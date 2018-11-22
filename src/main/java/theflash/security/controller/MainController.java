@@ -12,12 +12,9 @@ public class MainController {
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public HashMap<String, Object> index() {
-
     HashMap<String, Object> map = new HashMap<>();
     map.put("message", "Authenticated and authorised successfully !");
     map.put("result", "success!");
-
     return map;
   }
-
 }
