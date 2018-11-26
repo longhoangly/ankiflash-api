@@ -1,7 +1,10 @@
 package theflash.security.authentication;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,35 +21,49 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class JwtConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired
-  private JwtAuthProvider autheticationProvider;
+  @Autowired private JwtAuthProvider authProvider;
+  @Autowired private JwtAuthEntryPoint entryPoint;
 
-  @Autowired
-  private JwtAuthenticationEntryPoint entryPoint;
+  @Value("${jwt.token.route}")
+  private String tokenroute;
+
+  @Value("${spring.anonymous.endpoint}")
+  private String anonymousroute;
+
+  @Value("${spring.based.endpoint}")
+  private String basedroute;
 
   @Bean
   public AuthenticationManager authenticationManager() {
-    return new ProviderManager(Collections.singletonList(autheticationProvider));
+    return new ProviderManager(Collections.singletonList(authProvider));
   }
 
-  //create a custom filter
   @Bean
-  public JwtAuthFilter authTokenFilter() {
-    JwtAuthFilter filter = new JwtAuthFilter();
+  public JwtAuthFilter jwtAuthFilter() {
+    List<String> pathsToSkip = Arrays.asList(tokenroute, anonymousroute);
+    SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, basedroute);
+    JwtAuthFilter filter = new JwtAuthFilter(matcher);
     filter.setAuthenticationManager(authenticationManager());
-    filter.setAuthenticationSuccessHandler(new JwtSuccessHandler());
+    filter.setAuthenticationFailureHandler(new JwtAuthFailureHandler());
+    filter.setAuthenticationSuccessHandler(new JwtAuthSuccessHandler());
     return filter;
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable()
-        .authorizeRequests().antMatchers("**/**").authenticated()
+        .authorizeRequests().antMatchers(tokenroute).permitAll()
+        .and()
+        .authorizeRequests().antMatchers(anonymousroute).permitAll()
+        .and()
+        .authorizeRequests().antMatchers(basedroute).authenticated()
+        .and()
+        .authorizeRequests().anyRequest().authenticated()
         .and()
         .exceptionHandling().authenticationEntryPoint(entryPoint)
         .and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
     http.headers().cacheControl();
   }
 }

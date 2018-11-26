@@ -12,8 +12,7 @@ import theflash.security.service.UserService;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @Override
   public User save(User user) {

@@ -19,6 +19,7 @@ public class PropertiesHelper {
     } catch (IOException e) {
       e.printStackTrace();
     }
+
     PROXY_ADDRESS = properties.getProperty("theflash.proxy.address");
     PROXY_PORT = properties.getProperty("theflash.proxy.port");
     ANKI_DIR_FLASHCARDS = properties.getProperty("theflash.anki.root");

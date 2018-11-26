@@ -3,11 +3,11 @@ package theflash.helper;
 import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import theflash.security.authentication.JwtSuccessHandler;
+import theflash.security.authentication.JwtAuthSuccessHandler;
 
 public class IoHelper {
 
-  private static final Logger logger = LoggerFactory.getLogger(JwtSuccessHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(JwtAuthSuccessHandler.class);
 
   public static boolean createDirs(String path) {
     File files = new File(path);

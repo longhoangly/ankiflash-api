@@ -16,8 +16,7 @@ import theflash.security.payload.UserDetail;
 @Component
 public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
-  @Autowired
-  private JwtVal validator;
+  @Autowired private JwtVal validator;
 
   @Override
   protected void additionalAuthenticationChecks(UserDetails userDetails,

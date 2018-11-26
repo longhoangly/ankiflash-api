@@ -1,6 +1,5 @@
 package theflash.flashcard.utils;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -27,10 +26,12 @@ public class ContentRoller {
   public static Document getDocument(String url) {
     Document document = null;
     try {
-      if (PropertiesHelper.PROXY_ADDRESS != null && !PropertiesHelper.PROXY_ADDRESS.isEmpty() && PropertiesHelper.PROXY_PORT != null
+      if (PropertiesHelper.PROXY_ADDRESS != null && !PropertiesHelper.PROXY_ADDRESS.isEmpty()
+          && PropertiesHelper.PROXY_PORT != null
           && !PropertiesHelper.PROXY_PORT.isEmpty()) {
         Proxy proxy = new Proxy(Type.HTTP,
-            new InetSocketAddress(PropertiesHelper.PROXY_ADDRESS, Integer.parseInt(PropertiesHelper.PROXY_PORT)));
+            new InetSocketAddress(PropertiesHelper.PROXY_ADDRESS,
+                Integer.parseInt(PropertiesHelper.PROXY_PORT)));
         document = Jsoup.connect(url).proxy(proxy).get();
       } else {
         document = Jsoup.connect(url).get();
@@ -69,10 +70,12 @@ public class ContentRoller {
     try {
       URL site = new URL(url);
       URLConnection connection;
-      if (PropertiesHelper.PROXY_ADDRESS != null && !PropertiesHelper.PROXY_ADDRESS.isEmpty() && PropertiesHelper.PROXY_PORT != null
+      if (PropertiesHelper.PROXY_ADDRESS != null && !PropertiesHelper.PROXY_ADDRESS.isEmpty()
+          && PropertiesHelper.PROXY_PORT != null
           && !PropertiesHelper.PROXY_PORT.isEmpty()) {
         Proxy proxy = new Proxy(Type.HTTP,
-            new InetSocketAddress(PropertiesHelper.PROXY_ADDRESS, Integer.parseInt(PropertiesHelper.PROXY_PORT)));
+            new InetSocketAddress(PropertiesHelper.PROXY_ADDRESS,
+                Integer.parseInt(PropertiesHelper.PROXY_PORT)));
         connection = site.openConnection(proxy);
       } else {
         connection = site.openConnection();

@@ -20,31 +20,29 @@ import theflash.security.utils.PassEncoding;
 import theflash.security.utils.Roles;
 
 @RestController
-@RequestMapping("/api/user")
-public class UserController {
+@RequestMapping("/api/auth")
+public class SecurityController {
 
   private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 
   @Autowired private UserService userService;
+  @Autowired private JwtGen generator;
 
   private User currentUser;
 
-  @GetMapping("/current")
-  public ResponseEntity<User> getCurrentUser() {
+  @PostMapping("/token")
+  public ResponseEntity generate(@RequestBody final User user) {
 
-    logger.info("/user/current");
-    if (currentUser == null) {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      currentUser = userService.findByUserName(auth.getName());
-    }
-
-    return new ResponseEntity<>(currentUser, HttpStatus.OK);
+    logger.info("/auth/token");
+    HashMap response = new HashMap<String, String>();
+    response.put("Token", generator.generate(user));
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-  @PostMapping("/update")
-  public ResponseEntity<Object> register(@RequestBody final User reqUser) {
+  @PostMapping("/register")
+  public ResponseEntity register(@RequestBody final User reqUser) {
 
-    logger.info("/user/update");
+    logger.info("/auth/register");
     User user = userService.findByUserName(reqUser.getUsername());
     if (user != null) {
       HashMap response = new HashMap<String, String>();
@@ -62,7 +60,7 @@ public class UserController {
     reqUser.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
     reqUser.setRole(Roles.ROLE_USER.getValue());
 
-    user = userService.update(reqUser);
+    user = userService.save(reqUser);
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
 }

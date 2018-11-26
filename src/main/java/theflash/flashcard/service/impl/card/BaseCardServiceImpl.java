@@ -1,6 +1,6 @@
 package theflash.flashcard.service.impl.card;
 
-import theflash.flashcard.service.card.CardService;
+import theflash.flashcard.service.CardService;
 import theflash.flashcard.utils.Translation;
 
 public abstract class BaseCardServiceImpl implements CardService {

@@ -1,16 +1,15 @@
-package theflash.security.controller;
+package theflash.anonymous.controller;
 
 import java.util.HashMap;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/index")
-public class MainController {
+@RequestMapping("/api/anonymous")
+public class AnonymousController {
 
-  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping("/index")
   public HashMap<String, Object> index() {
     HashMap<String, Object> map = new HashMap<>();
     map.put("message", "Authenticated and authorised successfully !");

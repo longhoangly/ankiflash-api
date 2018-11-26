@@ -1,4 +1,4 @@
-package theflash.flashcard.service.card;
+package theflash.flashcard.service;
 
 import theflash.flashcard.utils.Translation;
 

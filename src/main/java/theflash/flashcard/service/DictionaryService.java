@@ -1,4 +1,4 @@
-package theflash.flashcard.service.dictionary;
+package theflash.flashcard.service;
 
 import java.util.List;
 import theflash.flashcard.utils.Translation;
