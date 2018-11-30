@@ -18,4 +18,6 @@ public interface UserService {
   User findByEmail(String email);
 
   Collection<User> findAll();
+
+  User login(String username, String password);
 }

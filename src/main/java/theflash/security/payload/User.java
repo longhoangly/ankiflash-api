@@ -1,5 +1,6 @@
 package theflash.security.payload;
 
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user")
@@ -16,17 +19,34 @@ public class User {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", unique = true)
   private long id;
-  @Column(name = "username", nullable = false)
+
+  @NotNull
+  @NotEmpty
+  @Column(name = "username")
   private String username;
 
-  @Column(name = "password", nullable = false)
+  @NotNull
+  @NotEmpty
+  @Column(name = "password")
   private String password;
 
-  @Column(name = "email", nullable = false)
+  @NotNull
+  @NotEmpty
+  @Column(name = "email")
   private String email;
 
+  @NotNull
+  @NotEmpty
   @Column(name = "role")
   private String role;
+
+  @NotNull
+  @Column(name = "createdDate")
+  private Date createdDate;
+
+  @NotNull
+  @Column(name = "lastLogin")
+  private Date lastLogin;
 
   public User() {
   }
@@ -76,6 +96,22 @@ public class User {
 
   public String getRole() {
     return role;
+  }
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(Date createdDate) {
+    this.createdDate = createdDate;
+  }
+
+  public Date getLastLogin() {
+    return lastLogin;
+  }
+
+  public void setLastLogin(Date lastLogin) {
+    this.lastLogin = lastLogin;
   }
 
   @Override

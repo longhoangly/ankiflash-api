@@ -1,12 +1,15 @@
 package theflash.security.service.impl;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import theflash.security.payload.User;
 import theflash.security.repository.UserRepository;
 import theflash.security.service.UserService;
+import theflash.security.utils.PassEncoding;
 
 @Service
 @Transactional
@@ -52,5 +55,21 @@ public class UserServiceImpl implements UserService {
   public Collection<User> findAll() {
     Iterable<User> itr = userRepository.findAll();
     return (Collection<User>) itr;
+  }
+
+  @Override
+  public User login(String username, String password) {
+    User user = findByUserName(username);
+    if (user == null) {
+      return null;
+    } else {
+      if (PassEncoding.getInstance().passwordEncoder.matches(password, user.getPassword())) {
+        Date now = Calendar.getInstance().getTime();
+        userRepository.updateLastLogin(now, user.getUsername());
+        return user;
+      } else {
+        return null;
+      }
+    }
   }
 }

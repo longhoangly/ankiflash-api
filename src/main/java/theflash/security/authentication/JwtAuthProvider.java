@@ -2,6 +2,7 @@ package theflash.security.authentication;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
@@ -27,11 +28,13 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
   @Override
   protected UserDetails retrieveUser(String username,
       UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+
     JwtAuthToken jwtAuthenticationToken = (JwtAuthToken) authentication;
     String token = jwtAuthenticationToken.getToken();
     User jwtUser = validator.validate(token);
+
     if (jwtUser == null) {
-      throw new RuntimeException("JWT Token is incorrect");
+      throw new AuthenticationServiceException("JWT Token is incorrect");
     }
     List<GrantedAuthority> grantedAuthorities = AuthorityUtils
         .commaSeparatedStringToAuthorityList(jwtUser.getRole());
