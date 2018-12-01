@@ -8,14 +8,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import theflash.helper.PropertiesHelper;
 
-@EnableAutoConfiguration
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Application {
+
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
   public static void main(String[] args) {
-    PropertiesHelper.IntialProperties();
+    PropertiesHelper.intialProperties("target/classes/application.properties");
+
     SpringApplication.run(Application.class, args);
     logger.info("Application Started");
   }

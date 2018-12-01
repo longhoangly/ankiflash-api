@@ -1,4 +1,4 @@
-package theflash.security.authentication;
+package theflash.security.jwt;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,9 @@ import theflash.security.payload.User;
 import theflash.security.payload.UserDetail;
 
 @Component
-public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
+public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
-  @Autowired private JwtVal validator;
+  @Autowired private Validation validator;
 
   @Override
   protected void additionalAuthenticationChecks(UserDetails userDetails,
@@ -36,10 +36,10 @@ public class JwtAuthProvider extends AbstractUserDetailsAuthenticationProvider {
     if (jwtUser == null) {
       throw new AuthenticationServiceException("JWT Token is incorrect");
     }
+
     List<GrantedAuthority> grantedAuthorities = AuthorityUtils
         .commaSeparatedStringToAuthorityList(jwtUser.getRole());
-    return new UserDetail(jwtUser.getUsername(), jwtUser.getPassword(), jwtUser.getId(), token,
-        grantedAuthorities);
+    return new UserDetail(jwtUser.getUsername(), jwtUser.getPassword(), grantedAuthorities);
   }
 
   @Override

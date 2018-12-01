@@ -9,6 +9,7 @@ import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.ContentRoller;
 import theflash.flashcard.utils.Translation;
 import theflash.helper.IoHelper;
+import theflash.helper.PropertiesHelper;
 
 public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
 

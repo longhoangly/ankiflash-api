@@ -1,4 +1,4 @@
-package theflash.security.authentication;
+package theflash.security.jwt;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,10 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 @Configuration
-public class JwtConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired private JwtAuthProvider authProvider;
-  @Autowired private JwtAuthEntryPoint entryPoint;
+  @Autowired private AuthProvider authProvider;
+  @Autowired private AuthEntryPoint entryPoint;
 
   @Value("${jwt.token.route}")
   private String tokenroute;
@@ -39,13 +39,13 @@ public class JwtConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public JwtAuthFilter jwtAuthFilter() {
+  public AuthFilter jwtAuthFilter() {
     List<String> pathsToSkip = Arrays.asList(tokenroute, anonymousroute);
     SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, basedroute);
-    JwtAuthFilter filter = new JwtAuthFilter(matcher);
+    AuthFilter filter = new AuthFilter(matcher);
     filter.setAuthenticationManager(authenticationManager());
-    filter.setAuthenticationFailureHandler(new JwtAuthFailureHandler());
-    filter.setAuthenticationSuccessHandler(new JwtAuthSuccessHandler());
+    filter.setAuthenticationFailureHandler(new AuthFailureHandler());
+    filter.setAuthenticationSuccessHandler(new AuthSuccessHandler());
     return filter;
   }
 

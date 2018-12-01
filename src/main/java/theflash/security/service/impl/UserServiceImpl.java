@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User findByUserName(String username) {
+  public User findByUsername(String username) {
     return userRepository.findByUsername(username);
   }
 
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User login(String username, String password) {
-    User user = findByUserName(username);
+  public User validate(String username, String password) {
+    User user = userRepository.findByUsername(username);
     if (user == null) {
       return null;
     } else {

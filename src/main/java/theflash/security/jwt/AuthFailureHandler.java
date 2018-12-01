@@ -1,4 +1,4 @@
-package theflash.security.authentication;
+package theflash.security.jwt;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-public class JwtAuthFailureHandler implements AuthenticationFailureHandler {
+public class AuthFailureHandler implements AuthenticationFailureHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(JwtAuthFailureHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(AuthFailureHandler.class);
 
   @Override
   public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,

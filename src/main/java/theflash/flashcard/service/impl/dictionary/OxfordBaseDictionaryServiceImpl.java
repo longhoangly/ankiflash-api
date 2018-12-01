@@ -67,6 +67,7 @@ public class OxfordBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
         break;
       }
     }
+
     //ToDo: double check if this function work well or not! Replace all words in examples except html values!
     //    Pattern pattern = Pattern.compile(
     //        String.format("({0})([^\\W_]*?[<>/\\]*?[^\\W_]*?[<>/\\]*?)([\\s.])", word.toLowerCase()));
@@ -115,7 +116,7 @@ public class OxfordBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
   public String getPron(String selector) {
     String pro_link = ContentRoller.getAttribute(doc, selector, 0, "data-src-mp3");
     if (pro_link.isEmpty()) {
-      return "";
+      return null;
     }
     String pro_name = pro_link.split("/")[pro_link.split("/").length - 1];
     String output = Paths.get(Constants.ANKI_DIR_SOUND, pro_name).toString();

@@ -1,5 +1,6 @@
 package theflash.security.payload;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import theflash.security.utils.Roles;
 
 @Entity
 @Table(name = "user")
@@ -18,7 +20,7 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", unique = true)
-  private long id;
+  private int id;
 
   @NotNull
   @NotEmpty
@@ -35,83 +37,19 @@ public class User {
   @Column(name = "email")
   private String email;
 
-  @NotNull
-  @NotEmpty
   @Column(name = "role")
-  private String role;
+  private String role = Roles.ROLE_USER.getValue();
 
-  @NotNull
   @Column(name = "createdDate")
-  private Date createdDate;
+  private Date createdDate = Calendar.getInstance().getTime();
 
-  @NotNull
   @Column(name = "lastLogin")
-  private Date lastLogin;
+  private Date lastLogin = Calendar.getInstance().getTime();
+
+  @Column(name = "active")
+  private boolean active = true;
 
   public User() {
-  }
-
-  public User(String username, String password, String email, String role) {
-    this.setUsername(username);
-    this.setPassword(password);
-    this.setEmail(email);
-    this.setRole(role);
-  }
-
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public void setUsername(String userName) {
-    this.username = userName;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setRole(String role) {
-    this.role = role;
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getRole() {
-    return role;
-  }
-
-  public Date getCreatedDate() {
-    return createdDate;
-  }
-
-  public void setCreatedDate(Date createdDate) {
-    this.createdDate = createdDate;
-  }
-
-  public Date getLastLogin() {
-    return lastLogin;
-  }
-
-  public void setLastLogin(Date lastLogin) {
-    this.lastLogin = lastLogin;
   }
 
   @Override
@@ -133,5 +71,70 @@ public class User {
   @Override
   public int hashCode() {
     return Objects.hash(id, username, password, email, role);
+  }
+
+  // Setter and Getter
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
+  }
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(Date createdDate) {
+    this.createdDate = createdDate;
+  }
+
+  public Date getLastLogin() {
+    return lastLogin;
+  }
+
+  public void setLastLogin(Date lastLogin) {
+    this.lastLogin = lastLogin;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
   }
 }

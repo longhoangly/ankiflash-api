@@ -14,18 +14,11 @@ public class UserDetail implements UserDetails {
 
   private String password;
 
-  private String token;
-
-  private long id;
-
   private Collection<? extends GrantedAuthority> authorities;
 
-  public UserDetail(String userName, String password, long id, String token,
-      List<GrantedAuthority> grantedAuthorities) {
+  public UserDetail(String userName, String password, List<GrantedAuthority> grantedAuthorities) {
     this.username = userName;
     this.password = password;
-    this.id = id;
-    this.token = token;
     this.authorities = grantedAuthorities;
   }
 
@@ -62,13 +55,5 @@ public class UserDetail implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
-  }
-
-  public String getToken() {
-    return token;
-  }
-
-  public long getId() {
-    return id;
   }
 }

@@ -1,6 +1,8 @@
 package theflash.security.payload;
 
+import java.util.Collection;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 
 public class JwtAuthToken extends UsernamePasswordAuthenticationToken {
 
@@ -8,6 +10,11 @@ public class JwtAuthToken extends UsernamePasswordAuthenticationToken {
 
   public JwtAuthToken(String token) {
     super(null, null);
+    this.token = token;
+  }
+
+  public JwtAuthToken(String token, Collection<GrantedAuthority> authorities) {
+    super(null, null, authorities);
     this.token = token;
   }
 

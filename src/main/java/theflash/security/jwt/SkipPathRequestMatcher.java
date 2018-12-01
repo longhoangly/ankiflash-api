@@ -1,4 +1,4 @@
-package theflash.security.authentication;
+package theflash.security.jwt;
 
 import io.jsonwebtoken.lang.Assert;
 import java.util.List;
