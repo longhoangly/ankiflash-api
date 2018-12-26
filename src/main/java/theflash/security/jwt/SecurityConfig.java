@@ -24,14 +24,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired private AuthProvider authProvider;
   @Autowired private AuthEntryPoint entryPoint;
 
-  @Value("${jwt.token.route}")
-  private String tokenroute;
+  @Value("${jwt.token.endpoint}")
+  private String tokenEndpoint;
 
   @Value("${spring.anonymous.endpoint}")
-  private String anonymousroute;
+  private String anonymousEndpoint;
 
   @Value("${spring.based.endpoint}")
-  private String basedroute;
+  private String basedEndpoint;
 
   @Bean
   public AuthenticationManager authenticationManager() {
@@ -40,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public AuthFilter jwtAuthFilter() {
-    List<String> pathsToSkip = Arrays.asList(tokenroute, anonymousroute);
-    SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, basedroute);
+    List<String> pathsToSkip = Arrays.asList(tokenEndpoint, anonymousEndpoint);
+    SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, basedEndpoint);
     AuthFilter filter = new AuthFilter(matcher);
     filter.setAuthenticationManager(authenticationManager());
     filter.setAuthenticationFailureHandler(new AuthFailureHandler());
@@ -52,11 +52,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable()
-        .authorizeRequests().antMatchers(tokenroute).permitAll()
+        .authorizeRequests().antMatchers(tokenEndpoint).permitAll()
         .and()
-        .authorizeRequests().antMatchers(anonymousroute).permitAll()
+        .authorizeRequests().antMatchers(anonymousEndpoint).permitAll()
         .and()
-        .authorizeRequests().antMatchers(basedroute).authenticated()
+        .authorizeRequests().antMatchers(basedEndpoint).authenticated()
         .and()
         .authorizeRequests().anyRequest().authenticated()
         .and()

@@ -2,7 +2,6 @@ package theflash.security.jwt;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import theflash.security.payload.JwtAuthToken;
-import theflash.security.payload.LoginUser;
 import theflash.security.payload.User;
 
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {

@@ -53,8 +53,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Collection<User> findAll() {
-    Iterable<User> itr = userRepository.findAll();
-    return (Collection<User>) itr;
+    return (Collection<User>) userRepository.findAll();
   }
 
   @Override
@@ -64,8 +63,7 @@ public class UserServiceImpl implements UserService {
       return null;
     } else {
       if (PassEncoding.getInstance().passwordEncoder.matches(password, user.getPassword())) {
-        Date now = Calendar.getInstance().getTime();
-        userRepository.updateLastLogin(now, user.getUsername());
+        userRepository.updateLastLogin(Calendar.getInstance().getTime(), user.getUsername());
         return user;
       } else {
         return null;

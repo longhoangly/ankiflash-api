@@ -22,11 +22,10 @@ public class Generator {
 
   public String generate(LoginUser jwtUser) {
     Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
-    String token = Jwts.builder()
-                       .setClaims(claims)
-                       .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                       .signWith(SignatureAlgorithm.HS512, secret)
-                       .compact();
-    return String.format("%s %s", prefix, token);
+    return Jwts.builder()
+               .setClaims(claims)
+               .setExpiration(new Date(System.currentTimeMillis() + expiration))
+               .signWith(SignatureAlgorithm.HS512, secret)
+               .compact();
   }
 }

@@ -22,12 +22,6 @@ public class LoginUser {
   public LoginUser() {
   }
 
-  public LoginUser(String username, String password, String role) {
-    this.setUsername(username);
-    this.setPassword(password);
-    this.setRole(role);
-  }
-
   public void setUsername(String userName) {
     this.username = userName;
   }

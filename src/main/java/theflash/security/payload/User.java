@@ -1,5 +1,7 @@
 package theflash.security.payload;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -19,6 +21,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "id", unique = true)
   private int id;
 
@@ -29,20 +32,27 @@ public class User {
 
   @NotNull
   @NotEmpty
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "password")
   private String password;
 
   @NotNull
   @NotEmpty
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "email")
   private String email;
 
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "role")
   private String role = Roles.ROLE_USER.getValue();
 
+  private String token;
+
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "createdDate")
   private Date createdDate = Calendar.getInstance().getTime();
 
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "lastLogin")
   private Date lastLogin = Calendar.getInstance().getTime();
 
@@ -112,6 +122,14 @@ public class User {
 
   public void setRole(String role) {
     this.role = role;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
   }
 
   public Date getCreatedDate() {
