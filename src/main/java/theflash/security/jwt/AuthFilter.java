@@ -15,15 +15,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import theflash.security.payload.JwtAuthToken;
-import theflash.security.payload.User;
+import theflash.security.dto.JwtAuthToken;
+import theflash.security.dto.User;
 
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
   @Value("${jwt.token.prefix}")
   private String prefix;
 
-  @Autowired private Validation validator;
+  @Autowired
+  private Validation validator;
 
   public AuthFilter(RequestMatcher matcher) {
     super(matcher);

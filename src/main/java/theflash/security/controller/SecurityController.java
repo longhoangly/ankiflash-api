@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import theflash.helper.exception.BadRequestException;
+import theflash.security.dto.User;
 import theflash.security.jwt.Generator;
-import theflash.security.payload.LoginUser;
-import theflash.security.payload.User;
+import theflash.security.payload.LoginUserRequest;
+import theflash.security.payload.LoginUserResponse;
+import theflash.security.payload.SignUpUserRequest;
+import theflash.security.payload.SignUpUserResponse;
 import theflash.security.service.UserService;
 import theflash.security.utils.PassEncoding;
 import theflash.security.utils.Roles;
@@ -25,27 +28,31 @@ public class SecurityController {
 
   private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 
-  @Autowired private UserService userService;
+  @Autowired
+  private UserService userService;
 
-  @Autowired private Generator generator;
+  @Autowired
+  private Generator generator;
 
   @PostMapping("/login")
-  public ResponseEntity login(@RequestBody @Valid LoginUser user) {
+  public ResponseEntity login(@RequestBody @Valid LoginUserRequest reqUser) {
 
     logger.info("/api/auth/login");
-    User loggedUser = userService.validate(user.getUsername(), user.getPassword());
-    if (loggedUser == null) {
+
+    User user = userService.validate(reqUser.getUsername(), reqUser.getPassword());
+    if (user == null) {
       throw new BadRequestException("Username or Password is not correct!");
     }
 
-    loggedUser.setToken(generator.generate(user));
-    return ResponseEntity.ok().body(loggedUser);
+    LoginUserResponse resUser = new LoginUserResponse(user.getUsername(), user.getRole(), user.isActive(), generator.generate(user));
+    return ResponseEntity.ok().body(resUser);
   }
 
   @PostMapping("/register")
-  public ResponseEntity register(@RequestBody @Valid User reqUser) {
+  public ResponseEntity register(@RequestBody @Valid SignUpUserRequest reqUser) {
 
     logger.info("/api/auth/register");
+
     User user = userService.findByUsername(reqUser.getUsername());
     if (user != null) {
       throw new BadRequestException("Username exists already");
@@ -56,15 +63,18 @@ public class SecurityController {
       throw new BadRequestException("Email exists already");
     }
 
-    reqUser.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
-    reqUser.setRole(Roles.ROLE_USER.getValue());
+    user = new User(reqUser.getUsername());
+    user.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
+    user.setRole(Roles.ROLE_USER.getValue());
 
     Date now = Calendar.getInstance().getTime();
-    reqUser.setCreatedDate(now);
-    reqUser.setLastLogin(now);
-    reqUser.setActive(true);
+    user.setCreatedDate(now);
+    user.setLastLogin(now);
+    user.setActive(true);
+    user = userService.save(user);
 
-    user = userService.save(reqUser);
-    return ResponseEntity.ok(user);
+    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(),
+        user.isActive());
+    return ResponseEntity.ok().body(resUser);
   }
 }

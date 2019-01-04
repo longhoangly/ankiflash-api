@@ -10,14 +10,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import theflash.security.payload.JwtAuthToken;
-import theflash.security.payload.User;
-import theflash.security.payload.UserDetail;
+import theflash.security.dto.JwtAuthToken;
+import theflash.security.dto.User;
+import theflash.security.dto.UserDetail;
 
 @Component
 public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
-  @Autowired private Validation validator;
+  @Autowired
+  private Validation validator;
 
   @Override
   protected void additionalAuthenticationChecks(UserDetails userDetails,

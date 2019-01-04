@@ -21,8 +21,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired private AuthProvider authProvider;
-  @Autowired private AuthEntryPoint entryPoint;
+  @Autowired
+  private AuthProvider authProvider;
+
+  @Autowired
+  private AuthEntryPoint entryPoint;
 
   @Value("${jwt.token.endpoint}")
   private String tokenEndpoint;

@@ -1,8 +1,5 @@
-package theflash.security.payload;
+package theflash.security.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -13,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import theflash.security.utils.Roles;
 
 @Entity
 @Table(name = "user")
@@ -21,7 +17,6 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "id", unique = true)
   private int id;
 
@@ -32,34 +27,36 @@ public class User {
 
   @NotNull
   @NotEmpty
-  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "password")
   private String password;
 
   @NotNull
   @NotEmpty
-  @JsonProperty(access = Access.WRITE_ONLY)
   @Column(name = "email")
   private String email;
 
-  @JsonProperty(access = Access.WRITE_ONLY)
+  @NotNull
+  @NotEmpty
   @Column(name = "role")
-  private String role = Roles.ROLE_USER.getValue();
+  private String role;
 
-  private String token;
-
-  @JsonProperty(access = Access.WRITE_ONLY)
+  @NotNull
   @Column(name = "createdDate")
-  private Date createdDate = Calendar.getInstance().getTime();
+  private Date createdDate;
 
-  @JsonProperty(access = Access.WRITE_ONLY)
+  @NotNull
   @Column(name = "lastLogin")
-  private Date lastLogin = Calendar.getInstance().getTime();
+  private Date lastLogin;
 
+  @NotNull
   @Column(name = "active")
-  private boolean active = true;
+  private boolean active;
 
   public User() {
+  }
+
+  public User(String username) {
+    this.username = username;
   }
 
   @Override
@@ -70,6 +67,7 @@ public class User {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
+
     User user = (User) o;
     return id == user.id &&
         role == user.role &&
@@ -83,7 +81,6 @@ public class User {
     return Objects.hash(id, username, password, email, role);
   }
 
-  // Setter and Getter
   public int getId() {
     return id;
   }
@@ -122,14 +119,6 @@ public class User {
 
   public void setRole(String role) {
     this.role = role;
-  }
-
-  public String getToken() {
-    return token;
-  }
-
-  public void setToken(String token) {
-    this.token = token;
   }
 
   public Date getCreatedDate() {

@@ -1,7 +1,7 @@
 /**
  *
  */
-package theflash.security.payload;
+package theflash.security.dto;
 
 import java.util.Collection;
 import java.util.List;

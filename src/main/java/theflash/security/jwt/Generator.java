@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import theflash.security.payload.LoginUser;
+import theflash.security.dto.User;
 
 @Component
 public class Generator {
@@ -20,7 +20,7 @@ public class Generator {
   @Value("${jwt.token.prefix}")
   private String prefix;
 
-  public String generate(LoginUser jwtUser) {
+  public String generate(User jwtUser) {
     Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
     return Jwts.builder()
                .setClaims(claims)

@@ -1,7 +1,7 @@
 package theflash.security.service;
 
 import java.util.Collection;
-import theflash.security.payload.User;
+import theflash.security.dto.User;
 
 public interface UserService {
 

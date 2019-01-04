@@ -1,4 +1,4 @@
-package theflash.security.payload;
+package theflash.security.dto;
 
 import java.util.Collection;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

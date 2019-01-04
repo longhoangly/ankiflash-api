@@ -2,11 +2,10 @@ package theflash.security.service.impl;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import theflash.security.payload.User;
+import theflash.security.dto.User;
 import theflash.security.repository.UserRepository;
 import theflash.security.service.UserService;
 import theflash.security.utils.PassEncoding;
@@ -15,7 +14,8 @@ import theflash.security.utils.PassEncoding;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-  @Autowired private UserRepository userRepository;
+  @Autowired
+  private UserRepository userRepository;
 
   @Override
   public User save(User user) {
