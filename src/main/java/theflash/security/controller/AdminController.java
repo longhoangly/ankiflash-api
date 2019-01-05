@@ -48,15 +48,15 @@ public class AdminController {
     }
 
     user = new User(reqUser.getUsername());
-    reqUser.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
-    reqUser.setRole(Roles.ROLE_ADMIN.getValue());
+    user.setEmail(reqUser.getEmail());
+    user.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
+    user.setRole(Roles.ROLE_ADMIN.getValue());
 
     Date now = Calendar.getInstance().getTime();
     user.setCreatedDate(now);
     user.setLastLogin(now);
     user.setActive(true);
-
-    user = userService.save(user);
+    userService.save(user);
 
     SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(),
         user.isActive());

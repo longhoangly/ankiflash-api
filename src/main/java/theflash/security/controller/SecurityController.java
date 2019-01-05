@@ -64,6 +64,7 @@ public class SecurityController {
     }
 
     user = new User(reqUser.getUsername());
+    user.setEmail(reqUser.getEmail());
     user.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
     user.setRole(Roles.ROLE_USER.getValue());
 
@@ -71,7 +72,7 @@ public class SecurityController {
     user.setCreatedDate(now);
     user.setLastLogin(now);
     user.setActive(true);
-    user = userService.save(user);
+    userService.save(user);
 
     SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(),
         user.isActive());
