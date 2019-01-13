@@ -11,8 +11,8 @@ import theflash.security.dto.User;
 @Component
 public class Generator {
 
-  @Value("${jwt.token.expiration}")
-  private long expiration;
+  @Value("${jwt.token.expiration.seconds}")
+  private long expirationInSeconds;
 
   @Value("${jwt.token.secret}")
   private String secret;
@@ -24,7 +24,16 @@ public class Generator {
     Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
     return Jwts.builder()
                .setClaims(claims)
-               .setExpiration(new Date(System.currentTimeMillis() + expiration))
+               .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds*1000))
+               .signWith(SignatureAlgorithm.HS512, secret)
+               .compact();
+  }
+
+  public String generate(User jwtUser, int expirationInSeconds) {
+    Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
+    return Jwts.builder()
+               .setClaims(claims)
+               .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds*1000))
                .signWith(SignatureAlgorithm.HS512, secret)
                .compact();
   }

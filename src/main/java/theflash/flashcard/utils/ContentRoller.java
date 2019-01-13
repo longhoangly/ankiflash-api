@@ -14,7 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import theflash.helper.PropertiesHelper;
+import theflash.helper.TheFlashProperties;
 
 public class ContentRoller {
 
@@ -26,12 +26,9 @@ public class ContentRoller {
   public static Document getDocument(String url) {
     Document document = null;
     try {
-      if (PropertiesHelper.PROXY_ADDRESS != null && !PropertiesHelper.PROXY_ADDRESS.isEmpty()
-          && PropertiesHelper.PROXY_PORT != null
-          && !PropertiesHelper.PROXY_PORT.isEmpty()) {
+      if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
         Proxy proxy = new Proxy(Type.HTTP,
-            new InetSocketAddress(PropertiesHelper.PROXY_ADDRESS,
-                Integer.parseInt(PropertiesHelper.PROXY_PORT)));
+            new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
         document = Jsoup.connect(url).proxy(proxy).get();
       } else {
         document = Jsoup.connect(url).get();
@@ -70,12 +67,9 @@ public class ContentRoller {
     try {
       URL site = new URL(url);
       URLConnection connection;
-      if (PropertiesHelper.PROXY_ADDRESS != null && !PropertiesHelper.PROXY_ADDRESS.isEmpty()
-          && PropertiesHelper.PROXY_PORT != null
-          && !PropertiesHelper.PROXY_PORT.isEmpty()) {
+      if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
         Proxy proxy = new Proxy(Type.HTTP,
-            new InetSocketAddress(PropertiesHelper.PROXY_ADDRESS,
-                Integer.parseInt(PropertiesHelper.PROXY_PORT)));
+            new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
         connection = site.openConnection(proxy);
       } else {
         connection = site.openConnection();

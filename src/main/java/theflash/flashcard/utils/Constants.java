@@ -1,9 +1,10 @@
 package theflash.flashcard.utils;
 
 import java.nio.file.Paths;
-import theflash.helper.PropertiesHelper;
+import theflash.helper.TheFlashProperties;
 
 public class Constants {
+
   // OXFORD
   public static String DICT_OXFORD_INTERFACE_CSS = "interface.css";
   public static String DICT_OXFORD_CSS = "oxford.css";
@@ -55,13 +56,13 @@ public class Constants {
   public static String ANKI_FR_MULTIPLE_FORM_ABCDEFGHLONGLEE123 = "[FR]multiformABCDEFGHLONGLEE123.apkg";
   public static String ANKI_VN_SINGLE_FORM_ABCDEFGHLONGLEE123 = "[VN]singleformABCDEFGHLONGLEE123.apkg";
   // ANKI DIRS
-  public static String ANKI_DIR_OXFORD = Paths.get(PropertiesHelper.ANKI_DIR_FLASHCARDS, "oxlayout").toString();
-  public static String ANKI_DIR_SOHA = Paths.get(PropertiesHelper.ANKI_DIR_FLASHCARDS, "soha").toString();
-  public static String ANKI_DIR_LACVIET = Paths.get(PropertiesHelper.ANKI_DIR_FLASHCARDS, "lacViet").toString();
-  public static String ANKI_DIR_CAMBRIDGE = Paths.get(PropertiesHelper.ANKI_DIR_FLASHCARDS, "cambridge").toString();
-  public static String ANKI_DIR_COLLINS = Paths.get(PropertiesHelper.ANKI_DIR_FLASHCARDS, "collins").toString();
-  public static String ANKI_DIR_SOUND = Paths.get(PropertiesHelper.ANKI_DIR_FLASHCARDS, "sounds").toString();
-  public static String ANKI_DIR_IMAGE = Paths.get(PropertiesHelper.ANKI_DIR_FLASHCARDS, "images").toString();
+  public static String ANKI_DIR_OXFORD = Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS, "oxlayout").toString();
+  public static String ANKI_DIR_SOHA = Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS, "soha").toString();
+  public static String ANKI_DIR_LACVIET = Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS, "lacViet").toString();
+  public static String ANKI_DIR_CAMBRIDGE = Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS, "cambridge").toString();
+  public static String ANKI_DIR_COLLINS = Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS, "collins").toString();
+  public static String ANKI_DIR_SOUND = Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS, "sounds").toString();
+  public static String ANKI_DIR_IMAGE = Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS, "images").toString();
   // LANGUAGES
   public static String ENGLISH = "English";
   public static String FRENCH = "French";

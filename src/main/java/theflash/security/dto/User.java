@@ -52,6 +52,10 @@ public class User {
   @Column(name = "active")
   private boolean active;
 
+  @NotNull
+  @Column(name = "verified")
+  private boolean verified;
+
   public User() {
   }
 
@@ -143,5 +147,13 @@ public class User {
 
   public void setActive(boolean active) {
     this.active = active;
+  }
+
+  public boolean isVerified() {
+    return verified;
+  }
+
+  public void setVerified(boolean verified) {
+    this.verified = verified;
   }
 }

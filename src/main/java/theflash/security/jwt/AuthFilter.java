@@ -36,12 +36,11 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
     String header = request.getHeader("Authorization");
 
-    if (header == null || !header.startsWith(String.format("%s ", prefix))) {
+    if (header == null || !header.startsWith(prefix)) {
       throw new AuthenticationServiceException("Token is missing");
     }
 
-    String authenticationToken = header.substring(6);
-
+    String authenticationToken = header.replaceFirst(prefix, "").trim();
     User jwtUser = validator.validate(authenticationToken);
     Collection<GrantedAuthority> grantedAuthorities = AuthorityUtils
         .commaSeparatedStringToAuthorityList(jwtUser.getRole());

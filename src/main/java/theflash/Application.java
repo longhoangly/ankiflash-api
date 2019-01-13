@@ -9,19 +9,16 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import theflash.helper.PropertiesHelper;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Application {
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-  @Value("${spring.security.allowed-origins}")
+  @Value("${spring.security.allowed.origins}")
   private String origins;
 
   public static void main(String[] args) {
-    PropertiesHelper.intialProperties("src/main/resources/application.properties");
-
     SpringApplication.run(Application.class, args);
     logger.info("Application Started");
   }

@@ -58,8 +58,8 @@ public class AdminController {
     user.setActive(true);
     userService.save(user);
 
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(),
-        user.isActive());
+    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
+        user.isVerified());
     return ResponseEntity.ok().body(resUser);
   }
 

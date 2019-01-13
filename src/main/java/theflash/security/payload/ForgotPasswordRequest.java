@@ -7,26 +7,40 @@ public class ForgotPasswordRequest {
 
   @NotNull
   @NotEmpty
-  private String email;
+  private String key;
 
-  private String username;
+  @NotNull
+  @NotEmpty
+  private String password;
+
+  @NotNull
+  @NotEmpty
+  private String confirmedPassword;
 
   public ForgotPasswordRequest() {
   }
 
-  public String getEmail() {
-    return email;
+  public String getKey() {
+    return key;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setKey(String key) {
+    this.key = key;
   }
 
-  public void setUsername(String userName) {
-    this.username = userName;
+  public String getPassword() {
+    return password;
   }
 
-  public String getUsername() {
-    return username;
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getConfirmedPassword() {
+    return confirmedPassword;
+  }
+
+  public void setConfirmedPassword(String confirmedPassword) {
+    this.confirmedPassword = confirmedPassword;
   }
 }

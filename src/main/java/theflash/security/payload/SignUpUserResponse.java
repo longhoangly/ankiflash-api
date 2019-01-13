@@ -17,10 +17,15 @@ public class SignUpUserResponse {
   @NotEmpty
   private boolean active;
 
-  public SignUpUserResponse(String username, String role, boolean active) {
+  @NotNull
+  @NotEmpty
+  private boolean verified;
+
+  public SignUpUserResponse(String username, String role, boolean active, boolean verified) {
     this.username = username;
     this.role = role;
     this.active = active;
+    this.verified = verified;
   }
 
   public void setUsername(String userName) {
@@ -45,5 +50,13 @@ public class SignUpUserResponse {
 
   public void setActive(boolean active) {
     this.active = active;
+  }
+
+  public boolean isVerified() {
+    return verified;
+  }
+
+  public void setVerified(boolean verified) {
+    this.verified = verified;
   }
 }

@@ -43,7 +43,7 @@ public class UserController {
   }
 
   @PostMapping("/update")
-  public ResponseEntity register(@RequestBody @Valid SignUpUserRequest reqUser) {
+  public ResponseEntity update(@RequestBody @Valid SignUpUserRequest reqUser) {
 
     logger.info("/api/user/update");
 
@@ -68,8 +68,8 @@ public class UserController {
 
     user = userService.update(user);
 
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(),
-        user.isActive());
+    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
+        user.isVerified());
     return ResponseEntity.ok().body(resUser);
   }
 
@@ -83,8 +83,8 @@ public class UserController {
     user.setActive(false);
     userService.update(user);
 
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(),
-        user.isActive());
+    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
+        user.isVerified());
     return ResponseEntity.ok().body(resUser);
   }
 
