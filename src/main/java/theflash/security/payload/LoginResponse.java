@@ -3,7 +3,7 @@ package theflash.security.payload;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class SignUpUserResponse {
+public class LoginResponse {
 
   @NotNull
   @NotEmpty
@@ -21,11 +21,16 @@ public class SignUpUserResponse {
   @NotEmpty
   private boolean verified;
 
-  public SignUpUserResponse(String username, String role, boolean active, boolean verified) {
+  @NotNull
+  @NotEmpty
+  private String token;
+
+  public LoginResponse(String username, String role, boolean active, boolean verified, String token) {
     this.username = username;
     this.role = role;
     this.active = active;
     this.verified = verified;
+    this.token = token;
   }
 
   public void setUsername(String userName) {
@@ -58,5 +63,13 @@ public class SignUpUserResponse {
 
   public void setVerified(boolean verified) {
     this.verified = verified;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
   }
 }

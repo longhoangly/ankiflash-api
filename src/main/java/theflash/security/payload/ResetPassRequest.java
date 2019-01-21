@@ -3,7 +3,7 @@ package theflash.security.payload;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class ForgotPasswordRequest {
+public class ResetPassRequest {
 
   @NotNull
   @NotEmpty
@@ -13,11 +13,7 @@ public class ForgotPasswordRequest {
   @NotEmpty
   private String password;
 
-  @NotNull
-  @NotEmpty
-  private String confirmedPassword;
-
-  public ForgotPasswordRequest() {
+  public ResetPassRequest() {
   }
 
   public String getKey() {
@@ -34,13 +30,5 @@ public class ForgotPasswordRequest {
 
   public void setPassword(String password) {
     this.password = password;
-  }
-
-  public String getConfirmedPassword() {
-    return confirmedPassword;
-  }
-
-  public void setConfirmedPassword(String confirmedPassword) {
-    this.confirmedPassword = confirmedPassword;
   }
 }

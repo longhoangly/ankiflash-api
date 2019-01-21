@@ -4,12 +4,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.ContentRoller;
 import theflash.flashcard.utils.Translation;
 import theflash.helper.IoHelper;
 
 public class OxfordBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
+
+  private static final Logger logger = LoggerFactory.getLogger(OxfordBaseDictionaryServiceImpl.class);
 
   @Override
   public List<Translation> supportedTranslations() {
@@ -63,7 +67,7 @@ public class OxfordBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
       try {
         examples += ContentRoller.getElement(doc, "span[class=x-g]", i).outerHtml();
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.error("Exception: ", e);
         break;
       }
     }

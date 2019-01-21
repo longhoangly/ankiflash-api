@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import theflash.helper.exception.BadRequestException;
 import theflash.security.dto.User;
-import theflash.security.payload.DeleteUserResponse;
-import theflash.security.payload.SignUpUserRequest;
-import theflash.security.payload.SignUpUserResponse;
+import theflash.security.payload.SignUpRequest;
 import theflash.security.service.UserService;
 import theflash.security.utils.PassEncoding;
 import theflash.security.utils.Roles;
@@ -43,7 +41,7 @@ public class UserController {
   }
 
   @PostMapping("/update")
-  public ResponseEntity update(@RequestBody @Valid SignUpUserRequest reqUser) {
+  public ResponseEntity update(@RequestBody @Valid SignUpRequest reqUser) {
 
     logger.info("/api/user/update");
 
@@ -58,34 +56,33 @@ public class UserController {
     }
 
     user = new User(reqUser.getUsername());
-    reqUser.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
-    reqUser.setRole(Roles.ROLE_USER.getValue());
+    user.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
+    user.setEmail(reqUser.getEmail());
 
     Date now = Calendar.getInstance().getTime();
-    user.setCreatedDate(now);
     user.setLastLogin(now);
     user.setActive(true);
+    user.setVerified(true);
+    user.setRole(Roles.ROLE_USER.getValue());
 
-    user = userService.update(user);
-
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified());
-    return ResponseEntity.ok().body(resUser);
+    userService.update(user);
+    return ResponseEntity.ok().build();
   }
 
-  @PostMapping("/deActive")
+  @PostMapping("/de-active")
   public ResponseEntity deActive() {
 
-    logger.info("/api/user/deActive");
+    logger.info("/api/user/de-active");
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     User user = userService.findByUsername(auth.getName());
+    if (user != null) {
+      throw new BadRequestException(String.format("User %1$s does not exist!", auth.getName()));
+    }
+
     user.setActive(false);
     userService.update(user);
-
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified());
-    return ResponseEntity.ok().body(resUser);
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping("/delete")
@@ -95,10 +92,11 @@ public class UserController {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     User user = userService.findByUsername(auth.getName());
-    userService.delete(user.getId());
+    if (user != null) {
+      throw new BadRequestException(String.format("User %1$s does not exist!", auth.getName()));
+    }
 
-    DeleteUserResponse resUser = new DeleteUserResponse(user.getUsername(), user.getRole(),
-        true);
-    return ResponseEntity.ok().body(resUser);
+    userService.delete(user.getId());
+    return ResponseEntity.ok().build();
   }
 }

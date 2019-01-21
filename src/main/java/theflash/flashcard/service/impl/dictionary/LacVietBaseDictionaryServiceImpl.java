@@ -4,6 +4,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.ContentRoller;
@@ -11,6 +13,8 @@ import theflash.flashcard.utils.Translation;
 import theflash.helper.IoHelper;
 
 public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
+
+  private static final Logger logger = LoggerFactory.getLogger(LacVietBaseDictionaryServiceImpl.class);
 
   @Override
   public List<Translation> supportedTranslations() {
@@ -79,7 +83,7 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
       try {
         examples += ContentRoller.getElement(doc, "div[class=e]", i).outerHtml() + "<br>";
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.error("Exception: ", e);
         break;
       }
     }

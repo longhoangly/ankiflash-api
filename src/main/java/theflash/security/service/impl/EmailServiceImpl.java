@@ -1,7 +1,5 @@
 package theflash.security.service.impl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import theflash.anonymous.controller.AnonymousController;
 import theflash.helper.TheFlashProperties;
 import theflash.security.dto.User;
 import theflash.security.jwt.Generator;
 import theflash.security.service.EmailService;
+import theflash.security.service.UserService;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -23,6 +23,9 @@ public class EmailServiceImpl implements EmailService {
 
   @Autowired
   private Generator generator;
+
+  @Autowired
+  private UserService userService;
 
   private JavaMailSender mailSender;
 
@@ -57,20 +60,13 @@ public class EmailServiceImpl implements EmailService {
     message.setTo(to);
     message.setSubject(subject);
     message.setText(msg);
+    message.setFrom(TheFlashProperties.MAIL_FROM);
     mailSender.send(message);
   }
 
   @Override
+  @Async
   public void sendVerificationEmail(User user) {
-
-    URL relativeUrl = null;
-    try {
-      URL baseUrl = new URL(TheFlashProperties.API_SERVER_URL);
-      relativeUrl = new URL(baseUrl,
-          String.format("/api/auth/verify?key=%1$s", generator.generate(user, 24 * 60 * 60)));
-    } catch (MalformedURLException e) {
-      logger.info("MalformedURLException: ", e);
-    }
 
     String emailTitle = "TheFlash Verify Email Address!";
     String emailContent = new StringBuilder()
@@ -92,20 +88,19 @@ public class EmailServiceImpl implements EmailService {
         .append("TheFlash Team\n")
         .toString();
 
-    emailContent = String.format(emailContent, user.getUsername(), relativeUrl.toString());
+    String token24h = generator.generate(user, 24 * 60 * 60);
+    String verificationUrl = String
+        .format("%1$s/api/auth/verify-email-address?key=%2$s", TheFlashProperties.API_SERVER_URL, token24h);
+    emailContent = String.format(emailContent, user.getUsername(), verificationUrl);
     sendSimpleMessage(user.getEmail(), emailTitle, emailContent);
+
+    user.setToken(token24h);
+    userService.update(user);
   }
 
   @Override
+  @Async
   public void sendResetPasswordEmail(User user) {
-
-    URL relativeUrl = null;
-    try {
-      URL baseUrl = new URL(TheFlashProperties.WEB_SERVER_URL);
-      relativeUrl = new URL(baseUrl, String.format("/reset-password?key=%1$s", generator.generate(user, 20 * 60)));
-    } catch (MalformedURLException e) {
-      logger.error("MalformedURLException: ", e);
-    }
 
     String emailTitle = "TheFlash Password Reset!";
     String emailContent = new StringBuilder()
@@ -128,7 +123,12 @@ public class EmailServiceImpl implements EmailService {
         .append("TheFlash Team\n")
         .toString();
 
-    emailContent = String.format(emailContent, user.getUsername(), relativeUrl.toString());
+    String token20m = generator.generate(user, 20 * 60);
+    String resetUrl = String.format("%1$s/reset-password?key=%2$s", TheFlashProperties.WEB_SERVER_URL, token20m);
+    emailContent = String.format(emailContent, user.getUsername(), resetUrl);
     sendSimpleMessage(user.getEmail(), emailTitle, emailContent);
+
+    user.setToken(token20m);
+    userService.update(user);
   }
 }

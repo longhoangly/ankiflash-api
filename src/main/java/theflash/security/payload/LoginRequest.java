@@ -3,7 +3,7 @@ package theflash.security.payload;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class SignUpUserRequest {
+public class LoginRequest {
 
   @NotNull
   @NotEmpty
@@ -13,15 +13,7 @@ public class SignUpUserRequest {
   @NotEmpty
   private String password;
 
-  @NotNull
-  @NotEmpty
-  private String email;
-
-  @NotNull
-  @NotEmpty
-  private String role;
-
-  public SignUpUserRequest() {
+  public LoginRequest() {
   }
 
   public void setUsername(String userName) {
@@ -38,21 +30,5 @@ public class SignUpUserRequest {
 
   public String getPassword() {
     return password;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getRole() {
-    return role;
-  }
-
-  public void setRole(String role) {
-    this.role = role;
   }
 }

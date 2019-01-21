@@ -87,7 +87,7 @@ public class TheFlashProperties {
     MAIL_DEBUG = mailDebug;
   }
 
-  @Value("${mail.from.email}")
+  @Value("${spring.mail.from}")
   public void setMailFrom(String mailFrom) {
     MAIL_FROM = mailFrom;
   }

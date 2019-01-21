@@ -3,6 +3,7 @@ package theflash.anonymous.controller;
 import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,12 +15,9 @@ public class AnonymousController {
   private static final Logger logger = LoggerFactory.getLogger(AnonymousController.class);
 
   @GetMapping("/test")
-  public HashMap index() {
+  public ResponseEntity test() {
 
     logger.info("/api/anonymous/test");
-    HashMap response = new HashMap();
-    response.put("message", "testing to call anonymous api!");
-    response.put("result", "success!");
-    return response;
+    return ResponseEntity.ok().body("Sent request successfully!");
   }
 }

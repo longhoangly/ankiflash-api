@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import theflash.helper.exception.BadRequestException;
 import theflash.security.dto.User;
-import theflash.security.payload.SignUpUserRequest;
-import theflash.security.payload.SignUpUserResponse;
+import theflash.security.payload.SignUpRequest;
 import theflash.security.service.UserService;
 import theflash.security.utils.PassEncoding;
 import theflash.security.utils.Roles;
@@ -32,8 +31,8 @@ public class AdminController {
   private UserService userService;
 
   @PreAuthorize("hasAuthority('ADMIN')")
-  @PostMapping("/create")
-  public ResponseEntity create(@RequestBody @Valid SignUpUserRequest reqUser) {
+  @PostMapping("/create-user")
+  public ResponseEntity createUser(@RequestBody @Valid SignUpRequest reqUser) {
 
     logger.info("/api/admin/create");
 
@@ -48,26 +47,25 @@ public class AdminController {
     }
 
     user = new User(reqUser.getUsername());
-    user.setEmail(reqUser.getEmail());
     user.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
-    user.setRole(Roles.ROLE_ADMIN.getValue());
+    user.setEmail(reqUser.getEmail());
 
     Date now = Calendar.getInstance().getTime();
     user.setCreatedDate(now);
     user.setLastLogin(now);
     user.setActive(true);
-    userService.save(user);
+    user.setVerified(false);
+    user.setRole(Roles.ROLE_ADMIN.getValue());
 
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified());
-    return ResponseEntity.ok().body(resUser);
+    userService.save(user);
+    return ResponseEntity.ok().body(user.getUsername());
   }
 
   @PreAuthorize("hasAuthority('ADMIN')")
-  @GetMapping("/get-all-users")
-  public ResponseEntity getAllUsers() {
+  @GetMapping("/get-users")
+  public ResponseEntity getUsers() {
 
-    logger.info("/api/admin/get-all-users");
+    logger.info("/api/admin/get-users");
 
     Collection<User> users = userService.findAll();
     return ResponseEntity.ok().body(users);

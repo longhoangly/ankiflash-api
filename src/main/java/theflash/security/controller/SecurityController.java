@@ -1,7 +1,5 @@
 package theflash.security.controller;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import java.util.Calendar;
 import java.util.Date;
 import javax.validation.Valid;
@@ -15,16 +13,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import theflash.helper.TheFlashProperties;
 import theflash.helper.exception.BadRequestException;
-import theflash.helper.exception.InactiveException;
 import theflash.security.dto.User;
 import theflash.security.jwt.Generator;
 import theflash.security.jwt.Validation;
-import theflash.security.payload.ForgotPasswordRequest;
-import theflash.security.payload.LoginUserRequest;
-import theflash.security.payload.LoginUserResponse;
-import theflash.security.payload.SignUpUserRequest;
-import theflash.security.payload.SignUpUserResponse;
+import theflash.security.payload.LoginRequest;
+import theflash.security.payload.LoginResponse;
+import theflash.security.payload.ResetPassRequest;
+import theflash.security.payload.SignUpRequest;
 import theflash.security.service.EmailService;
 import theflash.security.service.UserService;
 import theflash.security.utils.PassEncoding;
@@ -49,7 +47,7 @@ public class SecurityController {
   private Validation validator;
 
   @PostMapping("/login")
-  public ResponseEntity login(@RequestBody @Valid LoginUserRequest reqUser) {
+  public ResponseEntity login(@RequestBody @Valid LoginRequest reqUser) {
 
     logger.info("/api/auth/login");
 
@@ -58,21 +56,22 @@ public class SecurityController {
       throw new BadRequestException("Username or Password is not correct!");
     }
 
+    LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(),
+        user.isVerified(), null);
     if (!user.isVerified()) {
-      throw new InactiveException("Your email was not verified yet! Please check email for verification!");
+      return ResponseEntity.ok().body(resUser);
     }
 
     if (!user.isActive()) {
-      throw new InactiveException("Your account was disabled! Please reset password to enable it!");
+      return ResponseEntity.ok().body(resUser);
     }
 
-    LoginUserResponse resUser = new LoginUserResponse(user.getUsername(), user.getRole(), user.isActive(),
-        generator.generate(user));
+    resUser.setToken(generator.generate(user));
     return ResponseEntity.ok().body(resUser);
   }
 
   @PostMapping("/register")
-  public ResponseEntity register(@RequestBody @Valid SignUpUserRequest reqUser) {
+  public ResponseEntity register(@RequestBody @Valid SignUpRequest reqUser) {
 
     logger.info("/api/auth/register");
 
@@ -87,27 +86,28 @@ public class SecurityController {
     }
 
     user = new User(reqUser.getUsername());
-    user.setEmail(reqUser.getEmail());
     user.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
-    user.setRole(Roles.ROLE_USER.getValue());
+    user.setEmail(reqUser.getEmail());
 
     Date now = Calendar.getInstance().getTime();
     user.setCreatedDate(now);
     user.setLastLogin(now);
+    user.setActive(true);
     user.setVerified(false);
-    user.setActive(false);
-    userService.save(user);
+    user.setRole(Roles.ROLE_USER.getValue());
 
+    userService.save(user);
     emailService.sendVerificationEmail(user);
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified());
+
+    LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(),
+        user.isVerified(), null);
     return ResponseEntity.ok().body(resUser);
   }
 
-  @PostMapping("/request-email-verification-link")
-  public ResponseEntity requestEmailVerificationLink(@RequestParam(value = "email") String email) {
+  @GetMapping("/request-verify-email-address-link")
+  public ResponseEntity requestVerifyEmailink(@RequestParam(value = "email") String email) {
 
-    logger.info("/request-email-verification-link");
+    logger.info("/request-verify-email-address-link");
 
     User user = userService.findByEmail(email);
     if (user == null) {
@@ -119,24 +119,30 @@ public class SecurityController {
   }
 
   @GetMapping("/verify-email-address")
-  public ResponseEntity verifyEmailAddress(@RequestParam(value = "key") String token) {
+  public ModelAndView verifyEmailAddress(@RequestParam(value = "key") String token) {
 
     logger.info("/api/auth/verify-email-address");
 
     User user;
     try {
       user = validator.validate(token);
-    } catch (JwtException ex) {
-      throw new BadRequestException("Link expired! Please request to get a new link!");
+    } catch (Exception e) {
+      logger.error("Exception: ", e);
+      throw new BadRequestException(
+          "Oops! Something's wrong, please select 'Forgot Password' on 'Login' page to try again!");
     }
 
-    user.setVerified(true);
+    if (!user.getToken().equals(token)) {
+      return new ModelAndView("redirect:" + TheFlashProperties.WEB_SERVER_URL +
+          "/status?code=400&message=Key not found, please select 'Forgot Password' on 'Login' page to try again!");
+    }
+
     user.setActive(true);
+    user.setVerified(true);
     userService.save(user);
 
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified());
-    return ResponseEntity.ok().body(resUser);
+    return new ModelAndView("redirect:" + TheFlashProperties.WEB_SERVER_URL +
+        "/status?code=200&message=Email verified successfully!");
   }
 
   @GetMapping("/request-reset-password-link")
@@ -154,7 +160,7 @@ public class SecurityController {
   }
 
   @PostMapping("/reset-password")
-  public ResponseEntity resetPassword(@RequestBody @Valid ForgotPasswordRequest reqUser) {
+  public ResponseEntity resetPassword(@RequestBody @Valid ResetPassRequest reqUser) {
 
     logger.info("/api/auth/reset-password");
 
@@ -162,22 +168,19 @@ public class SecurityController {
     User user;
     try {
       user = validator.validate(token);
-    } catch (ExpiredJwtException e1) {
-      throw new BadRequestException("Link expired! Please select 'Forgot Password' to get a new link!");
-    } catch (Exception e2) {
-      throw new BadRequestException("Invalid link! Please select 'Forgot Password' to get a new link!");
+    } catch (Exception e) {
+      logger.error("Exception: ", e);
+      throw new BadRequestException(
+          "Oops! Something's wrong, please select 'Forgot Password' on 'Login' page to try again!");
     }
 
-    if (!reqUser.getPassword().equals(reqUser.getConfirmedPassword())) {
-      throw new BadRequestException(
-          "Password* and Confirmed Password* do not match! Please request to get a new link!");
+    if (!user.getToken().equals(token)) {
+      throw new BadRequestException("Key not found, please select 'Forgot Password' on 'Login' page to try again!");
     }
 
     user.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));
+    user.setActive(true);
     userService.save(user);
-
-    SignUpUserResponse resUser = new SignUpUserResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified());
-    return ResponseEntity.ok().body(resUser);
+    return ResponseEntity.ok().build();
   }
 }

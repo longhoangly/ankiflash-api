@@ -14,9 +14,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import theflash.helper.TheFlashProperties;
 
 public class ContentRoller {
+
+  private static final Logger logger = LoggerFactory.getLogger(ContentRoller.class);
 
   public static String lookupUrl(String dictUrl, String word) {
     word = word.replaceAll(" ", "%20");
@@ -34,7 +38,7 @@ public class ContentRoller {
         document = Jsoup.connect(url).get();
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error("Exception: ", e);
     }
     return document;
   }
@@ -78,7 +82,7 @@ public class ContentRoller {
         Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error("Exception: ", e);
     }
   }
 }
