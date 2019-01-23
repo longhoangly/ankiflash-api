@@ -1,4 +1,4 @@
-package theflash.security.utils;
+package theflash.security.utility;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

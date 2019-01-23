@@ -1,4 +1,4 @@
-package theflash.helper;
+package theflash.utility;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

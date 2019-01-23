@@ -10,7 +10,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.ContentRoller;
 import theflash.flashcard.utils.Translation;
-import theflash.helper.IoHelper;
+import theflash.utility.IOUtility;
 
 public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
 
@@ -117,7 +117,7 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
       img_name = "fullsize_" + img_name;
     }
     String output = Paths.get(Constants.ANKI_DIR_IMAGE, img_name).toString();
-    IoHelper.createDirs(Constants.ANKI_DIR_IMAGE);
+    IOUtility.createDirs(Constants.ANKI_DIR_IMAGE);
     ContentRoller.download(img_link, output);
     return "<img src=\"" + img_name + "\"/>";
   }
@@ -131,7 +131,7 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
     pro_link = pro_link.replace("file=", "").replace("&autostart=false", "");
     String pro_name = pro_link.split("/")[pro_link.split("/").length - 1];
     String output = Paths.get(Constants.ANKI_DIR_SOUND, pro_name).toString();
-    IoHelper.createDirs(Constants.ANKI_DIR_SOUND);
+    IOUtility.createDirs(Constants.ANKI_DIR_SOUND);
     ContentRoller.download(pro_link, output);
     return "[sound:" + pro_name + "]";
   }

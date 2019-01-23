@@ -1,13 +1,12 @@
-package theflash.helper;
+package theflash.utility;
 
 import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import theflash.security.jwt.AuthSuccessHandler;
 
-public class IoHelper {
+public class IOUtility {
 
-  private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(IOUtility.class);
 
   public static boolean createDirs(String path) {
     File files = new File(path);

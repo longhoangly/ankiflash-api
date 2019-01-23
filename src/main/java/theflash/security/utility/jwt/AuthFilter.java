@@ -1,4 +1,4 @@
-package theflash.security.jwt;
+package theflash.security.utility.jwt;
 
 import java.io.IOException;
 import java.util.Collection;

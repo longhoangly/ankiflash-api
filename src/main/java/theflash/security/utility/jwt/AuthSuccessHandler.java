@@ -1,4 +1,4 @@
-package theflash.security.jwt;
+package theflash.security.utility.jwt;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

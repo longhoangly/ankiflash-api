@@ -11,8 +11,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableAsync
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Application {
 
   private static final Logger logger = LoggerFactory.getLogger(Application.class);

@@ -9,17 +9,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import theflash.anonymous.controller.AnonymousController;
-import theflash.helper.TheFlashProperties;
 import theflash.security.dto.User;
-import theflash.security.jwt.Generator;
 import theflash.security.service.EmailService;
 import theflash.security.service.UserService;
+import theflash.security.utility.jwt.Generator;
+import theflash.utility.TheFlashProperties;
 
 @Service
 public class EmailServiceImpl implements EmailService {
 
-  private static final Logger logger = LoggerFactory.getLogger(AnonymousController.class);
+  private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
   @Autowired
   private Generator generator;

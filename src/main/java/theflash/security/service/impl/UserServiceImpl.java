@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import theflash.security.dto.User;
 import theflash.security.repository.UserRepository;
 import theflash.security.service.UserService;
-import theflash.security.utils.PassEncoding;
+import theflash.security.utility.PassEncoding;
 
 @Service
 @Transactional
@@ -69,5 +69,10 @@ public class UserServiceImpl implements UserService {
         return null;
       }
     }
+  }
+
+  @Override
+  public int countUser() {
+    return Math.toIntExact(userRepository.count());
   }
 }

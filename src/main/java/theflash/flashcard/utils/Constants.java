@@ -1,7 +1,7 @@
 package theflash.flashcard.utils;
 
 import java.nio.file.Paths;
-import theflash.helper.TheFlashProperties;
+import theflash.utility.TheFlashProperties;
 
 public class Constants {
 

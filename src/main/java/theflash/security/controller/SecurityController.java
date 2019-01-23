@@ -14,19 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import theflash.helper.TheFlashProperties;
-import theflash.helper.exception.BadRequestException;
+import theflash.counter.service.CounterService;
+import theflash.utility.TheFlashProperties;
+import theflash.utility.exception.BadRequestException;
 import theflash.security.dto.User;
-import theflash.security.jwt.Generator;
-import theflash.security.jwt.Validation;
+import theflash.security.utility.jwt.Generator;
+import theflash.security.utility.jwt.Validation;
 import theflash.security.payload.LoginRequest;
 import theflash.security.payload.LoginResponse;
 import theflash.security.payload.ResetPassRequest;
 import theflash.security.payload.SignUpRequest;
 import theflash.security.service.EmailService;
 import theflash.security.service.UserService;
-import theflash.security.utils.PassEncoding;
-import theflash.security.utils.Roles;
+import theflash.security.utility.PassEncoding;
+import theflash.security.utility.Roles;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -38,10 +39,13 @@ public class SecurityController {
   private UserService userService;
 
   @Autowired
-  private Generator generator;
+  private EmailService emailService;
 
   @Autowired
-  private EmailService emailService;
+  private CounterService counterService;
+
+  @Autowired
+  private Generator generator;
 
   @Autowired
   private Validation validator;
@@ -99,6 +103,7 @@ public class SecurityController {
     userService.save(user);
     emailService.sendVerificationEmail(user);
 
+    counterService.addCustomer();
     LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(),
         user.isVerified(), null);
     return ResponseEntity.ok().body(resUser);

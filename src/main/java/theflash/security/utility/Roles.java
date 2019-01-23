@@ -1,4 +1,4 @@
-package theflash.security.utils;
+package theflash.security.utility;
 
 public enum Roles {
   ROLE_ADMIN("ADMIN"),

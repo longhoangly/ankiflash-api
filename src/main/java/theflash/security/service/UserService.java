@@ -20,4 +20,6 @@ public interface UserService {
   Collection<User> findAll();
 
   User validate(String username, String password);
+
+  int countUser();
 }

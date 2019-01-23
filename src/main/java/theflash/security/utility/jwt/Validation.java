@@ -1,4 +1,4 @@
-package theflash.security.jwt;
+package theflash.security.utility.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
