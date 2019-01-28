@@ -1,5 +1,6 @@
 package theflash.counter.service.impl;
 
+import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,14 @@ public class CounterServiceImpl implements CounterService {
 
   @Override
   public Counter get(int id) {
-    return counterRepository.findById(id).get();
+    Optional<Counter> counter = counterRepository.findById(id);
+    return counter.orElse(null);
   }
 
   @Override
   public Counter get() {
-    return counterRepository.findById(1).get();
+    Optional<Counter> counter = counterRepository.findById(1);
+    return counter.orElse(null);
   }
 
   @Override

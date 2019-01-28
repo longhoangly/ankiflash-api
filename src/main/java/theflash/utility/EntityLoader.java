@@ -45,7 +45,7 @@ public class EntityLoader {
   @PostConstruct
   public void initCounterData() {
 
-    Counter counter = counterService.get(1);
+    Counter counter = counterService.get();
     if (counter == null) {
       counter = new Counter();
       counter.setId(1);
