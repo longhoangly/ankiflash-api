@@ -1,8 +1,8 @@
 package theflash.flashcard.utils;
 
-import javafx.util.Pair;
+import java.util.Map;
 
-public class Translation extends Pair {
+public class Translation implements Map.Entry<String, String> {
 
   public static Translation EN_EN = new Translation(Constants.ENGLISH, Constants.ENGLISH);
   public static Translation EN_VN = new Translation(Constants.ENGLISH, Constants.VIETNAMESE);
@@ -19,13 +19,46 @@ public class Translation extends Pair {
   // public static Translation JP_EN = new Translation(Constants.JAPANESE, Constants.ENGLISH);
   // public static Translation JP_VN = new Translation(Constants.JAPANESE, Constants.VIETNAMESE);
 
+  private String source;
+  private String target;
+
   /**
-   * Creates a new pair
+   * Creates a new translation
    *
-   * @param source The key for this pair
-   * @param target The value to use for this pair
+   * @param source The source language for this translation
+   * @param target The target language for this translation
    */
   public Translation(String source, String target) {
-    super(source, target);
+    this.source = source;
+    this.target = target;
+  }
+
+  @Override
+  public String getKey() {
+    return source;
+  }
+
+  @Override
+  public String getValue() {
+    return target;
+  }
+
+  @Override
+  public String setValue(String target) {
+    return this.target = target;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Translation translation = (Translation) o;
+    return source.equals(translation.getKey()) && target.equals(translation.getValue());
   }
 }
