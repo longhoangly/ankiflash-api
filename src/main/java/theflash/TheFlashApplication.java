@@ -13,16 +13,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableAsync
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
-public class Application {
+public class TheFlashApplication {
 
-  private static final Logger logger = LoggerFactory.getLogger(Application.class);
+  private static final Logger logger = LoggerFactory.getLogger(TheFlashApplication.class);
 
   @Value("${spring.security.allowed.origins}")
   private String origins;
 
   public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-    logger.info("Application Started");
+    SpringApplication.run(TheFlashApplication.class, args);
+    logger.info("TheFlashApplication Started");
   }
 
   @Bean
