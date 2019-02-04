@@ -148,6 +148,6 @@ public class OxfordBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
 
   @Override
   public String getDictionaryName() {
-    return "Oxford Advanced Learner's BaseDictionaryServiceImpl";
+    return "Oxford Advanced Learner's Dictionary";
   }
 }

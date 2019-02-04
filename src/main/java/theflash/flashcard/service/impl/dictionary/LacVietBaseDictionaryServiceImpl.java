@@ -6,7 +6,6 @@ import java.util.List;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.ContentRoller;
 import theflash.flashcard.utils.Translation;
@@ -69,7 +68,7 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
 
   @Override
   public String getWordType() {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -159,6 +158,6 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
 
   @Override
   public String getDictionaryName() {
-    return "Lac Viet BaseDictionaryServiceImpl";
+    return "Lac Viet Dictionary";
   }
 }

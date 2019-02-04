@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.ContentRoller;
 import theflash.flashcard.utils.Translation;
@@ -47,27 +46,27 @@ public class CambridgeBaseDictionaryServiceImpl extends BaseDictionaryServiceImp
 
   @Override
   public String getWordType() {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public String getExample() {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public String getPhonetic() {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public String getImage(String selector, String attr) {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public String getPron(String selector) {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -109,6 +108,6 @@ public class CambridgeBaseDictionaryServiceImpl extends BaseDictionaryServiceImp
 
   @Override
   public String getDictionaryName() {
-    return "Cambridge BaseDictionaryServiceImpl";
+    return "Cambridge Dictionary";
   }
 }
