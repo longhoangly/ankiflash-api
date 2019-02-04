@@ -12,9 +12,14 @@
     </developer>
   </developers>
 
-  <groupId>longlee</groupId>
+  <groupId>long.lee</groupId>
   <artifactId>theflash</artifactId>
   <version>0.1.0</version>
+  <packaging>war</packaging>
+
+  <properties>
+    <java.version>1.8</java.version>
+  </properties>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -86,10 +91,6 @@
       <artifactId>jaxb-api</artifactId>
     </dependency>
   </dependencies>
-
-  <properties>
-    <java.version>1.8</java.version>
-  </properties>
 
   <build>
     <resources>
