@@ -2,8 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
   <developers>
     <developer>
       <name>Long Lee</name>
@@ -12,26 +10,33 @@
     </developer>
   </developers>
 
+  <modelVersion>4.0.0</modelVersion>
   <groupId>long.lee</groupId>
   <artifactId>theflash</artifactId>
-  <version>0.1.0</version>
+  <version>0.0.1</version>
   <packaging>war</packaging>
 
   <properties>
     <java.version>1.8</java.version>
+    <appengine.plugin.version>1.3.2</appengine.plugin.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.5.RELEASE</version>
+    <version>2.1.2.RELEASE</version>
   </parent>
-
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
         <exclusion>
           <artifactId>log4j-over-slf4j</artifactId>
           <groupId>org.slf4j</groupId>
@@ -40,30 +45,27 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
+      <artifactId>spring-boot-starter-mail</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
+      <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt</artifactId>
       <version>0.9.1</version>
     </dependency>
+    <!-- JPA -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-mail</artifactId>
-      <version>2.0.1.RELEASE</version>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
     </dependency>
-
-    <!-- content rollers to get and parse html -->
+    <!-- The Flash  -->
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
@@ -74,21 +76,24 @@
       <artifactId>commons-io</artifactId>
       <version>2.6</version>
     </dependency>
-
-    <!-- JPA -->
+    <!-- Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
     </dependency>
+    <!-- Servlet API -->
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
     </dependency>
-
-    <!-- to work with Java 9+ -->
+    <!-- Exclude jul-to-slf4j -->
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -103,9 +108,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>${appengine.plugin.version}</version>
+      </plugin>
     </plugins>
   </build>
-
   <repositories>
     <repository>
       <id>spring-releases</id>
@@ -118,5 +127,4 @@
       <url>https://repo.spring.io/libs-release</url>
     </pluginRepository>
   </pluginRepositories>
-
 </project>
