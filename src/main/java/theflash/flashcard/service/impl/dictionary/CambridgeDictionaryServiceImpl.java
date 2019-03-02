@@ -5,10 +5,10 @@ import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.ContentRoller;
+import theflash.flashcard.utils.HtmlHelper;
 import theflash.flashcard.utils.Translation;
 
-public class CambridgeBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
+public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public List<Translation> supportedTranslations() {
@@ -22,8 +22,8 @@ public class CambridgeBaseDictionaryServiceImpl extends BaseDictionaryServiceImp
     this.word = word;
     this.translation = translation;
     boolean isConnectionEstablished = false;
-    String url = ContentRoller.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN, word);
-    doc = ContentRoller.getDocument(url);
+    String url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN, word);
+    doc = HtmlHelper.getDocument(url);
     if (doc != null) {
       isConnectionEstablished = true;
     }
@@ -33,11 +33,11 @@ public class CambridgeBaseDictionaryServiceImpl extends BaseDictionaryServiceImp
   @Override
   public boolean isWordingCorrect() {
     boolean isWordingCorrect = false;
-    String title = ContentRoller.getText(doc, "title", 0);
+    String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.DICT_CAMBRIDGE_SPELLING_WRONG)) {
       isWordingCorrect = true;
     }
-    String word = ContentRoller.getText(doc, "span.headword>span", 0);
+    String word = HtmlHelper.getText(doc, "span.headword>span", 0);
     if (word.isEmpty()) {
       isWordingCorrect = true;
     }
@@ -71,28 +71,28 @@ public class CambridgeBaseDictionaryServiceImpl extends BaseDictionaryServiceImp
 
   @Override
   public String getMeaning() {
-    Element ukSoundIcon = ContentRoller
+    Element ukSoundIcon = HtmlHelper
         .getElement(doc, "span.circle.circle-btn.sound.audio_play_button.uk", 0);
     if (ukSoundIcon != null) {
       ukSoundIcon.remove();
     }
-    Element usSoundIcon = ContentRoller
+    Element usSoundIcon = HtmlHelper
         .getElement(doc, "span.circle.circle-btn.sound.audio_play_button.us", 0);
     if (usSoundIcon != null) {
       usSoundIcon.remove();
     }
-    Element translations = ContentRoller
+    Element translations = HtmlHelper
         .getElement(doc, "div.clrd.mod.mod--style5.mod--dark.mod-translate", 0);
     translations.remove();
-    Element shareThisEntry = ContentRoller.getElement(doc, "div.share.rounded.js-share", 0);
+    Element shareThisEntry = HtmlHelper.getElement(doc, "div.share.rounded.js-share", 0);
     shareThisEntry.remove();
-    Elements scripts = ContentRoller.getElements(doc, "script");
+    Elements scripts = HtmlHelper.getElements(doc, "script");
     if (scripts.size() > 0) {
       for (Element script : scripts) {
         script.remove();
       }
     }
-    Element contentElement = ContentRoller.getElement(doc, "div#entryContent", 0);
+    Element contentElement = HtmlHelper.getElement(doc, "div#entryContent", 0);
     contentElement.addClass("entrybox english-chinese-simplified entry-body");
     String htmlContent =
         "<html>" + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +

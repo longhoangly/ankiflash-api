@@ -7,13 +7,13 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.ContentRoller;
+import theflash.flashcard.utils.HtmlHelper;
 import theflash.flashcard.utils.Translation;
 import theflash.utility.IOUtility;
 
-public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl {
+public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
-  private static final Logger logger = LoggerFactory.getLogger(LacVietBaseDictionaryServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(LacVietDictionaryServiceImpl.class);
 
   @Override
   public List<Translation> supportedTranslations() {
@@ -32,15 +32,15 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
     boolean isConnectionEstablished = false;
     String url;
     if (translation.equals(Translation.VN_EN)) {
-      url = ContentRoller.lookupUrl(Constants.DICT_LACVIET_URL_VN_EN, word);
+      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_VN_EN, word);
     } else if (translation.equals(Translation.VN_FR)) {
-      url = ContentRoller.lookupUrl(Constants.DICT_LACVIET_URL_VN_FR, word);
+      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_VN_FR, word);
     } else if (translation.equals(Translation.EN_VN)) {
-      url = ContentRoller.lookupUrl(Constants.DICT_LACVIET_URL_EN_VN, word);
+      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_EN_VN, word);
     } else {
-      url = ContentRoller.lookupUrl(Constants.DICT_LACVIET_URL_FR_VN, word);
+      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_FR_VN, word);
     }
-    doc = ContentRoller.getDocument(url);
+    doc = HtmlHelper.getDocument(url);
     if (doc != null) {
       isConnectionEstablished = true;
     }
@@ -50,16 +50,16 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
   @Override
   public boolean isWordingCorrect() {
     boolean isWordingCorrect = false;
-    String title = ContentRoller.getText(doc, "title", 0);
+    String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.DICT_LACVIET_SPELLING_WRONG)) {
       isWordingCorrect = true;
     }
-    String word = ContentRoller.getText(doc, "div[class=w fl]", 0);
+    String word = HtmlHelper.getText(doc, "div[class=w fl]", 0);
     if (word.isEmpty()) {
       isWordingCorrect = true;
     }
     //ToDo: Check which one we use to check correct word??? lacResult or title???
-    String lacResult = ContentRoller.getText(doc, "div[class=i p10]", 0);
+    String lacResult = HtmlHelper.getText(doc, "div[class=i p10]", 0);
     if (lacResult.contains(Constants.DICT_LACVIET_SPELLING_WRONG)) {
       isWordingCorrect = true;
     }
@@ -73,14 +73,14 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
 
   @Override
   public String getExample() {
-    Element exampleElements = ContentRoller.getElement(doc, "div[class=e]", 0);
+    Element exampleElements = HtmlHelper.getElement(doc, "div[class=e]", 0);
     if (exampleElements == null) {
       return Constants.DICT_NO_EXAMPLE;
     }
     String examples = exampleElements.outerHtml() + "<br>";
     for (int i = 1; i < 2; i++) {
       try {
-        examples += ContentRoller.getElement(doc, "div[class=e]", i).outerHtml() + "<br>";
+        examples += HtmlHelper.getElement(doc, "div[class=e]", i).outerHtml() + "<br>";
       } catch (Exception e) {
         logger.error("Exception: ", e);
         break;
@@ -100,13 +100,13 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
 
   @Override
   public String getPhonetic() {
-    String phonetic = ContentRoller.getText(doc, "div[class=p5l fl cB]", 0);
+    String phonetic = HtmlHelper.getText(doc, "div[class=p5l fl cB]", 0);
     return phonetic;
   }
 
   @Override
   public String getImage(String selector, String attr) {
-    String img_link = ContentRoller.getAttribute(doc, selector, 0, attr);
+    String img_link = HtmlHelper.getAttribute(doc, selector, 0, attr);
     if (img_link.isEmpty()) {
       return "<a href=\"https://www.google.com.vn/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
           + "\" style=\"font-size: 15px; color: blue\">Images for this word</a>";
@@ -117,13 +117,13 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
     }
     String output = Paths.get(Constants.ANKI_DIR_IMAGE, img_name).toString();
     IOUtility.createDirs(Constants.ANKI_DIR_IMAGE);
-    ContentRoller.download(img_link, output);
+    HtmlHelper.download(img_link, output);
     return "<img src=\"" + img_name + "\"/>";
   }
 
   @Override
   public String getPron(String selector) {
-    String pro_link = ContentRoller.getAttribute(doc, selector, 0, "flashvars");
+    String pro_link = HtmlHelper.getAttribute(doc, selector, 0, "flashvars");
     if (pro_link.isEmpty()) {
       return "";
     }
@@ -131,13 +131,13 @@ public class LacVietBaseDictionaryServiceImpl extends BaseDictionaryServiceImpl 
     String pro_name = pro_link.split("/")[pro_link.split("/").length - 1];
     String output = Paths.get(Constants.ANKI_DIR_SOUND, pro_name).toString();
     IOUtility.createDirs(Constants.ANKI_DIR_SOUND);
-    ContentRoller.download(pro_link, output);
+    HtmlHelper.download(pro_link, output);
     return "[sound:" + pro_name + "]";
   }
 
   @Override
   public String getMeaning() {
-    Element domContent = ContentRoller
+    Element domContent = HtmlHelper
         .getElement(doc, "#ctl00_ContentPlaceHolderMain_cnt_dict", 0);
     String htmlContent =
         "<html>" + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +

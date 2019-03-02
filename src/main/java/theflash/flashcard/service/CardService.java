@@ -1,28 +1,14 @@
 package theflash.flashcard.service;
 
+import java.util.List;
+import theflash.flashcard.dto.Card;
 import theflash.flashcard.utils.Translation;
 
 public interface CardService {
 
-  String getWord();
+  Card generateCard(String word, Translation translation);
 
-  String getWordType();
+  List<Card> generateCards(List<String> wordList, Translation translation);
 
-  String getPhonetic();
-
-  String getExample();
-
-  String getPron();
-
-  String getMeaning();
-
-  String getImage();
-
-  char getTag();
-
-  String getCopyRight();
-
-  String getCardContent();
-
-  String generateFlashcard(String word, Translation translation);
+  String getDownloadLink();
 }

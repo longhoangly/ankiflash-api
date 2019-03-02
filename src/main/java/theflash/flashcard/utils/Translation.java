@@ -1,8 +1,6 @@
 package theflash.flashcard.utils;
 
-import java.util.Map;
-
-public class Translation implements Map.Entry<String, String> {
+public class Translation {
 
   public static Translation EN_EN = new Translation(Constants.ENGLISH, Constants.ENGLISH);
   public static Translation EN_VN = new Translation(Constants.ENGLISH, Constants.VIETNAMESE);
@@ -14,12 +12,13 @@ public class Translation implements Map.Entry<String, String> {
   public static Translation FR_VN = new Translation(Constants.FRENCH, Constants.VIETNAMESE);
   public static Translation FR_EN = new Translation(Constants.FRENCH, Constants.ENGLISH);
 
-  // ToDo: Going to implement the following
-  // public static Translation VN_JP = new Translation(Constants.ENGLISH, Constants.ENGLISH);
+  // ToDo: Support the following languages in the future!
+  // public static Translation VN_JP = new Translation(Constants.VIETNAMESE, Constants.JAPANESE);
   // public static Translation JP_EN = new Translation(Constants.JAPANESE, Constants.ENGLISH);
   // public static Translation JP_VN = new Translation(Constants.JAPANESE, Constants.VIETNAMESE);
 
   private String source;
+
   private String target;
 
   /**
@@ -33,32 +32,24 @@ public class Translation implements Map.Entry<String, String> {
     this.target = target;
   }
 
-  @Override
-  public String getKey() {
+  public String getSource() {
     return source;
   }
 
-  @Override
-  public String getValue() {
+  public void setSource(String source) {
+    this.source = source;
+  }
+
+  public String getTarget() {
     return target;
   }
 
-  @Override
-  public String setValue(String target) {
-    return this.target = target;
+  public void setTarget(String target) {
+    this.target = target;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    Translation translation = (Translation) o;
-    return source.equals(translation.getKey()) && target.equals(translation.getValue());
+  public boolean equals(Translation translation) {
+    return this.source.equalsIgnoreCase(translation.getSource()) && this.target
+        .equalsIgnoreCase(translation.getTarget());
   }
 }

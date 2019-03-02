@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,9 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import theflash.utility.TheFlashProperties;
 
-public class ContentRoller {
+public class HtmlHelper {
 
-  private static final Logger logger = LoggerFactory.getLogger(ContentRoller.class);
+  private static final Logger logger = LoggerFactory.getLogger(HtmlHelper.class);
 
   public static String lookupUrl(String dictUrl, String word) {
     word = word.replaceAll(" ", "%20");
@@ -49,7 +50,7 @@ public class ContentRoller {
 
   public static Element getElement(Document doc, String selector, int index) {
     Elements elements = doc.select(selector);
-    return elements.size() > 0 ? elements.get(index) : null;
+    return elements.size() - index > 0 ? elements.get(index) : null;
   }
 
   public static String getText(Document doc, String selector, int index) {
@@ -84,5 +85,39 @@ public class ContentRoller {
     } catch (IOException e) {
       logger.error("Exception: ", e);
     }
+  }
+
+  public static String buildExample(List<String> examples) {
+
+    StringBuilder htmlBuilder = new StringBuilder();
+    htmlBuilder.append("<div class=\"content-container\">");
+    htmlBuilder.append("<ul class=\"content-circle\">");
+    for (String example : examples) {
+      htmlBuilder.append("<li class=\"content-example\">" + example + "</li>");
+    }
+    htmlBuilder.append("</ul>");
+    htmlBuilder.append("</div>");
+    return htmlBuilder.toString();
+  }
+
+  public static String buildMeaning(String word, String type, String phonetic, List<Meaning> meanings) {
+
+    StringBuilder htmlBuilder = new StringBuilder();
+    htmlBuilder.append("<div class=\"content-container\">");
+    htmlBuilder.append("<h2 class=\"h\">" + word + "</h2>");
+    htmlBuilder.append("<span class=\"content-type\">" + type + "</span>");
+    htmlBuilder.append("<span class=\"content-phonetic\">" + phonetic + "</span>");
+    htmlBuilder.append("<ol class=\"content-order\">");
+    for (Meaning meaning : meanings) {
+      htmlBuilder.append("<li class=\"content-meaning\">" + meaning.getMeaning() + "</li>");
+      htmlBuilder.append("<ul class=\"content-circle\">");
+      for (String example : meaning.getExamples()) {
+        htmlBuilder.append("<li class=\"content-example\">" + example + "</li>");
+      }
+      htmlBuilder.append("</ul>");
+    }
+    htmlBuilder.append("</ol>");
+    htmlBuilder.append("</div>");
+    return htmlBuilder.toString();
   }
 }

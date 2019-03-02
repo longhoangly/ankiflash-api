@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 import theflash.flashcard.service.DictionaryService;
 import theflash.flashcard.utils.Translation;
 
-public abstract class BaseDictionaryServiceImpl implements DictionaryService {
+public abstract class DictionaryServiceImpl implements DictionaryService {
 
   protected Document doc;
 
