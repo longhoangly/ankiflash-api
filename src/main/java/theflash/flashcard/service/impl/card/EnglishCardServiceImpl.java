@@ -1,12 +1,11 @@
 package theflash.flashcard.service.impl.card;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import theflash.flashcard.controller.CardController;
@@ -85,7 +84,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     card.setImage(oxfordDict.getImage("a[class=topic]", "href"));
     card.setTag(oxfordDict.getTag());
     card.setStatus(Status.SUCCESS);
-    card.setComment("Success");
+    card.setComment("SUCCESS");
 
     String cardContent =
         card.getWord() + Constants.TAB + card.getWordType() + Constants.TAB + card.getPhonetic() + Constants.TAB
@@ -94,8 +93,8 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     card.setContent(cardContent);
 
     try {
-      FileUtils.write(new File(Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS, "flashcards.csv").toString()),
-          cardContent, Charset.defaultCharset());
+      Files.write(Paths.get(TheFlashProperties.ANKI_DIR_FLASHCARDS + "/cards.csv"),
+          cardContent.getBytes(), StandardOpenOption.APPEND);
     } catch (IOException e) {
       logger.error("Exception: ", e);
     }

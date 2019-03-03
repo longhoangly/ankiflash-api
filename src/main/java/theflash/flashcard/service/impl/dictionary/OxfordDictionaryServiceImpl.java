@@ -59,6 +59,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getExample() {
+
     List<String> examples = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
       String example = HtmlHelper.getText(doc, "span[class=x]", i);
@@ -77,17 +78,10 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getPhonetic() {
-    String phoneticBrE = HtmlHelper.getInnerHtml(doc, "span[class=phon]", 0);
-    String phoneticNAmE = HtmlHelper.getInnerHtml(doc, "span[class=phon]", 1);
-    String phonetic = String.format("%s %s", phoneticBrE, phoneticNAmE);
-    phonetic = phonetic.replace("<span class=\"separator\">/</span>", "");
-    phonetic = phonetic
-        .replace("<span class=\"bre\">BrE</span><span class=\"wrap\">/</span>", "BrE /");
-    phonetic = phonetic.replace(
-        "<span class=\"wrap\">/</span><span class=\"name\">NAmE</span><span class=\"wrap\">/</span>",
-        "/  &nbsp; NAmE /");
-    phonetic = String.format("<span class=\"phon\">%s</span>", phonetic);
-    return phonetic;
+    String phoneticBrE = HtmlHelper.getText(doc, "span[class=phon]", 0);
+    String phoneticNAmE = HtmlHelper.getText(doc, "span[class=phon]", 1);
+    String phonetic = String.format("%1$s %2$s", phoneticBrE, phoneticNAmE);
+    return phonetic.replaceAll("//", " / ");
   }
 
   @Override
@@ -95,7 +89,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     String img_link = HtmlHelper.getAttribute(doc, selector, 0, attr);
     if (img_link.isEmpty()) {
       return "<a href=\"https://www.google.com.vn/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
-          + "\" style=\"font-size: 15px; color: blue\">Search Google Image for the word!</a>";
+          + "\" style=\"font-size: 15px; color: blue\">Search images by the word.</a>";
     }
 
     String img_name = img_link.split("/")[img_link.split("/").length - 1];
@@ -121,18 +115,19 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getMeaning() {
 
-    List<Element> meanElements = HtmlHelper.getElements(doc, "span[class=def]");
+    List<Element> meanGroup = HtmlHelper.getElements(doc, "li[class=sn-g]");
     List<Meaning> meanings = new ArrayList<>();
-    for (Element meanElement : meanElements) {
-      Element sibling = meanElement.nextElementSibling();
+    for (Element meanElem : meanGroup) {
+      Element defElem = meanElem.selectFirst("span.def");
+      Element siblingElem = defElem.nextElementSibling();
       List<String> examples = new ArrayList<>();
-      if (sibling != null) {
-        List<Element> exampleElements = sibling.select("span.x");
-        for (Element exampleElement : exampleElements) {
-          examples.add(exampleElement.text());
+      if (siblingElem != null) {
+        List<Element> exampleElements = siblingElem.select("span.x");
+        for (Element exampleElem : exampleElements) {
+          examples.add(exampleElem.text());
         }
       }
-      Meaning meaning = new Meaning(meanElement.text(), examples);
+      Meaning meaning = new Meaning(defElem.text(), examples);
       meanings.add(meaning);
     }
 
