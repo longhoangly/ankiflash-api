@@ -7,7 +7,7 @@ public class CardRequest {
 
   @NotNull
   @NotEmpty
-  private String wordList;
+  private String words;
 
   @NotNull
   @NotEmpty
@@ -22,12 +22,12 @@ public class CardRequest {
     this.target = target;
   }
 
-  public String getWordList() {
-    return wordList;
+  public String getWords() {
+    return words;
   }
 
-  public void setWordList(String wordList) {
-    this.wordList = wordList;
+  public void setWords(String words) {
+    this.words = words;
   }
 
   public String getSource() {

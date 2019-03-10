@@ -3,3 +3,4 @@ AnkiFlashcards
 build
 .gradle
 .idea
+out

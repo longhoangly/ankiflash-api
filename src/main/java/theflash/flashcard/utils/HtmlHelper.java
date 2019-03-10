@@ -83,7 +83,7 @@ public class HtmlHelper {
         Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
       }
     } catch (IOException e) {
-      logger.error("Exception: ", e);
+      logger.error("Exception Occurred: ", e);
     }
   }
 

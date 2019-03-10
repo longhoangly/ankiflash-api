@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Collection;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import theflash.security.dto.User;
 import theflash.security.repository.UserRepository;
@@ -74,5 +76,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public int countUser() {
     return Math.toIntExact(userRepository.count());
+  }
+
+  @Override
+  public String getCurrentUsername() {
+    // Authenticate User
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    User user = findByUsername(auth.getName());
+    return user != null ? user.getUsername() : "";
   }
 }

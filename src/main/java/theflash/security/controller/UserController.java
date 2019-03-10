@@ -37,6 +37,10 @@ public class UserController {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     User currentUser = userService.findByUsername(auth.getName());
+    if (currentUser == null) {
+      throw new BadRequestException("Cannot find current user info!");
+    }
+
     return ResponseEntity.ok().body(currentUser);
   }
 

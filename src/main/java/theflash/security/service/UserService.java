@@ -22,4 +22,6 @@ public interface UserService {
   User validate(String username, String password);
 
   int countUser();
+
+  String getCurrentUsername();
 }

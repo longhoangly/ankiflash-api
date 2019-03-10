@@ -1,6 +1,5 @@
 package theflash.flashcard.service.impl.dictionary;
 
-import java.util.List;
 import org.jsoup.nodes.Document;
 import theflash.flashcard.service.DictionaryService;
 import theflash.flashcard.utils.Translation;
@@ -11,9 +10,11 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   protected String word;
 
-  protected Translation translation;
+  protected String type;
 
-  public abstract List<Translation> supportedTranslations();
+  protected String phonetic;
+
+  protected Translation translation;
 
   public abstract boolean isConnectionEstablished(String word, Translation translation);
 
@@ -25,9 +26,9 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   public abstract String getPhonetic();
 
-  public abstract String getImage(String selector, String attr);
+  public abstract String getImage(String username, String selector);
 
-  public abstract String getPron(String selector);
+  public abstract String getPron(String username, String selector);
 
   public abstract String getMeaning();
 

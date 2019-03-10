@@ -1,11 +1,8 @@
 package theflash.flashcard.service;
 
-import java.util.List;
 import theflash.flashcard.utils.Translation;
 
 public interface DictionaryService {
-  
-  List<Translation> supportedTranslations();
 
   boolean isConnectionEstablished(String word, Translation translation);
 
@@ -17,9 +14,9 @@ public interface DictionaryService {
 
   String getPhonetic();
 
-  String getImage(String selector, String attr);
+  String getImage(String username, String selector);
 
-  String getPron(String selector);
+  String getPron(String username, String selector);
 
   String getMeaning();
 

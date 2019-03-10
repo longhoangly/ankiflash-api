@@ -1,7 +1,5 @@
 package theflash.flashcard.service.impl.dictionary;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import theflash.flashcard.utils.Constants;
@@ -11,14 +9,8 @@ import theflash.flashcard.utils.Translation;
 public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
-  public List<Translation> supportedTranslations() {
-    List<Translation> pairs = new ArrayList<>();
-    pairs.add(new Translation(Constants.ENGLISH, Constants.CHINESE));
-    return pairs;
-  }
-
-  @Override
   public boolean isConnectionEstablished(String word, Translation translation) {
+
     this.word = word;
     this.translation = translation;
     boolean isConnectionEstablished = false;
@@ -32,6 +24,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public boolean isWordingCorrect() {
+
     boolean isWordingCorrect = false;
     String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.DICT_CAMBRIDGE_SPELLING_WRONG)) {
@@ -60,12 +53,12 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public String getImage(String selector, String attr) {
+  public String getImage(String username, String selector) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public String getPron(String selector) {
+  public String getPron(String username, String selector) {
     throw new UnsupportedOperationException();
   }
 

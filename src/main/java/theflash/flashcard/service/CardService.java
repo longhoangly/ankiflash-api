@@ -6,9 +6,11 @@ import theflash.flashcard.utils.Translation;
 
 public interface CardService {
 
-  Card generateCard(String word, Translation translation);
+  List<Translation> supportedTranslations();
 
-  List<Card> generateCards(List<String> wordList, Translation translation);
+  Card generateCard(String word, Translation translation, String username);
 
-  String getDownloadLink();
+  List<Card> generateCards(List<String> wordList, Translation translation, String username);
+
+  String compressResources(String username);
 }

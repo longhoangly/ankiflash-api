@@ -91,8 +91,10 @@ public class Constants {
   public static String DICT_COLLINS_SPELLING_WRONG = "CollinsDictionary.com | Collins Dictionaries - Free Online";
   public static String DICT_COLLINS_URL_FR_EN = "https://www.collinsdictionary.com/search/?dictCode=french-english&q=%s";
   // OTHERS
+  public static String DICT_SUCCESS = "SUCCESS";
   public static String DICT_COPYRIGHT = "This flashcard's content is collected from the following dictionaries: %s";
   public static String DICT_NO_EXAMPLE = "There is no example for this word!";
   public static String DICT_CONNECTION_FAILED = "Cannot connect to dictionaries, please try again later!";
-  public static String DICT_WORD_NOT_FOUND = "The word not found! Could you please check spelling or report to us!";
+  public static String DICT_WORD_NOT_FOUND = "The word was not found! Could you please check spelling or report to us!";
+  public static String DICT_NOT_SUPPORTED_TRANSLATION = "The translation from %1$s to %2$s is not supported!";
 }
