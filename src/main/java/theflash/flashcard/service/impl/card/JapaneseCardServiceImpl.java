@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import theflash.flashcard.controller.CardController;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.Status;
 import theflash.flashcard.utils.Translation;
 
 public class JapaneseCardServiceImpl extends CardServiceImpl {
@@ -15,11 +13,11 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(JapaneseCardServiceImpl.class);
 
   @Override
-  public List<Translation> supportedTranslations() {
-    List<Translation> translations = new ArrayList<>();
-    translations.add(new Translation(Constants.JAPANESE, Constants.ENGLISH));
-    translations.add(new Translation(Constants.JAPANESE, Constants.VIETNAMESE));
-    return translations;
+  public List<String> getSupportedLanguages() {
+    List<String> languages = new ArrayList<>();
+    languages.add(Constants.ENGLISH);
+    languages.add(Constants.VIETNAMESE);
+    return languages;
   }
 
   @Override

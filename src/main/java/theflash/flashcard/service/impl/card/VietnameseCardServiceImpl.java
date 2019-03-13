@@ -13,11 +13,11 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(VietnameseCardServiceImpl.class);
 
   @Override
-  public List<Translation> supportedTranslations() {
-    List<Translation> translations = new ArrayList<>();
-    translations.add(new Translation(Constants.VIETNAMESE, Constants.ENGLISH));
-    translations.add(new Translation(Constants.VIETNAMESE, Constants.FRENCH));
-    return translations;
+  public List<String> getSupportedLanguages() {
+    List<String> languages = new ArrayList<>();
+    languages.add(Constants.ENGLISH);
+    languages.add(Constants.FRENCH);
+    return languages;
   }
 
   @Override

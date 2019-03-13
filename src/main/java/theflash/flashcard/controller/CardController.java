@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.payload.CardRequest;
@@ -56,7 +57,7 @@ public class CardController {
 
     // Initialize CardService per Translation
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
-    cardService = CardServiceImpl.getCardService(translation);
+    cardService = CardServiceImpl.getCardService(reqCard.getSource());
 
     // Generate Cards
     Card card = cardService.generateCard(reqCard.getWords(), translation, username);
@@ -75,7 +76,7 @@ public class CardController {
 
     // Initialize CardService per Translation
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
-    cardService = CardServiceImpl.getCardService(translation);
+    cardService = CardServiceImpl.getCardService(reqCard.getSource());
 
     // Create AnkiFlashcards per User
     String ankiDir = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString();
@@ -94,6 +95,17 @@ public class CardController {
     }
 
     return ResponseEntity.ok().body(cards);
+  }
+
+  @GetMapping(path = "/get-supported-language")
+  public ResponseEntity getSupportedLanguagues(@RequestParam(value = "language") String language) {
+
+    logger.info("/api/v1/anki-flash-card/get-supported-language");
+
+    cardService = CardServiceImpl.getCardService(language);
+    List<String> languages = cardService.getSupportedLanguages();
+
+    return ResponseEntity.ok().body(languages);
   }
 
   @GetMapping(path = "/download")

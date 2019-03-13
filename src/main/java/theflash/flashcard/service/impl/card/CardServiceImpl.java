@@ -12,6 +12,7 @@ import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.Translation;
 import theflash.utility.IOUtility;
 import theflash.utility.TheFlashProperties;
+import theflash.utility.exception.BadRequestException;
 
 public abstract class CardServiceImpl implements CardService {
 
@@ -22,7 +23,7 @@ public abstract class CardServiceImpl implements CardService {
   protected DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
 
 
-  public abstract List<Translation> supportedTranslations();
+  public abstract List<String> getSupportedLanguages();
 
   public abstract Card generateCard(String word, Translation translation, String username);
 
@@ -40,29 +41,37 @@ public abstract class CardServiceImpl implements CardService {
     return ankiDir + ".zip";
   }
 
-  public static CardService getCardService(Translation translation) {
+  public static CardService getCardService(String sourceLanguage) {
 
     CardService cardService = null;
 
-    if (translation.getSource().equals(Constants.ENGLISH)) {
+    if (sourceLanguage.equalsIgnoreCase(Constants.ENGLISH)) {
 
       cardService = new EnglishCardServiceImpl();
 
-    } else if (translation.getSource().equals(Constants.VIETNAMESE)) {
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.VIETNAMESE)) {
 
       cardService = new VietnameseCardServiceImpl();
 
-    } else if (translation.getSource().equals(Constants.CHINESE)) {
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.FRENCH)) {
+
+      cardService = new FrenchCardServiceImpl();
+
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE)) {
 
       cardService = new ChineseCardServiceImpl();
 
-    } else if (translation.getSource().equals(Constants.JAPANESE)) {
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.JAPANESE)) {
 
       cardService = new JapaneseCardServiceImpl();
 
-    } else if (translation.getSource().equals(Constants.SPANISH)) {
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.SPANISH)) {
 
       cardService = new SpanishCardServiceImpl();
+
+    } else {
+
+      throw new BadRequestException(String.format("The language [%s] is not supported!", sourceLanguage));
 
     }
 
