@@ -35,7 +35,7 @@ public class TheFlashApplication {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(origins)
+                .allowedOrigins(origins.split(";"))
                 .allowedMethods("*");
       }
     };
@@ -44,7 +44,7 @@ public class TheFlashApplication {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     final CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(origins));
+    configuration.setAllowedOrigins(Arrays.asList(origins.split(";")));
     configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
     // setAllowCredentials(true) is important, otherwise:
     // The value of the 'Access-Control-Allow-Origin' header in the response must not be
