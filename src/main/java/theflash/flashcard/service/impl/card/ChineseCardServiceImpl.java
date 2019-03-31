@@ -13,14 +13,6 @@ public class ChineseCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(ChineseCardServiceImpl.class);
 
   @Override
-  public List<String> getSupportedLanguages() {
-    List<String> languages = new ArrayList<>();
-    languages.add(Constants.ENGLISH);
-    languages.add(Constants.VIETNAMESE);
-    return languages;
-  }
-
-  @Override
   public Card generateCard(String word, Translation translation, String username) {
     Card card = new Card(word);
 

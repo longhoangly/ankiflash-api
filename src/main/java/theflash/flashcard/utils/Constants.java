@@ -77,22 +77,22 @@ public class Constants {
   // OXFORD
   public static String DICT_OXFORD_SPELLING_WRONG_1 = "Did you spell it correctly?";
   public static String DICT_OXFORD_SPELLING_WRONG_2 = "Oxford Learner's Dictionaries | Find the meanings";
-  public static String DICT_OXFORD_URL_EN_EN = "http://www.oxfordlearnersdictionaries.com/search/english/direct/?q=%s";
+  public static String DICT_OXFORD_URL_EN_EN = "http://www.oxfordlearnersdictionaries.com/search/english/direct/?q=%1$s";
   // LACVIET
   public static String DICT_LACVIET_SPELLING_WRONG = "Dữ liệu đang được cập nhật";
-  public static String DICT_LACVIET_URL_VN_EN = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-anh&t=V-A&k=%s";
-  public static String DICT_LACVIET_URL_VN_FR = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-phap&t=V-F&k=%s";
-  public static String DICT_LACVIET_URL_EN_VN = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-anh&t=A-V&k=%s";
-  public static String DICT_LACVIET_URL_FR_VN = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-phap&t=F-V&k=%s";
+  public static String DICT_LACVIET_URL_VN_EN = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-anh&t=V-A&k=%1$s";
+  public static String DICT_LACVIET_URL_VN_FR = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-phap&t=V-F&k=%1$s";
+  public static String DICT_LACVIET_URL_EN_VN = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-anh&t=A-V&k=%1$s";
+  public static String DICT_LACVIET_URL_FR_VN = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-phap&t=F-V&k=%1$s";
   // CAMBRIDGE
   public static String DICT_CAMBRIDGE_SPELLING_WRONG = "你拼写正确了吗？";
-  public static String DICT_CAMBRIDGE_URL_EN_CN = "http://dictionary.cambridge.org/zhs/%E6%90%9C%E7%B4%A2/english-chinese-simplified/direct/?q=%s";
+  public static String DICT_CAMBRIDGE_URL_EN_CN = "http://dictionary.cambridge.org/zhs/搜索/english-chinese-simplified/direct/?q=%1$s";
   // COLLINS
   public static String DICT_COLLINS_SPELLING_WRONG = "CollinsDictionary.com | Collins Dictionaries - Free Online";
-  public static String DICT_COLLINS_URL_FR_EN = "https://www.collinsdictionary.com/search/?dictCode=french-english&q=%s";
+  public static String DICT_COLLINS_URL_FR_EN = "https://www.collinsdictionary.com/search/?dictCode=french-english&q=%1$s";
   // OTHERS
   public static String DICT_SUCCESS = "SUCCESS";
-  public static String DICT_COPYRIGHT = "This flashcard's content is collected from the following dictionaries: %s";
+  public static String DICT_COPYRIGHT = "This flashcard's content is collected from the following dictionaries: %1$s";
   public static String DICT_NO_EXAMPLE = "There is no example for this word!";
   public static String DICT_CONNECTION_FAILED = "Cannot connect to dictionaries, please try again later!";
   public static String DICT_WORD_NOT_FOUND = "The word was not found! Could you please check spelling or report to us!";

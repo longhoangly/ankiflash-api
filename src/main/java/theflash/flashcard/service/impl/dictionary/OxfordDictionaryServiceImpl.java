@@ -15,12 +15,12 @@ import theflash.utility.TheFlashProperties;
 
 public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
 
-  private static final Logger logger = LoggerFactory.getLogger(OxfordDictionaryServiceImpl.class);
-
   @Override
   public boolean isConnectionEstablished(String word, Translation translation) {
+
     this.word = word;
     this.translation = translation;
+
     boolean isConnectionEstablished = false;
     String url = HtmlHelper.lookupUrl(Constants.DICT_OXFORD_URL_EN_EN, word);
     doc = HtmlHelper.getDocument(url);
@@ -32,6 +32,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public boolean isWordingCorrect() {
+
     boolean isWordingCorrect = true;
     String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.DICT_OXFORD_SPELLING_WRONG_1) ||
@@ -47,8 +48,11 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getWordType() {
-    type = HtmlHelper.getText(doc, "span[class=pos]", 0);
-    return type.isEmpty() ? "" : "(" + type + ")";
+
+    if (type == null) {
+      type = "(" + HtmlHelper.getText(doc, "span[class=pos]", 0) + ")";
+    }
+    return type.isEmpty() ? "" : type;
   }
 
   @Override
@@ -72,10 +76,13 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getPhonetic() {
-    String phoneticBrE = HtmlHelper.getText(doc, "span[class=phon]", 0);
-    String phoneticNAmE = HtmlHelper.getText(doc, "span[class=phon]", 1);
-    phonetic = String.format("%1$s %2$s", phoneticBrE, phoneticNAmE);
-    return phonetic.replaceAll("//", " / ");
+
+    if (phonetic == null) {
+      String phoneticBrE = HtmlHelper.getText(doc, "span[class=phon]", 0);
+      String phoneticNAmE = HtmlHelper.getText(doc, "span[class=phon]", 1);
+      phonetic = String.format("%1$s %2$s", phoneticBrE, phoneticNAmE).replaceAll("//", " / ");
+    }
+    return phonetic;
   }
 
   @Override
@@ -122,18 +129,23 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getMeaning() {
 
-    List<Element> meanGroup = HtmlHelper.getElements(doc, "li[class=sn-g]");
+    getWordType();
+    getPhonetic();
+
     List<Meaning> meanings = new ArrayList<>();
+    List<Element> meanGroup = HtmlHelper.getElements(doc, "li[class=sn-g]");
     for (Element meanElem : meanGroup) {
       Element defElem = meanElem.selectFirst("span.def");
-      Element siblingElem = defElem.nextElementSibling();
+
       List<String> examples = new ArrayList<>();
+      Element siblingElem = defElem.nextElementSibling();
       if (siblingElem != null) {
         List<Element> exampleElements = siblingElem.select("span.x");
         for (Element exampleElem : exampleElements) {
           examples.add(exampleElem.text());
         }
       }
+
       Meaning meaning = new Meaning(defElem.text(), examples);
       meanings.add(meaning);
     }

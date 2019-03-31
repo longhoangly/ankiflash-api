@@ -5,6 +5,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import theflash.flashcard.dto.Card;
+import theflash.flashcard.service.DictionaryService;
+import theflash.flashcard.service.impl.dictionary.CambridgeDictionaryServiceImpl;
+import theflash.flashcard.service.impl.dictionary.LacVietDictionaryServiceImpl;
+import theflash.flashcard.service.impl.dictionary.OxfordDictionaryServiceImpl;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.Status;
 import theflash.flashcard.utils.Translation;
@@ -14,20 +18,15 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(EnglishCardServiceImpl.class);
 
   @Override
-  public List<String> getSupportedLanguages() {
-    List<String> languages = new ArrayList<>();
-    languages.add(Constants.ENGLISH);
-    languages.add(Constants.CHINESE);
-    languages.add(Constants.VIETNAMESE);
-    return languages;
-  }
-
-  @Override
   public Card generateCard(String word, Translation translation, String username) {
-    Card card = new Card(word);
 
-    logger.debug("Word = " + word);
-    logger.debug("Translation = " + translation);
+    Card card = new Card(word);
+    DictionaryService oxfordDict = new OxfordDictionaryServiceImpl();
+    DictionaryService cambridgeDict = new CambridgeDictionaryServiceImpl();
+    DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
+
+    logger.info("English = " + word);
+    logger.info("Target = " + translation.getTarget());
 
     //English to English
     if (translation.equals(Translation.EN_EN)) {
@@ -42,6 +41,8 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
         return card;
       }
 
+      card.setWordType(oxfordDict.getWordType());
+      card.setPhonetic(oxfordDict.getPhonetic());
       card.setMeaning(oxfordDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, oxfordDict.getDictionaryName()));
 
@@ -59,6 +60,8 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
         return card;
       }
 
+      card.setWordType(oxfordDict.getWordType());
+      card.setPhonetic(oxfordDict.getPhonetic());
       card.setMeaning(cambridgeDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT,
           String.join(", and ", oxfordDict.getDictionaryName(), cambridgeDict.getDictionaryName())));
@@ -77,6 +80,8 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
         return card;
       }
 
+      card.setWordType(oxfordDict.getWordType());
+      card.setPhonetic(oxfordDict.getPhonetic());
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT,
           String.join(", and ", oxfordDict.getDictionaryName(), lacVietDict.getDictionaryName())));
@@ -88,8 +93,6 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
       return card;
     }
 
-    card.setWordType(oxfordDict.getWordType());
-    card.setPhonetic(oxfordDict.getPhonetic());
     card.setExample(oxfordDict.getExample());
     card.setPron("BrE " + oxfordDict.getPron(username, "div.pron-uk")
         + " NAmE " + oxfordDict.getPron(username, "div.pron-us"));

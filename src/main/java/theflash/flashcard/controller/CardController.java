@@ -20,13 +20,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.payload.CardRequest;
 import theflash.flashcard.service.CardService;
-import theflash.flashcard.service.impl.card.CardServiceImpl;
+import theflash.flashcard.service.impl.card.ChineseCardServiceImpl;
 import theflash.flashcard.service.impl.card.EnglishCardServiceImpl;
+import theflash.flashcard.service.impl.card.FrenchCardServiceImpl;
+import theflash.flashcard.service.impl.card.JapaneseCardServiceImpl;
+import theflash.flashcard.service.impl.card.SpanishCardServiceImpl;
+import theflash.flashcard.service.impl.card.VietnameseCardServiceImpl;
+import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.Status;
 import theflash.flashcard.utils.Translation;
 import theflash.security.service.UserService;
@@ -56,10 +60,10 @@ public class CardController {
     }
 
     // Initialize CardService per Translation
-    Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
-    cardService = CardServiceImpl.getCardService(reqCard.getSource());
+    cardService = getCardService(reqCard.getSource());
 
-    // Generate Cards
+    // Generate Card
+    Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
     Card card = cardService.generateCard(reqCard.getWords(), translation, username);
     return ResponseEntity.ok().body(card);
   }
@@ -75,8 +79,7 @@ public class CardController {
     }
 
     // Initialize CardService per Translation
-    Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
-    cardService = CardServiceImpl.getCardService(reqCard.getSource());
+    cardService = getCardService(reqCard.getSource());
 
     // Create AnkiFlashcards per User
     String ankiDir = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString();
@@ -85,6 +88,7 @@ public class CardController {
 
     // Generate Cards
     List<String> words = Arrays.asList(reqCard.getWords().split(";"));
+    Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
     List<Card> cards = cardService.generateCards(words, translation, username);
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.SUCCESS) == 0) {
@@ -98,12 +102,12 @@ public class CardController {
   }
 
   @GetMapping(path = "/get-supported-language")
-  public ResponseEntity getSupportedLanguagues(@RequestParam(value = "language") String language) {
+  public ResponseEntity getSupportedLanguagues() {
 
     logger.info("/api/v1/anki-flash-card/get-supported-language");
 
-    cardService = CardServiceImpl.getCardService(language);
-    List<String> languages = cardService.getSupportedLanguages();
+    cardService = new EnglishCardServiceImpl();
+    List<Translation> languages = cardService.getSupportedLanguages();
 
     return ResponseEntity.ok().body(languages);
   }
@@ -130,5 +134,42 @@ public class CardController {
                          .contentLength(file.length())
                          .contentType(MediaType.parseMediaType("application/octet-stream"))
                          .body(resource);
+  }
+
+  private CardService getCardService(String sourceLanguage) {
+
+    CardService cardService;
+
+    if (sourceLanguage.equalsIgnoreCase(Constants.ENGLISH)) {
+
+      cardService = new EnglishCardServiceImpl();
+
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.VIETNAMESE)) {
+
+      cardService = new VietnameseCardServiceImpl();
+
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.FRENCH)) {
+
+      cardService = new FrenchCardServiceImpl();
+
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE)) {
+
+      cardService = new ChineseCardServiceImpl();
+
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.JAPANESE)) {
+
+      cardService = new JapaneseCardServiceImpl();
+
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.SPANISH)) {
+
+      cardService = new SpanishCardServiceImpl();
+
+    } else {
+
+      throw new BadRequestException(String.format("The language [%s] is not supported!", sourceLanguage));
+
+    }
+
+    return cardService;
   }
 }

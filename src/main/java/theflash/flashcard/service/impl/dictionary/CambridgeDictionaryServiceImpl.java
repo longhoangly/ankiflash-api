@@ -1,9 +1,11 @@
 package theflash.flashcard.service.impl.dictionary;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.HtmlHelper;
+import theflash.flashcard.utils.Meaning;
 import theflash.flashcard.utils.Translation;
 
 public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
@@ -13,6 +15,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 
     this.word = word;
     this.translation = translation;
+
     boolean isConnectionEstablished = false;
     String url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN, word);
     doc = HtmlHelper.getDocument(url);
@@ -25,21 +28,25 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isWordingCorrect() {
 
-    boolean isWordingCorrect = false;
+    boolean isWordingCorrect = true;
     String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.DICT_CAMBRIDGE_SPELLING_WRONG)) {
-      isWordingCorrect = true;
+      isWordingCorrect = false;
     }
     String word = HtmlHelper.getText(doc, "span.headword>span", 0);
     if (word.isEmpty()) {
-      isWordingCorrect = true;
+      isWordingCorrect = false;
     }
     return isWordingCorrect;
   }
 
   @Override
   public String getWordType() {
-    throw new UnsupportedOperationException();
+
+    if (type == null) {
+      type = "(" + HtmlHelper.getText(doc, "span[class=pos]", 0) + ")";
+    }
+    return type.isEmpty() ? "" : type;
   }
 
   @Override
@@ -49,7 +56,12 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getPhonetic() {
-    throw new UnsupportedOperationException();
+    if (phonetic == null) {
+      String phoneticBrE = HtmlHelper.getText(doc, "span[class=pron]", 0);
+      String phoneticNAmE = HtmlHelper.getText(doc, "span[class=pron]", 1);
+      phonetic = String.format("%1$s %2$s", phoneticBrE, phoneticNAmE);
+    }
+    return phonetic;
   }
 
   @Override
@@ -64,39 +76,67 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getMeaning() {
-    Element ukSoundIcon = HtmlHelper
-        .getElement(doc, "span.circle.circle-btn.sound.audio_play_button.uk", 0);
-    if (ukSoundIcon != null) {
-      ukSoundIcon.remove();
-    }
-    Element usSoundIcon = HtmlHelper
-        .getElement(doc, "span.circle.circle-btn.sound.audio_play_button.us", 0);
-    if (usSoundIcon != null) {
-      usSoundIcon.remove();
-    }
-    Element translations = HtmlHelper
-        .getElement(doc, "div.clrd.mod.mod--style5.mod--dark.mod-translate", 0);
-    translations.remove();
-    Element shareThisEntry = HtmlHelper.getElement(doc, "div.share.rounded.js-share", 0);
-    shareThisEntry.remove();
-    Elements scripts = HtmlHelper.getElements(doc, "script");
-    if (scripts.size() > 0) {
-      for (Element script : scripts) {
-        script.remove();
+
+    getWordType();
+    getPhonetic();
+
+    List<Meaning> meanings = new ArrayList<>();
+    List<Element> headerGroups = HtmlHelper.getElements(doc, "div[class*=entry-body__el]");
+    for (Element headerGroup : headerGroups) {
+      // Word Type Header
+      Meaning meaning = new Meaning();
+      Element wordTypeHeader = headerGroup.selectFirst(".pos-header");
+      if (wordTypeHeader != null) {
+        List<String> headerTexts = new ArrayList<>();
+        List<Element> elements = wordTypeHeader.select(".pos,.pron");
+        for (Element element : elements) {
+          headerTexts.add(element.text());
+        }
+        meaning.setWordType(String.join(" ", headerTexts));
+        meanings.add(meaning);
+      }
+
+      List<String> examples;
+      List<Element> meanGroups = headerGroup.select("div.sense-block");
+      for (Element meanGroup : meanGroups) {
+        // Header
+        meaning = new Meaning();
+        Element header = meanGroup.selectFirst("h3");
+        if (header != null) {
+          meaning.setWordType(meanGroup.selectFirst("h3").text());
+          meanings.add(meaning);
+        }
+
+        // Meaning
+        List<Element> meaningElements = meanGroup.select("div[class*=def-block]");
+        for (Element meaningElem : meaningElements) {
+          meaning = new Meaning();
+          meaning.setMeaning(meaningElem.selectFirst("b.def").text());
+
+          examples = new ArrayList<>();
+          for (Element element : meaningElem.select(".eg,.trans")) {
+            examples.add(element.text());
+          }
+          meaning.setExamples(examples);
+          meanings.add(meaning);
+        }
+
+        // Extra Examples
+        meaning = new Meaning();
+        examples = new ArrayList<>();
+        Element extraExample = meanGroup.selectFirst(".extraexamps>p");
+        if (extraExample != null) {
+          meaning.setWordType(extraExample.text());
+          for (Element element : meanGroup.select(".extraexamps>ul>li.eg")) {
+            examples.add(element.text());
+          }
+          meaning.setExamples(examples);
+          meanings.add(meaning);
+        }
       }
     }
-    Element contentElement = HtmlHelper.getElement(doc, "div#entryContent", 0);
-    contentElement.addClass("entrybox english-chinese-simplified entry-body");
-    String htmlContent =
-        "<html>" + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +
-            "<link type=\"text/css\" rel=\"stylesheet\" href=\"common.css\">" +
-            "<link type=\"text/css\" rel=\"stylesheet\" href=\"responsive.css\">" +
-            "<div class=\"responsive_entry_center_wrap\">" + contentElement.outerHtml() +
-            "</div>" + "</html>";
-    htmlContent = htmlContent.replace(Constants.TAB, "");
-    htmlContent = htmlContent.replace(Constants.CR, "");
-    htmlContent = htmlContent.replace(Constants.LF, "");
-    return htmlContent;
+
+    return HtmlHelper.buildMeaning(word, type, phonetic, meanings);
   }
 
   @Override

@@ -1,23 +1,23 @@
 package theflash.flashcard.service.impl.dictionary;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import org.jsoup.nodes.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.HtmlHelper;
+import theflash.flashcard.utils.Meaning;
 import theflash.flashcard.utils.Translation;
 import theflash.utility.IOUtility;
 
 public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
-
-  private static final Logger logger = LoggerFactory.getLogger(LacVietDictionaryServiceImpl.class);
 
   @Override
   public boolean isConnectionEstablished(String word, Translation translation) {
 
     this.word = word;
     this.translation = translation;
+
     boolean isConnectionEstablished = false;
     String url;
     if (translation.equals(Translation.VN_EN)) {
@@ -39,77 +39,74 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isWordingCorrect() {
 
-    boolean isWordingCorrect = false;
-    String title = HtmlHelper.getText(doc, "title", 0);
-    if (title.contains(Constants.DICT_LACVIET_SPELLING_WRONG)) {
-      isWordingCorrect = true;
-    }
+    boolean isWordingCorrect = true;
     String word = HtmlHelper.getText(doc, "div[class=w fl]", 0);
     if (word.isEmpty()) {
-      isWordingCorrect = true;
+      isWordingCorrect = false;
     }
-    //ToDo: Check which one we use to check correct word??? lacResult or title???
+
     String lacResult = HtmlHelper.getText(doc, "div[class=i p10]", 0);
     if (lacResult.contains(Constants.DICT_LACVIET_SPELLING_WRONG)) {
-      isWordingCorrect = true;
+      isWordingCorrect = false;
     }
     return isWordingCorrect;
   }
 
   @Override
   public String getWordType() {
-    throw new UnsupportedOperationException();
+
+    if (type == null) {
+      List<String> types = new ArrayList<>();
+      List<Element> elements = HtmlHelper.getElements(doc, "div[class=ub]");
+      for (Element elem : elements) {
+        String text = elem.text();
+        if (!text.equalsIgnoreCase("Từ liên quan")) {
+          types.add(text);
+        }
+      }
+      type = "(" + String.join(" / ", types) + ")";
+    }
+    return type;
   }
 
   @Override
   public String getExample() {
-    Element exampleElements = HtmlHelper.getElement(doc, "div[class=e]", 0);
-    if (exampleElements == null) {
-      return Constants.DICT_NO_EXAMPLE;
-    }
-    String examples = exampleElements.outerHtml() + "<br>";
-    for (int i = 1; i < 2; i++) {
-      try {
-        examples += HtmlHelper.getElement(doc, "div[class=e]", i).outerHtml() + "<br>";
-      } catch (Exception e) {
-        logger.error("Exception: ", e);
+
+    List<String> examples = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      String example = HtmlHelper.getText(doc, "div[class=e]", i);
+      if (example.isEmpty() && i == 0) {
+        return Constants.DICT_NO_EXAMPLE;
+      } else if (example.isEmpty()) {
         break;
+      } else {
+        example = example.replaceAll(word, "{{c1::" + word + "}}");
+        examples.add(example);
       }
     }
-    //ToDo: double check if this function work well or not! Replace all words in examples except html values!
-    //    Pattern pattern = Pattern.compile(
-    //        String.format("({0})([^\\W_]*?[<>/\\]*?[^\\W_]*?[<>/\\]*?)([\\s.])", word.toLowerCase()));
-    //    examples = examples.toLowerCase();
-    //    Matcher match = pattern.matcher(examples);
-    //    if (match.find()) {
-    //      examples = match.replaceAll("{{c1::" + word + "}}$2$3");
-    //    }
-    examples = "<link type=\"text/css\" rel=\"stylesheet\" href=\"home.css\">" + examples;
-    return examples;
+
+    return HtmlHelper.buildExample(examples);
   }
 
   @Override
   public String getPhonetic() {
-    String phonetic = HtmlHelper.getText(doc, "div[class=p5l fl cB]", 0);
+
+    if (phonetic == null) {
+      phonetic = HtmlHelper.getText(doc, "div[class=p5l fl cB]", 0);
+    }
     return phonetic;
   }
 
   @Override
   public String getImage(String username, String selector) {
-    String img_link = HtmlHelper.getAttribute(doc, selector, 0, "href");
-    if (img_link.isEmpty()) {
-      return "<a href=\"https://www.google.com.vn/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
-          + "\" style=\"font-size: 15px; color: blue\">Images for this word</a>";
-    }
-    String img_name = img_link.split("/")[img_link.split("/").length - 1];
-    String output = Paths.get(username, Constants.ANKI_DIR_IMAGE, img_name).toString();
-    IOUtility.createDirs(Paths.get(username, Constants.ANKI_DIR_IMAGE).toString());
-    HtmlHelper.download(img_link, output);
-    return "<img src=\"" + img_name + "\"/>";
+
+    return "<a href=\"https://www.google.com.vn/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+        + "\" style=\"font-size: 15px; color: blue\">Images for this word</a>";
   }
 
   @Override
   public String getPron(String username, String selector) {
+
     String pro_link = HtmlHelper.getAttribute(doc, selector, 0, "flashvars");
     if (pro_link.isEmpty()) {
       return "";
@@ -124,23 +121,43 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getMeaning() {
-    Element domContent = HtmlHelper
-        .getElement(doc, "#ctl00_ContentPlaceHolderMain_cnt_dict", 0);
-    String htmlContent =
-        "<html>" + "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" +
-            "<link type=\"text/css\" rel=\"stylesheet\" href=\"home.css\">" +
-            "<link type=\"text/css\" rel=\"stylesheet\" href=\"responsive.css\">" +
-            "<div class=\"responsive_entry_center_wrap\">" + domContent.outerHtml() +
-            "</div>" + "</html>";
-    htmlContent = htmlContent.replace(Constants.TAB, "");
-    htmlContent = htmlContent.replace(Constants.CR, "");
-    htmlContent = htmlContent.replace(Constants.LF, "");
-    htmlContent = htmlContent.replaceAll("<div class=\"p5l fl\".*?</div>", "");
-    htmlContent = htmlContent.replaceAll("<div class=\"p3l fl m3t\">.*?</div>", "");
-    htmlContent = htmlContent.replaceAll("<div class=\"cgach p5lr fl\">|</div>", "");
-    htmlContent = htmlContent
-        .replace("<div id=\"firstHeading\"> </div>", "<div id=\"firstHeading\">" + word + "</div>");
-    return htmlContent;
+
+    getWordType();
+    getPhonetic();
+
+    List<Meaning> meanings = new ArrayList<>();
+    List<String> examples = new ArrayList<>();
+    Meaning meaning = new Meaning();
+    boolean processMeaning = false;
+
+    List<Element> meanGroups = HtmlHelper.getElements(doc, "div[id*=partofspeech]");
+    for (Element meanGroup : meanGroups) {
+      if (!meanGroup.attr("id").equalsIgnoreCase("partofspeech_100")) {
+        List<Element> meanElements = meanGroup.getElementsByTag("div");
+        for (Element meanElem : meanElements) {
+          if (meanElem.hasClass("ub")) {
+            meaning.setWordType(meanElem.text());
+          } else if (meanElem.hasClass("m")) {
+            if (processMeaning) {
+              meaning.setExamples(examples);
+              meanings.add(meaning);
+              // reset values
+              meaning = new Meaning();
+              examples = new ArrayList<>();
+            }
+            processMeaning = true;
+            meaning.setMeaning(meanElem.text());
+          } else if (meanElem.hasClass("e") || meanElem.hasClass("em") ||
+              meanElem.hasClass("im") || meanElem.hasClass("id")) {
+            examples.add(meanElem.text());
+          }
+        }
+        meaning.setExamples(examples);
+        meanings.add(meaning);
+      }
+    }
+
+    return HtmlHelper.buildMeaning(word, type, phonetic, meanings);
   }
 
   @Override

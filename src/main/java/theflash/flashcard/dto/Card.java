@@ -15,7 +15,6 @@ public class Card {
 
   private String pron;
 
-  @JsonIgnore
   private String meaning;
 
   private String image;
@@ -24,6 +23,7 @@ public class Card {
 
   private String copyright;
 
+  @JsonIgnore
   private String content;
 
   private Status Status;

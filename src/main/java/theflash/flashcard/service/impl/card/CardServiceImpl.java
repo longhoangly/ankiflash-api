@@ -1,13 +1,10 @@
 package theflash.flashcard.service.impl.card;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.service.CardService;
-import theflash.flashcard.service.DictionaryService;
-import theflash.flashcard.service.impl.dictionary.CambridgeDictionaryServiceImpl;
-import theflash.flashcard.service.impl.dictionary.LacVietDictionaryServiceImpl;
-import theflash.flashcard.service.impl.dictionary.OxfordDictionaryServiceImpl;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.Translation;
 import theflash.utility.IOUtility;
@@ -15,15 +12,6 @@ import theflash.utility.TheFlashProperties;
 import theflash.utility.exception.BadRequestException;
 
 public abstract class CardServiceImpl implements CardService {
-
-  protected DictionaryService oxfordDict = new OxfordDictionaryServiceImpl();
-
-  protected DictionaryService cambridgeDict = new CambridgeDictionaryServiceImpl();
-
-  protected DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
-
-
-  public abstract List<String> getSupportedLanguages();
 
   public abstract Card generateCard(String word, Translation translation, String username);
 
@@ -41,40 +29,29 @@ public abstract class CardServiceImpl implements CardService {
     return ankiDir + ".zip";
   }
 
-  public static CardService getCardService(String sourceLanguage) {
+  public List<Translation> getSupportedLanguages() {
 
-    CardService cardService = null;
+    List<Translation> translations = new ArrayList<>();
+    // CHINESE
+    translations.add(new Translation(Constants.CHINESE, Constants.ENGLISH));
+    translations.add(new Translation(Constants.CHINESE, Constants.VIETNAMESE));
+    //ENGLISH
+    translations.add(new Translation(Constants.ENGLISH, Constants.ENGLISH));
+    translations.add(new Translation(Constants.ENGLISH, Constants.CHINESE));
+    translations.add(new Translation(Constants.ENGLISH, Constants.VIETNAMESE));
+    //FRENCH
+    translations.add(new Translation(Constants.FRENCH, Constants.ENGLISH));
+    translations.add(new Translation(Constants.FRENCH, Constants.VIETNAMESE));
+    //JAPANESE
+    translations.add(new Translation(Constants.JAPANESE, Constants.ENGLISH));
+    translations.add(new Translation(Constants.JAPANESE, Constants.VIETNAMESE));
+    //SPANISH
+    translations.add(new Translation(Constants.SPANISH, Constants.ENGLISH));
+    translations.add(new Translation(Constants.SPANISH, Constants.VIETNAMESE));
+    //VIETNAMESE
+    translations.add(new Translation(Constants.VIETNAMESE, Constants.ENGLISH));
+    translations.add(new Translation(Constants.VIETNAMESE, Constants.FRENCH));
 
-    if (sourceLanguage.equalsIgnoreCase(Constants.ENGLISH)) {
-
-      cardService = new EnglishCardServiceImpl();
-
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.VIETNAMESE)) {
-
-      cardService = new VietnameseCardServiceImpl();
-
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.FRENCH)) {
-
-      cardService = new FrenchCardServiceImpl();
-
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE)) {
-
-      cardService = new ChineseCardServiceImpl();
-
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.JAPANESE)) {
-
-      cardService = new JapaneseCardServiceImpl();
-
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.SPANISH)) {
-
-      cardService = new SpanishCardServiceImpl();
-
-    } else {
-
-      throw new BadRequestException(String.format("The language [%s] is not supported!", sourceLanguage));
-
-    }
-
-    return cardService;
+    return translations;
   }
 }

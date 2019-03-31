@@ -109,12 +109,21 @@ public class HtmlHelper {
     htmlBuilder.append("<span class=\"content-phonetic\">" + phonetic + "</span>");
     htmlBuilder.append("<ol class=\"content-order\">");
     for (Meaning meaning : meanings) {
-      htmlBuilder.append("<li class=\"content-meaning\">" + meaning.getMeaning() + "</li>");
-      htmlBuilder.append("<ul class=\"content-circle\">");
-      for (String example : meaning.getExamples()) {
-        htmlBuilder.append("<li class=\"content-example\">" + example + "</li>");
+      if (meaning.getWordType() != null && !meaning.getWordType().isEmpty()) {
+        htmlBuilder.append("<h3 class=\"content-type\">" + meaning.getWordType() + "</h3>");
       }
-      htmlBuilder.append("</ul>");
+
+      if (meaning.getMeaning() != null && !meaning.getMeaning().isEmpty()) {
+        htmlBuilder.append("<li class=\"content-meaning\">" + meaning.getMeaning() + "</li>");
+      }
+
+      if (meaning.getExamples() != null && meaning.getExamples().size() > 0) {
+        htmlBuilder.append("<ul class=\"content-circle\">");
+        for (String example : meaning.getExamples()) {
+          htmlBuilder.append("<li class=\"content-example\">" + example + "</li>");
+        }
+        htmlBuilder.append("</ul>");
+      }
     }
     htmlBuilder.append("</ol>");
     htmlBuilder.append("</div>");
