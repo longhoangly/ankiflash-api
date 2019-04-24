@@ -25,7 +25,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     DictionaryService cambridgeDict = new CambridgeDictionaryServiceImpl();
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
 
-    logger.info("English = " + word);
+    logger.info("Word = " + word);
     logger.info("Target = " + translation.getTarget());
 
     //English to English

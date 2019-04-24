@@ -21,11 +21,12 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     Card card = new Card(word);
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
 
-    logger.info("Vietnamese = " + word);
+    logger.info("Word = " + word);
     logger.info("Target = " + translation.getTarget());
 
     // Vietnamese to English
-    if (translation.equals(Translation.VN_EN)) {
+    // Vietnamese to French
+    if (translation.equals(Translation.VN_EN) || translation.equals(Translation.VN_FR)) {
 
       if (!lacVietDict.isConnectionEstablished(word, translation)) {
         card.setStatus(Status.CONNECTION_FAILED);
@@ -51,7 +52,7 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
 
     card.setExample(lacVietDict.getExample());
     card.setPron(lacVietDict.getPron(username, "embed"));
-    card.setImage(lacVietDict.getImage("", ""));
+    card.setImage(lacVietDict.getImage("any", "any"));
     card.setTag(lacVietDict.getTag());
     card.setStatus(Status.SUCCESS);
     card.setComment(Constants.DICT_SUCCESS);

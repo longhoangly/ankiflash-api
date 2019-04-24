@@ -56,15 +56,9 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getWordType() {
 
     if (type == null) {
-      List<String> types = new ArrayList<>();
-      List<Element> elements = HtmlHelper.getElements(doc, "div[class=ub]");
-      for (Element elem : elements) {
-        String text = elem.text();
-        if (!text.equalsIgnoreCase("Từ liên quan")) {
-          types.add(text);
-        }
-      }
-      type = "(" + String.join(" / ", types) + ")";
+      Element element = HtmlHelper.getElement(doc, "div.m5t.p10lr", 0);
+      type = element.text().replace("|Tất cả", "").replace("|Từ liên quan", "");
+      type = type.isEmpty() ? "" : "(" + type + ")";
     }
     return type;
   }
@@ -126,35 +120,45 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    List<String> examples = new ArrayList<>();
-    Meaning meaning = new Meaning();
-    boolean processMeaning = false;
-
     List<Element> meanGroups = HtmlHelper.getElements(doc, "div[id*=partofspeech]");
+
     for (Element meanGroup : meanGroups) {
-      if (!meanGroup.attr("id").equalsIgnoreCase("partofspeech_100")) {
-        List<Element> meanElements = meanGroup.getElementsByTag("div");
-        for (Element meanElem : meanElements) {
-          if (meanElem.hasClass("ub")) {
+      List<Element> meanElements = meanGroup.getElementsByTag("div");
+      int meanCount = meanGroup.getElementsByClass("m").size();
+
+      Meaning meaning = new Meaning();
+      List<String> examples = new ArrayList<>();
+      boolean firstMeaning = true;
+
+      for (Element meanElem : meanElements) {
+        if (meanElem.hasClass("ub")) {
+          if (meanCount > 0) {
+            // has meaning => get text
             meaning.setWordType(meanElem.text());
-          } else if (meanElem.hasClass("m")) {
-            if (processMeaning) {
-              meaning.setExamples(examples);
-              meanings.add(meaning);
-              // reset values
-              meaning = new Meaning();
-              examples = new ArrayList<>();
-            }
-            processMeaning = true;
-            meaning.setMeaning(meanElem.text());
-          } else if (meanElem.hasClass("e") || meanElem.hasClass("em") ||
-              meanElem.hasClass("im") || meanElem.hasClass("id")) {
-            examples.add(meanElem.text());
+          } else {
+            // only type => get inner html
+            meaning.setWordType(meanElem.html());
           }
+        } else if (meanElem.hasClass("m")) {
+          // from the second meaning tag
+          if (!firstMeaning) {
+            meaning.setExamples(examples);
+            meanings.add(meaning);
+            // reset values
+            meaning = new Meaning();
+            examples = new ArrayList<>();
+          }
+
+          meaning.setMeaning(meanElem.text());
+          firstMeaning = false;
+        } else if (meanElem.hasClass("e") || meanElem.hasClass("em") ||
+            meanElem.hasClass("im") || meanElem.hasClass("id")) {
+          examples.add(meanElem.text());
         }
-        meaning.setExamples(examples);
-        meanings.add(meaning);
       }
+
+      meaning.setExamples(examples);
+      meanings.add(meaning);
     }
 
     return HtmlHelper.buildMeaning(word, type, phonetic, meanings);
