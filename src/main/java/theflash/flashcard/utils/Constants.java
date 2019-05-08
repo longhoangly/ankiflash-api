@@ -88,7 +88,7 @@ public class Constants {
   public static String DICT_CAMBRIDGE_SPELLING_WRONG = "你拼写正确了吗？";
   public static String DICT_CAMBRIDGE_URL_EN_CN = "http://dictionary.cambridge.org/zhs/搜索/english-chinese-simplified/direct/?q=%1$s";
   // COLLINS
-  public static String DICT_COLLINS_SPELLING_WRONG = "CollinsDictionary.com | Collins Dictionaries - Free Online";
+  public static String DICT_COLLINS_SPELLING_WRONG = "Sorry, no results for";
   public static String DICT_COLLINS_URL_FR_EN = "https://www.collinsdictionary.com/search/?dictCode=french-english&q=%1$s";
   // OTHERS
   public static String DICT_SUCCESS = "SUCCESS";

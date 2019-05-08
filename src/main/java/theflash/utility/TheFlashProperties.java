@@ -11,6 +11,8 @@ public class TheFlashProperties {
   public static String PROXY_ADDRESS;
   public static int PROXY_PORT;
   public static String ANKI_DIR_FLASHCARDS;
+  public static int CONNECTION_TIMEOUT;
+  public static int READ_TIMEOUT;
   public static String MAIL_HOST;
   public static int MAIL_PORT;
   public static String MAIL_USERNAME;
@@ -45,6 +47,16 @@ public class TheFlashProperties {
   @Value("${theflash.anki.root}")
   public void setAnkiDirFlashcards(String ankiDirFlashcards) {
     ANKI_DIR_FLASHCARDS = ankiDirFlashcards;
+  }
+
+  @Value("${theflash.timeout.connection}")
+  public void setConnectionTimeout(int timeout) {
+    CONNECTION_TIMEOUT = timeout * 1000;
+  }
+
+  @Value("${theflash.timeout.read}")
+  public void setReadTimeout(int timeout) {
+    READ_TIMEOUT = timeout * 1000;
   }
 
   @Value("${spring.mail.host}")

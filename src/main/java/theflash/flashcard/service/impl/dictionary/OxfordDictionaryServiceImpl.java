@@ -5,8 +5,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jsoup.select.Elements;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.HtmlHelper;
 import theflash.flashcard.utils.Meaning;
@@ -33,24 +32,25 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isWordingCorrect() {
 
-    boolean isWordingCorrect = true;
     String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.DICT_OXFORD_SPELLING_WRONG_1) ||
         title.contains(Constants.DICT_OXFORD_SPELLING_WRONG_2)) {
-      isWordingCorrect = false;
+      return false;
     }
+
     String word = HtmlHelper.getText(doc, "h2", 0);
     if (word.isEmpty()) {
-      isWordingCorrect = false;
+      return false;
     }
-    return isWordingCorrect;
+
+    return true;
   }
 
   @Override
   public String getWordType() {
 
     if (type == null) {
-      type = "(" + HtmlHelper.getText(doc, "span[class=pos]", 0) + ")";
+      type = "(" + HtmlHelper.getText(doc, "span.pos", 0) + ")";
     }
     return type.isEmpty() ? "" : type;
   }
@@ -60,13 +60,14 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
 
     List<String> examples = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
-      String example = HtmlHelper.getText(doc, "span[class=x]", i);
+      String example = HtmlHelper.getText(doc, "span.x", i);
       if (example.isEmpty() && i == 0) {
         return Constants.DICT_NO_EXAMPLE;
       } else if (example.isEmpty()) {
         break;
       } else {
-        example = example.replaceAll(word, "{{c1::" + word + "}}");
+        word = word.toLowerCase();
+        example = example.toLowerCase().replaceAll(word, "{{c1::" + word + "}}");
         examples.add(example);
       }
     }
@@ -78,8 +79,8 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getPhonetic() {
 
     if (phonetic == null) {
-      String phoneticBrE = HtmlHelper.getText(doc, "span[class=phon]", 0);
-      String phoneticNAmE = HtmlHelper.getText(doc, "span[class=phon]", 1);
+      String phoneticBrE = HtmlHelper.getText(doc, "span.phon", 0);
+      String phoneticNAmE = HtmlHelper.getText(doc, "span.phon", 1);
       phonetic = String.format("%1$s %2$s", phoneticBrE, phoneticNAmE).replaceAll("//", " / ");
     }
     return phonetic;
@@ -90,7 +91,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
 
     String img_link = HtmlHelper.getAttribute(doc, selector, 0, "href");
     if (img_link.isEmpty()) {
-      return "<a href=\"https://www.google.com.vn/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+      return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
           + "\" style=\"font-size: 15px; color: blue\">Search images by the word.</a>";
     }
 
@@ -133,14 +134,14 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    List<Element> meanGroup = HtmlHelper.getElements(doc, "li[class=sn-g]");
+    Elements meanGroup = doc.select("li.sn-g");
     for (Element meanElem : meanGroup) {
       Element defElem = meanElem.selectFirst("span.def");
 
       List<String> examples = new ArrayList<>();
       Element siblingElem = defElem.nextElementSibling();
       if (siblingElem != null) {
-        List<Element> exampleElements = siblingElem.select("span.x");
+        Elements exampleElements = siblingElem.select("span.x");
         for (Element exampleElem : exampleElements) {
           examples.add(exampleElem.text());
         }

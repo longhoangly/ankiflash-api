@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.service.DictionaryService;
+import theflash.flashcard.service.impl.dictionary.CollinsDictionaryServiceImpl;
 import theflash.flashcard.service.impl.dictionary.LacVietDictionaryServiceImpl;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.Status;
@@ -20,6 +21,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
 
     Card card = new Card(word);
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
+    DictionaryService collinsDict = new CollinsDictionaryServiceImpl();
 
     logger.info("Word = " + word);
     logger.info("Target = " + translation.getTarget());
@@ -39,20 +41,43 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
 
       card.setWordType(lacVietDict.getWordType());
       card.setPhonetic(lacVietDict.getPhonetic());
+      card.setExample(lacVietDict.getExample());
+      card.setPron(lacVietDict.getPron(username, "embed"));
+      card.setImage(lacVietDict.getImage("any", "any"));
+      card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));
 
+    } else if (translation.equals(Translation.FR_EN)) {
+
+      if (!collinsDict.isConnectionEstablished(word, translation)) {
+        card.setStatus(Status.CONNECTION_FAILED);
+        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        return card;
+      } else if (!collinsDict.isWordingCorrect()) {
+        card.setStatus(Status.WORD_NOT_FOUND);
+        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        return card;
+      }
+
+      card.setWordType(collinsDict.getWordType());
+      card.setPhonetic(collinsDict.getPhonetic());
+      card.setExample(collinsDict.getExample());
+      card.setPron(collinsDict.getPron(username, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr"));
+      card.setImage(collinsDict.getImage("any", "any"));
+      card.setTag(collinsDict.getTag());
+      card.setMeaning(collinsDict.getMeaning());
+      card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));
+
     } else {
+
       card.setStatus(Status.NOT_SUPPORTED_TRANSLATION);
       card.setComment(String.format(Constants.DICT_NOT_SUPPORTED_TRANSLATION,
           translation.getSource(), translation.getTarget()));
+
       return card;
     }
 
-    card.setExample(lacVietDict.getExample());
-    card.setPron(lacVietDict.getPron(username, "embed"));
-    card.setImage(lacVietDict.getImage("any", "any"));
-    card.setTag(lacVietDict.getTag());
     card.setStatus(Status.SUCCESS);
     card.setComment(Constants.DICT_SUCCESS);
 
@@ -62,7 +87,8 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
         + Constants.TAB + card.getTag() + "\n";
     card.setContent(cardContent);
 
-    return card;  }
+    return card;
+  }
 
   @Override
   public List<Card> generateCards(List<String> words, Translation translation, String username) {

@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.HtmlHelper;
 import theflash.flashcard.utils.Meaning;
@@ -39,17 +40,17 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isWordingCorrect() {
 
-    boolean isWordingCorrect = true;
-    String word = HtmlHelper.getText(doc, "div[class=w fl]", 0);
+    String word = HtmlHelper.getText(doc, "div.w.fl", 0);
     if (word.isEmpty()) {
-      isWordingCorrect = false;
+      return false;
     }
 
-    String lacResult = HtmlHelper.getText(doc, "div[class=i p10]", 0);
-    if (lacResult.contains(Constants.DICT_LACVIET_SPELLING_WRONG)) {
-      isWordingCorrect = false;
+    String warning = HtmlHelper.getText(doc, "div.i.p10", 0);
+    if (warning.contains(Constants.DICT_LACVIET_SPELLING_WRONG)) {
+      return false;
     }
-    return isWordingCorrect;
+
+    return true;
   }
 
   @Override
@@ -57,7 +58,13 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
     if (type == null) {
       Element element = HtmlHelper.getElement(doc, "div.m5t.p10lr", 0);
-      type = element.text().replace("|Tất cả", "").replace("|Từ liên quan", "");
+      type = element != null ? element.text().replace("|Tất cả", "").replace("|Từ liên quan", "") : "";
+
+      if (type.isEmpty()) {
+        List<String> elements = HtmlHelper.getTexts(doc, "div.m5t.p10lr");
+        type = elements.size() > 0 ? String.join(" | ", elements) : "";
+      }
+
       type = type.isEmpty() ? "" : "(" + type + ")";
     }
     return type;
@@ -68,13 +75,14 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
     List<String> examples = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
-      String example = HtmlHelper.getText(doc, "div[class=e]", i);
+      String example = HtmlHelper.getText(doc, "div.e", i);
       if (example.isEmpty() && i == 0) {
         return Constants.DICT_NO_EXAMPLE;
       } else if (example.isEmpty()) {
         break;
       } else {
-        example = example.replaceAll(word, "{{c1::" + word + "}}");
+        word = word.toLowerCase();
+        example = example.toLowerCase().replaceAll(word, "{{c1::" + word + "}}");
         examples.add(example);
       }
     }
@@ -86,7 +94,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getPhonetic() {
 
     if (phonetic == null) {
-      phonetic = HtmlHelper.getText(doc, "div[class=p5l fl cB]", 0);
+      phonetic = HtmlHelper.getText(doc, "div.p5l.fl.cB", 0);
     }
     return phonetic;
   }
@@ -94,7 +102,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getImage(String username, String selector) {
 
-    return "<a href=\"https://www.google.com.vn/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
         + "\" style=\"font-size: 15px; color: blue\">Images for this word</a>";
   }
 
@@ -120,10 +128,10 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    List<Element> meanGroups = HtmlHelper.getElements(doc, "div[id*=partofspeech]");
+    Elements meanGroups = doc.select("div[id*=partofspeech]");
 
     for (Element meanGroup : meanGroups) {
-      List<Element> meanElements = meanGroup.getElementsByTag("div");
+      Elements meanElements = meanGroup.getElementsByTag("div");
       int meanCount = meanGroup.getElementsByClass("m").size();
 
       Meaning meaning = new Meaning();

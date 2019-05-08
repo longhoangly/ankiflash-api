@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -44,18 +45,28 @@ public class HtmlHelper {
     return document;
   }
 
-  public static Elements getElements(Document doc, String selector) {
-    return doc.select(selector);
-  }
-
   public static Element getElement(Document doc, String selector, int index) {
     Elements elements = doc.select(selector);
+    return elements.size() - index > 0 ? elements.get(index) : null;
+  }
+
+  public static Element getElement(Element element, String selector, int index) {
+    Elements elements = element.select(selector);
     return elements.size() - index > 0 ? elements.get(index) : null;
   }
 
   public static String getText(Document doc, String selector, int index) {
     Element element = getElement(doc, selector, index);
     return element != null ? element.text() : "";
+  }
+
+  public static List<String> getTexts(Document doc, String selector) {
+    Elements elements = doc.select(selector);
+    List<String> texts = new ArrayList<>();
+    for (Element element : elements) {
+      texts.add(element.text());
+    }
+    return texts;
   }
 
   public static String getInnerHtml(Document doc, String selector, int index) {
@@ -79,6 +90,9 @@ public class HtmlHelper {
       } else {
         connection = site.openConnection();
       }
+      connection.addRequestProperty("User-Agent", "Mozilla/5.0 Gecko/20100101 Firefox/47.0");
+      connection.setConnectTimeout(TheFlashProperties.CONNECTION_TIMEOUT);
+      connection.setReadTimeout(TheFlashProperties.READ_TIMEOUT);
       try (InputStream in = connection.getInputStream()) {
         Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
       }

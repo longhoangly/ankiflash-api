@@ -96,7 +96,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     card.setExample(oxfordDict.getExample());
     card.setPron("BrE " + oxfordDict.getPron(username, "div.pron-uk")
         + " NAmE " + oxfordDict.getPron(username, "div.pron-us"));
-    card.setImage(oxfordDict.getImage(username, "a[class=topic]"));
+    card.setImage(oxfordDict.getImage(username, "a.topic"));
     card.setTag(oxfordDict.getTag());
     card.setStatus(Status.SUCCESS);
     card.setComment(Constants.DICT_SUCCESS);

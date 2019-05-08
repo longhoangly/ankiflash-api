@@ -3,6 +3,7 @@ package theflash.flashcard.service.impl.dictionary;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.HtmlHelper;
 import theflash.flashcard.utils.Meaning;
@@ -28,23 +29,24 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isWordingCorrect() {
 
-    boolean isWordingCorrect = true;
     String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.DICT_CAMBRIDGE_SPELLING_WRONG)) {
-      isWordingCorrect = false;
+      return false;
     }
+
     String word = HtmlHelper.getText(doc, "span.headword>span", 0);
     if (word.isEmpty()) {
-      isWordingCorrect = false;
+      return false;
     }
-    return isWordingCorrect;
+
+    return true;
   }
 
   @Override
   public String getWordType() {
 
     if (type == null) {
-      type = "(" + HtmlHelper.getText(doc, "span[class=pos]", 0) + ")";
+      type = "(" + HtmlHelper.getText(doc, "span.pos", 0) + ")";
     }
     return type.isEmpty() ? "" : type;
   }
@@ -57,8 +59,8 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getPhonetic() {
     if (phonetic == null) {
-      String phoneticBrE = HtmlHelper.getText(doc, "span[class=pron]", 0);
-      String phoneticNAmE = HtmlHelper.getText(doc, "span[class=pron]", 1);
+      String phoneticBrE = HtmlHelper.getText(doc, "span.pron", 0);
+      String phoneticNAmE = HtmlHelper.getText(doc, "span.pron", 1);
       phonetic = String.format("%1$s %2$s", phoneticBrE, phoneticNAmE);
     }
     return phonetic;
@@ -81,14 +83,14 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    List<Element> headerGroups = HtmlHelper.getElements(doc, "div[class*=entry-body__el]");
+    Elements headerGroups = doc.select("div[class*=entry-body__el]");
     for (Element headerGroup : headerGroups) {
       // Word Type Header
       Meaning meaning = new Meaning();
       Element wordTypeHeader = headerGroup.selectFirst(".pos-header");
       if (wordTypeHeader != null) {
         List<String> headerTexts = new ArrayList<>();
-        List<Element> elements = wordTypeHeader.select(".pos,.pron");
+        Elements elements = wordTypeHeader.select(".pos,.pron");
         for (Element element : elements) {
           headerTexts.add(element.text());
         }
@@ -97,7 +99,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
       }
 
       List<String> examples;
-      List<Element> meanGroups = headerGroup.select("div.sense-block");
+      Elements meanGroups = headerGroup.select("div.sense-block");
       for (Element meanGroup : meanGroups) {
         // Header
         meaning = new Meaning();
@@ -108,7 +110,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
         }
 
         // Meaning
-        List<Element> meaningElements = meanGroup.select("div[class*=def-block]");
+        Elements meaningElements = meanGroup.select("div[class*=def-block]");
         for (Element meaningElem : meaningElements) {
           meaning = new Meaning();
           meaning.setMeaning(meaningElem.selectFirst("b.def").text());
