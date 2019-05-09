@@ -92,12 +92,13 @@ public class CardController {
     List<Card> cards = cardService.generateCards(words, translation, username);
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.SUCCESS) == 0) {
-        IOUtility.write(ankiDir + "/cards.csv", card.getContent());
+        IOUtility.write(ankiDir + Constants.DICT_DECK, card.getContent());
       } else {
-        IOUtility.write(ankiDir + "/failed_words.csv", card.getWord() + " => " + card.getStatus() + "\n");
+        IOUtility.write(ankiDir + "/failures.csv", card.getWord() + " => " + card.getStatus() + "\n");
       }
     }
 
+    IOUtility.write(ankiDir + Constants.DICT_LANGUAGE, translation.getSource() + "-" + translation.getTarget() + "\n");
     return ResponseEntity.ok().body(cards);
   }
 

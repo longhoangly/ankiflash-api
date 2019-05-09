@@ -1,5 +1,6 @@
 package theflash.flashcard.service.impl.dictionary;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.HtmlHelper;
 import theflash.flashcard.utils.Meaning;
 import theflash.flashcard.utils.Translation;
-import theflash.utility.IOUtility;
+import theflash.utility.TheFlashProperties;
 
 public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
 
@@ -98,10 +99,16 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     if (pro_link.isEmpty()) {
       return "";
     }
-    String pro_name = pro_link.split("/")[pro_link.split("/").length - 1];
-    String output = Paths.get(username, Constants.ANKI_DIR_SOUND, pro_name).toString();
-    IOUtility.createDirs(Paths.get(username, Constants.ANKI_DIR_SOUND).toString());
-    HtmlHelper.download(pro_link, output);
+
+    String[] pro_link_els = pro_link.split("/");
+    String pro_name = pro_link_els[pro_link_els.length - 1];
+
+    File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
+    if (dir.exists()) {
+      String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, pro_name).toString();
+      HtmlHelper.download(pro_link, output);
+    }
+
     return "[sound:" + pro_name + "]";
   }
 
