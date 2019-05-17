@@ -79,7 +79,7 @@ public class HtmlHelper {
     return element != null ? element.attr(attr) : "";
   }
 
-  public static void download(String url, String target) {
+  public static boolean download(String url, String target) {
     try {
       URL site = new URL(url);
       URLConnection connection;
@@ -93,12 +93,15 @@ public class HtmlHelper {
       connection.addRequestProperty("User-Agent", "Mozilla/5.0 Gecko/20100101 Firefox/47.0");
       connection.setConnectTimeout(TheFlashProperties.CONNECTION_TIMEOUT);
       connection.setReadTimeout(TheFlashProperties.READ_TIMEOUT);
-      try (InputStream in = connection.getInputStream()) {
-        Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
-      }
+
+      InputStream in = connection.getInputStream();
+      Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
       logger.error("Exception Occurred: ", e);
+      return false;
     }
+
+    return true;
   }
 
   public static String buildExample(List<String> examples) {

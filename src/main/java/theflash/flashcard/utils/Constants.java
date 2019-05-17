@@ -3,9 +3,9 @@ package theflash.flashcard.utils;
 public class Constants {
 
   // ANKI FILES
-  public static String DICT_DECK = "ankiDeck.csv";
-  public static String DICT_LANGUAGE = "Language.csv";
-  public static String DICT_PNG = "anki.png";
+  public static String ANKI_DECK = "ankiDeck.csv";
+  public static String ANKI_FAILURE = "failures.csv";
+  public static String ANKI_LANGUAGE = "Language.csv";
 
   // ANKI MODELS
   public static String ANKI_GENERATOR_SINGLE_FORM_ABC = "AnkiGeneratorSingleFormABC.apkg";

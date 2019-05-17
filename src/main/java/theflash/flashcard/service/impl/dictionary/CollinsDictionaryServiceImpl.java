@@ -103,13 +103,14 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     String[] pro_link_els = pro_link.split("/");
     String pro_name = pro_link_els[pro_link_els.length - 1];
 
+    boolean isSuccess = false;
     File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
       String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, pro_name).toString();
-      HtmlHelper.download(pro_link, output);
+      isSuccess = HtmlHelper.download(pro_link, output);
     }
 
-    return "[sound:" + pro_name + "]";
+    return isSuccess ? "[sound:" + pro_name + "]" : "";
   }
 
   @Override

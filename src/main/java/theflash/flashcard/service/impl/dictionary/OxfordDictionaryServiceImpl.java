@@ -89,22 +89,25 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getImage(String username, String selector) {
 
+    String google_image = "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+        + "\" style=\"font-size: 15px; color: blue\">Search images by the word.</a>";
+
     String img_link = HtmlHelper.getAttribute(doc, selector, 0, "href");
     if (img_link.isEmpty()) {
-      return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
-          + "\" style=\"font-size: 15px; color: blue\">Search images by the word.</a>";
+      return google_image;
     }
 
     String[] img_link_els = img_link.split("/");
     String img_name = img_link_els[img_link_els.length - 1];
 
+    boolean isSuccess = false;
     File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
       String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, img_name).toString();
-      HtmlHelper.download(img_link, output);
+      isSuccess = HtmlHelper.download(img_link, output);
     }
 
-    return "<img src=\"" + img_name + "\"/>";
+    return isSuccess ? "<img src=\"" + img_name + "\"/>" : google_image;
   }
 
   @Override
@@ -118,13 +121,14 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     String[] pro_link_els = pro_link.split("/");
     String pro_name = pro_link_els[pro_link_els.length - 1];
 
+    boolean isSuccess = false;
     File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
       String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, pro_name).toString();
-      HtmlHelper.download(pro_link, output);
+      isSuccess = HtmlHelper.download(pro_link, output);
     }
 
-    return "[sound:" + pro_name + "]";
+    return isSuccess ? "[sound:" + pro_name + "]" : "";
   }
 
   @Override
