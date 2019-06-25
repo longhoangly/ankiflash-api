@@ -13,7 +13,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     this.translation = translation;
 
     boolean isConnectionEstablished = false;
-    String url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN, word);
+    String url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_TD, word);
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
       isConnectionEstablished = true;

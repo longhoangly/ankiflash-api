@@ -18,7 +18,16 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
     this.translation = translation;
 
     boolean isConnectionEstablished = false;
-    String url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN, word);
+    String url;
+    if (translation.equals(Translation.EN_CN_TD)) {
+      url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_TD, word);
+    } else if (translation.equals(Translation.EN_CN_SP)) {
+      url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_SP, word);
+    } else if (translation.equals(Translation.EN_FR)) {
+      url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_FR, word);
+    } else {
+      url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_JP, word);
+    }
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
       isConnectionEstablished = true;
@@ -34,7 +43,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
       return false;
     }
 
-    String word = HtmlHelper.getText(doc, "span.headword>span", 0);
+    String word = HtmlHelper.getText(doc, "span.headword>span,.hw", 0);
     if (word.isEmpty()) {
       return false;
     }
@@ -87,7 +96,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
     for (Element headerGroup : headerGroups) {
       // Word Type Header
       Meaning meaning = new Meaning();
-      Element wordTypeHeader = headerGroup.selectFirst(".pos-header");
+      Element wordTypeHeader = headerGroup.selectFirst(".pos-header,div[class*=di-head]");
       if (wordTypeHeader != null) {
         List<String> headerTexts = new ArrayList<>();
         Elements elements = wordTypeHeader.select(".pos,.pron");
@@ -105,7 +114,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
         meaning = new Meaning();
         Element header = meanGroup.selectFirst("h3");
         if (header != null) {
-          meaning.setWordType(meanGroup.selectFirst("h3").text());
+          meaning.setWordType(header.text());
           meanings.add(meaning);
         }
 
@@ -113,7 +122,10 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
         Elements meaningElements = meanGroup.select("div[class*=def-block]");
         for (Element meaningElem : meaningElements) {
           meaning = new Meaning();
-          meaning.setMeaning(meaningElem.selectFirst("b.def").text());
+          Element def = meaningElem.selectFirst("b.def");
+          if (def != null) {
+            meaning.setMeaning(def.text());
+          }
 
           examples = new ArrayList<>();
           for (Element element : meaningElem.select(".eg,.trans")) {

@@ -46,8 +46,11 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
       card.setMeaning(oxfordDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, oxfordDict.getDictionaryName()));
 
-      //English to Chinese
-    } else if (translation.equals(Translation.EN_CN)) {
+      //English to Chinese/French/Japanese
+    } else if (translation.equals(Translation.EN_CN_TD)
+        || translation.equals(Translation.EN_CN_SP)
+        || translation.equals(Translation.EN_JP)
+        || translation.equals(Translation.EN_FR)) {
 
       if (!oxfordDict.isConnectionEstablished(word, translation) ||
           !cambridgeDict.isConnectionEstablished(word, translation)) {

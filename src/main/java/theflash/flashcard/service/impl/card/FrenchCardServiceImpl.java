@@ -48,6 +48,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));
 
+      // French to English
     } else if (translation.equals(Translation.FR_EN)) {
 
       if (!collinsDict.isConnectionEstablished(word, translation)) {

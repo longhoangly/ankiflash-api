@@ -154,7 +154,8 @@ public class CardController {
 
       cardService = new FrenchCardServiceImpl();
 
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE)) {
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE_TD) || sourceLanguage
+        .equalsIgnoreCase(Constants.CHINESE_SP)) {
 
       cardService = new ChineseCardServiceImpl();
 

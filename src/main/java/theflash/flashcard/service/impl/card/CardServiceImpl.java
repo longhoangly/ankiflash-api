@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.service.CardService;
-import theflash.flashcard.utils.Constants;
 import theflash.flashcard.utils.Translation;
 import theflash.utility.IOUtility;
 import theflash.utility.TheFlashProperties;
-import theflash.utility.exception.BadRequestException;
 
 public abstract class CardServiceImpl implements CardService {
 
@@ -32,25 +30,30 @@ public abstract class CardServiceImpl implements CardService {
   public List<Translation> getSupportedLanguages() {
 
     List<Translation> translations = new ArrayList<>();
+
+    // ENGLISH
+    translations.add(Translation.EN_EN);
+    translations.add(Translation.EN_VN);
+    translations.add(Translation.EN_CN_TD);
+    translations.add(Translation.EN_CN_SP);
+    translations.add(Translation.EN_FR);
+    translations.add(Translation.EN_JP);
+
+    // VIETNAMESE
+    translations.add(Translation.VN_EN);
+    translations.add(Translation.VN_FR);
+    // translations.add(Translation.VN_JP);
+
+    // FRENCH
+    translations.add(Translation.FR_EN);
+    translations.add(Translation.FR_VN);
+
+    // JAPANESE
+    // translations.add(Translation.JP_EN);
+    // translations.add(Translation.JP_VN);
+
     // CHINESE
-    translations.add(new Translation(Constants.CHINESE, Constants.ENGLISH));
-    translations.add(new Translation(Constants.CHINESE, Constants.VIETNAMESE));
-    //ENGLISH
-    translations.add(new Translation(Constants.ENGLISH, Constants.ENGLISH));
-    translations.add(new Translation(Constants.ENGLISH, Constants.CHINESE));
-    translations.add(new Translation(Constants.ENGLISH, Constants.VIETNAMESE));
-    //FRENCH
-    translations.add(new Translation(Constants.FRENCH, Constants.ENGLISH));
-    translations.add(new Translation(Constants.FRENCH, Constants.VIETNAMESE));
-    //JAPANESE
-    translations.add(new Translation(Constants.JAPANESE, Constants.ENGLISH));
-    translations.add(new Translation(Constants.JAPANESE, Constants.VIETNAMESE));
-    //SPANISH
-    translations.add(new Translation(Constants.SPANISH, Constants.ENGLISH));
-    translations.add(new Translation(Constants.SPANISH, Constants.VIETNAMESE));
-    //VIETNAMESE
-    translations.add(new Translation(Constants.VIETNAMESE, Constants.ENGLISH));
-    translations.add(new Translation(Constants.VIETNAMESE, Constants.FRENCH));
+    // SPANISH
 
     return translations;
   }

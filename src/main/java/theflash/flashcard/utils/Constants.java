@@ -14,19 +14,18 @@ public class Constants {
   public static String ENGLISH = "English";
   public static String FRENCH = "French";
   public static String VIETNAMESE = "Vietnamese";
-  public static String CHINESE = "Chinese";
+  public static String CHINESE_TD = "Chinese (Traditional)";
+  public static String CHINESE_SP = "Chinese (Simplified)";
   public static String JAPANESE = "Japanese";
   public static String SPANISH = "Spanish";
 
   // CONSTANTS
   public static String TAB = "\t";
-  public static String CR = "\r";
-  public static String LF = "\n";
 
   // OXFORD
   public static String DICT_OXFORD_SPELLING_WRONG_1 = "Did you spell it correctly?";
   public static String DICT_OXFORD_SPELLING_WRONG_2 = "Oxford Learner's Dictionaries | Find the meanings";
-  public static String DICT_OXFORD_URL_EN_EN = "http://www.oxfordlearnersdictionaries.com/search/english/direct/?q=%1$s";
+  public static String DICT_OXFORD_URL_EN_EN = "https://www.oxfordlearnersdictionaries.com/search/english/direct/?q=%1$s";
 
   // LACVIET
   public static String DICT_LACVIET_SPELLING_WRONG = "Dữ liệu đang được cập nhật";
@@ -36,8 +35,11 @@ public class Constants {
   public static String DICT_LACVIET_URL_FR_VN = "http://tratu.coviet.vn/tu-dien-lac-viet.aspx?learn=hoc-tieng-phap&t=F-V&k=%1$s";
 
   // CAMBRIDGE
-  public static String DICT_CAMBRIDGE_SPELLING_WRONG = "你拼写正确了吗？";
-  public static String DICT_CAMBRIDGE_URL_EN_CN = "http://dictionary.cambridge.org/zhs/搜索/english-chinese-simplified/direct/?q=%1$s";
+  public static String DICT_CAMBRIDGE_SPELLING_WRONG = "Did you spell it correctly?";
+  public static String DICT_CAMBRIDGE_URL_EN_CN_TD = "https://dictionary.cambridge.org/search/english-chinese-traditional/direct/?q=%1$s";
+  public static String DICT_CAMBRIDGE_URL_EN_CN_SP = "https://dictionary.cambridge.org/search/english-chinese-simplified/direct/?q=%1$s";
+  public static String DICT_CAMBRIDGE_URL_EN_FR = "https://dictionary.cambridge.org/search/english-french/direct/?q=%1$s";
+  public static String DICT_CAMBRIDGE_URL_EN_JP = "https://dictionary.cambridge.org/search/english-japanese/direct/?q=%1$s";
 
   // COLLINS
   public static String DICT_COLLINS_SPELLING_WRONG = "Sorry, no results for";
