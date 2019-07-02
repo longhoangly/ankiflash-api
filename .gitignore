@@ -1,6 +1,7 @@
-target
+.idea
 AnkiFlashcards
+target
 build
 .gradle
-.idea
+gradle
 out
