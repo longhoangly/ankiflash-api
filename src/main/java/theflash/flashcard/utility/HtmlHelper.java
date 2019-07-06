@@ -1,5 +1,6 @@
-package theflash.flashcard.utils;
+package theflash.flashcard.utility;
 
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -29,7 +30,23 @@ public class HtmlHelper {
     return String.format(dictUrl, word);
   }
 
+  public static Document getJDictDoc(String url, String body) {
+
+    Document document;
+    if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
+      Proxy proxy = new Proxy(Type.HTTP,
+          new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
+      JsonObject json = JsonHelper.postRequest(url, body, proxy);
+      document = Jsoup.parse(json.get("Content").getAsString());
+    } else {
+      JsonObject json = JsonHelper.postRequest(url, body);
+      document = Jsoup.parse(json.get("Content").getAsString());
+    }
+    return document;
+  }
+
   public static Document getDocument(String url) {
+
     Document document = null;
     try {
       if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {

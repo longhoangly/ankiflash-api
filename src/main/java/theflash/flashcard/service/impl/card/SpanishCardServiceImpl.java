@@ -5,8 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import theflash.flashcard.dto.Card;
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Translation;
 
 public class SpanishCardServiceImpl extends CardServiceImpl {
 
@@ -16,8 +15,9 @@ public class SpanishCardServiceImpl extends CardServiceImpl {
   public Card generateCard(String word, Translation translation, String username) {
     Card card = new Card(word);
 
-    logger.debug("Word = " + word);
-    logger.debug("Translation = " + translation);
+    logger.info("Word = " + word);
+    logger.info("Source = " + translation.getSource());
+    logger.info("Target = " + translation.getTarget());
 
     return card;
   }

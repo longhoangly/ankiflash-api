@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import theflash.utility.exception.BadRequestException;
 import theflash.security.dto.User;
 import theflash.security.payload.SignUpRequest;
 import theflash.security.service.UserService;
 import theflash.security.utility.PassEncoding;
 import theflash.security.utility.Roles;
+import theflash.utility.exception.BadRequestException;
 
 @RestController
 @RequestMapping("/api/admin")

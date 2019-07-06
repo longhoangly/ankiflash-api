@@ -30,9 +30,9 @@ import theflash.flashcard.service.impl.card.FrenchCardServiceImpl;
 import theflash.flashcard.service.impl.card.JapaneseCardServiceImpl;
 import theflash.flashcard.service.impl.card.SpanishCardServiceImpl;
 import theflash.flashcard.service.impl.card.VietnameseCardServiceImpl;
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.Status;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.Status;
+import theflash.flashcard.utility.Translation;
 import theflash.security.service.UserService;
 import theflash.utility.IOUtility;
 import theflash.utility.TheFlashProperties;
@@ -154,8 +154,8 @@ public class CardController {
 
       cardService = new FrenchCardServiceImpl();
 
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE_TD) || sourceLanguage
-        .equalsIgnoreCase(Constants.CHINESE_SP)) {
+    } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE_TD)
+        || sourceLanguage.equalsIgnoreCase(Constants.CHINESE_SP)) {
 
       cardService = new ChineseCardServiceImpl();
 

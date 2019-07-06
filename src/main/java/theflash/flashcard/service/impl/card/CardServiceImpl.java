@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.service.CardService;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Translation;
 import theflash.utility.IOUtility;
 import theflash.utility.TheFlashProperties;
 
@@ -42,15 +42,15 @@ public abstract class CardServiceImpl implements CardService {
     // VIETNAMESE
     translations.add(Translation.VN_EN);
     translations.add(Translation.VN_FR);
-    // translations.add(Translation.VN_JP);
+    translations.add(Translation.VN_JP);
 
     // FRENCH
     translations.add(Translation.FR_EN);
     translations.add(Translation.FR_VN);
 
     // JAPANESE
-    // translations.add(Translation.JP_EN);
-    // translations.add(Translation.JP_VN);
+    translations.add(Translation.JP_EN);
+    translations.add(Translation.JP_VN);
 
     // CHINESE
     // SPANISH

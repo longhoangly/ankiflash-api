@@ -1,7 +1,7 @@
 package theflash.flashcard.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import theflash.flashcard.utils.Status;
+import theflash.flashcard.utility.Status;
 
 public class Card {
 

@@ -1,4 +1,4 @@
-package theflash.flashcard.utils;
+package theflash.flashcard.utility;
 
 public class Constants {
 
@@ -23,8 +23,8 @@ public class Constants {
   public static String TAB = "\t";
 
   // OXFORD
-  public static String DICT_OXFORD_SPELLING_WRONG_1 = "Did you spell it correctly?";
-  public static String DICT_OXFORD_SPELLING_WRONG_2 = "Oxford Learner's Dictionaries | Find the meanings";
+  public static String DICT_OXFORD_SPELLING_WRONG = "Did you spell it correctly?";
+  public static String DICT_OXFORD_WORD_NOT_FOUND = "Oxford Learner's Dictionaries | Find the meanings";
   public static String DICT_OXFORD_URL_EN_EN = "https://www.oxfordlearnersdictionaries.com/search/english/direct/?q=%1$s";
 
   // LACVIET
@@ -44,6 +44,19 @@ public class Constants {
   // COLLINS
   public static String DICT_COLLINS_SPELLING_WRONG = "Sorry, no results for";
   public static String DICT_COLLINS_URL_FR_EN = "https://www.collinsdictionary.com/search/?dictCode=french-english&q=%1$s";
+
+  // JISHO
+  public static String DICT_JISHO_SPELLING_WRONG = "";
+  public static String DICT_JISHO_URL_JP_EN = "";
+
+  // JDICT
+  public static String DICT_JDICT_URL_VN_JP = "https://j-dict.com/postrequest.ashx";
+  public static String DICT_JDICT_URL_JP_VN = "https://j-dict.com/postrequest.ashx";
+
+  // WORD REFERENCE
+  public static String DICT_WORD_REFERENCE_SPELLING_WRONG = "";
+  public static String DICT_WORD_REFERENCE_URL_EN_SP = "";
+  public static String DICT_WORD_REFERENCE_URL_SP_EN = "";
 
   // OTHERS
   public static String DICT_SUCCESS = "SUCCESS";

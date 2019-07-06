@@ -1,43 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration monitorInterval="60">
-  <Properties>
-    <Property name="log-path">logs</Property>
-    <!--change log-path-->
-  </Properties>
+<Configuration>
   <Appenders>
-    <Console name="Console-Appender" target="SYSTEM_OUT">
-      <PatternLayout>
-        <pattern>
-          [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
-        </pattern>>
-      </PatternLayout>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout
+        pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable"/>
     </Console>
-    <File name="App-File-Appender" fileName="app_log.log">
+
+    <RollingFile name="RollingFile"
+      fileName="./logs/spring-boot-logger-log4j2.log"
+      filePattern="./logs/$${date:yyyy-MM}/spring-boot-logger-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz">
       <PatternLayout>
-        <pattern>
-          [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
-        </pattern>
+        <pattern>%d %p %C{1.} [%t] %m%n</pattern>
       </PatternLayout>
-    </File>
-    <File name="SpringBoot-File-Appender" fileName="${log-path}/theflash.log">
-      <PatternLayout>
-        <pattern>
-          [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
-        </pattern>
-      </PatternLayout>
-    </File>
+      <Policies>
+        <!-- rollover on startup, daily and when the file reaches 10 MegaBytes -->
+        <OnStartupTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="10 MB"/>
+        <TimeBasedTriggeringPolicy/>
+      </Policies>
+    </RollingFile>
   </Appenders>
+
   <Loggers>
-    <Logger name="org.springframework.web" level="info" additivity="false">
-      <AppenderRef ref="SpringBoot-File-Appender"/>
-      <AppenderRef ref="Console-Appender"/>
-    </Logger>
-    <Logger name="tr.com.jowl" level="info" additivity="false">
-      <AppenderRef ref="App-File-Appender"/>
-      <AppenderRef ref="Console-Appender"/>
-    </Logger>
-    <Root>
-      <AppenderRef ref="Console-Appender"/>
+    <!-- LOG everything at INFO level -->
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="RollingFile"/>
     </Root>
+
+    <!-- LOG "com.ankiflash*" at TRACE level -->
+    <Logger name="com.ankiflash" level="info"></Logger>
   </Loggers>
+
 </Configuration>

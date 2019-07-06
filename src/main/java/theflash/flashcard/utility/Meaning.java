@@ -1,4 +1,4 @@
-package theflash.flashcard.utils;
+package theflash.flashcard.utility;
 
 import java.util.List;
 

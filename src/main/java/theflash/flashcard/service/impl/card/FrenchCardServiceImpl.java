@@ -8,9 +8,9 @@ import theflash.flashcard.dto.Card;
 import theflash.flashcard.service.DictionaryService;
 import theflash.flashcard.service.impl.dictionary.CollinsDictionaryServiceImpl;
 import theflash.flashcard.service.impl.dictionary.LacVietDictionaryServiceImpl;
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.Status;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.Status;
+import theflash.flashcard.utility.Translation;
 
 public class FrenchCardServiceImpl extends CardServiceImpl {
 
@@ -24,6 +24,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
     DictionaryService collinsDict = new CollinsDictionaryServiceImpl();
 
     logger.info("Word = " + word);
+    logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
     // French to Vietnamese
@@ -43,7 +44,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
       card.setPron(lacVietDict.getPron(username, "embed"));
-      card.setImage(lacVietDict.getImage("any", "any"));
+      card.setImage(lacVietDict.getImage("", ""));
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));
@@ -65,7 +66,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(collinsDict.getPhonetic());
       card.setExample(collinsDict.getExample());
       card.setPron(collinsDict.getPron(username, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr"));
-      card.setImage(collinsDict.getImage("any", "any"));
+      card.setImage(collinsDict.getImage("", ""));
       card.setTag(collinsDict.getTag());
       card.setMeaning(collinsDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));

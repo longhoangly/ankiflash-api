@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.HtmlHelper;
-import theflash.flashcard.utils.Meaning;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.HtmlHelper;
+import theflash.flashcard.utility.Meaning;
+import theflash.flashcard.utility.Translation;
 import theflash.utility.TheFlashProperties;
 
 public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {

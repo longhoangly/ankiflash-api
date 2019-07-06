@@ -6,13 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import theflash.flashcard.utility.Constants;
 import theflash.flashcard.utility.HtmlHelper;
 import theflash.flashcard.utility.Meaning;
 import theflash.flashcard.utility.Translation;
 import theflash.utility.TheFlashProperties;
 
-public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
+public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
+
+  private static final Logger logger = LoggerFactory.getLogger(JDictDictionaryServiceImpl.class);
 
   @Override
   public boolean isConnectionEstablished(String word, Translation translation) {
@@ -22,16 +26,15 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
     boolean isConnectionEstablished = false;
     String url = "";
-    if (translation.equals(Translation.VN_EN)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_VN_EN, word);
-    } else if (translation.equals(Translation.VN_FR)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_VN_FR, word);
-    } else if (translation.equals(Translation.EN_VN)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_EN_VN, word);
-    } else if (translation.equals(Translation.FR_VN)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_FR_VN, word);
+    if (translation.equals(Translation.VN_JP)) {
+      url = Constants.DICT_JDICT_URL_VN_JP;
+    } else if (translation.equals(Translation.JP_VN)) {
+      url = Constants.DICT_JDICT_URL_VN_JP;
     }
-    doc = HtmlHelper.getDocument(url);
+
+    String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
+    logger.info(urlParameters);
+    doc = HtmlHelper.getJDictDoc(url, urlParameters);
     if (doc != null) {
       isConnectionEstablished = true;
     }
@@ -41,13 +44,13 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isWordingCorrect() {
 
-    Elements words = doc.select("div.w.fl");
-    if (words.isEmpty()) {
+    Elements elements = doc.select("#txtKanji");
+    if (elements.isEmpty()) {
       return false;
     }
 
-    String warning = HtmlHelper.getText(doc, "div.i.p10", 0);
-    if (warning.contains(Constants.DICT_LACVIET_SPELLING_WRONG)) {
+    elements = doc.select("dict-result-word-list");
+    if (elements.isEmpty()) {
       return false;
     }
 
@@ -58,16 +61,12 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getWordType() {
 
     if (type == null) {
-      Element element = HtmlHelper.getElement(doc, "div.m5t.p10lr", 0);
-      type = element != null ? element.text().replace("|Tất cả", "").replace("|Từ liên quan", "") : "";
-
-      if (type.isEmpty()) {
-        List<String> elements = HtmlHelper.getTexts(doc, "div.m5t.p10lr");
-        type = elements.size() > 0 ? String.join(" | ", elements) : "";
-      }
+      Element element = HtmlHelper.getElement(doc, "label[class*=word-type]", 0);
+      type = element != null ? element.text() : "";
 
       type = type.isEmpty() ? "" : "(" + type + ")";
     }
+
     return type;
   }
 
@@ -76,7 +75,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
     List<String> examples = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
-      String example = HtmlHelper.getText(doc, "div.e", i);
+      String example = HtmlHelper.getText(doc, "ul.ul-disc>li", i);
       if (example.isEmpty() && i == 0) {
         return Constants.DICT_NO_EXAMPLE;
       } else if (example.isEmpty()) {
@@ -95,7 +94,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getPhonetic() {
 
     if (phonetic == null) {
-      phonetic = HtmlHelper.getText(doc, "div.p5l.fl.cB", 0);
+      phonetic = HtmlHelper.getText(doc, "span.romaji", 0);
     }
     return phonetic;
   }
@@ -103,19 +102,36 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getImage(String username, String selector) {
 
-    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+    String google_image = "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
         + "\" style=\"font-size: 15px; color: blue\">Images for this word</a>";
+
+    String img_link = HtmlHelper.getAttribute(doc, "a[class*=img]", 0, "href");
+    if (img_link.isEmpty()) {
+      return google_image;
+    }
+
+    img_link = img_link.replaceFirst("\\?w=.*$", "");
+    String[] img_link_els = img_link.split("/");
+    String img_name = img_link_els[img_link_els.length - 1];
+
+    boolean isSuccess = false;
+    File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
+    if (dir.exists()) {
+      String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, img_name).toString();
+      isSuccess = HtmlHelper.download(img_link, output);
+    }
+
+    return isSuccess ? "<img src=\"" + img_name + "\"/>" : google_image;
   }
 
   @Override
   public String getPron(String username, String selector) {
 
-    String pro_link = HtmlHelper.getAttribute(doc, selector, 0, "flashvars");
+    String pro_link = HtmlHelper.getAttribute(doc, "a.sound", 0, "data-fn");
     if (pro_link.isEmpty()) {
       return "";
     }
 
-    pro_link = pro_link.replace("file=", "").replace("&autostart=false", "");
     String[] pro_link_els = pro_link.split("/");
     String pro_name = pro_link_els[pro_link_els.length - 1];
 
@@ -136,45 +152,31 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    Elements meanGroups = doc.select("div[id*=partofspeech]");
-
+    Elements meanGroups = doc.select("#word-detail-info");
     for (Element meanGroup : meanGroups) {
-      Elements meanElements = meanGroup.getElementsByTag("div");
-      int meanCount = meanGroup.getElementsByClass("m").size();
 
       Meaning meaning = new Meaning();
-      List<String> examples = new ArrayList<>();
-      boolean firstMeaning = true;
-
-      for (Element meanElem : meanElements) {
-        if (meanElem.hasClass("ub")) {
-          if (meanCount > 0) {
-            // has meaning => get text
-            meaning.setWordType(meanElem.text());
-          } else {
-            // only type => get inner html
-            meaning.setWordType(meanElem.html());
-          }
-        } else if (meanElem.hasClass("m")) {
-          // from the second meaning tag
-          if (!firstMeaning) {
-            meaning.setExamples(examples);
-            meanings.add(meaning);
-            // reset values
-            meaning = new Meaning();
-            examples = new ArrayList<>();
-          }
-
-          meaning.setMeaning(meanElem.text());
-          firstMeaning = false;
-        } else if (meanElem.hasClass("e") || meanElem.hasClass("em") ||
-            meanElem.hasClass("im") || meanElem.hasClass("id")) {
-          examples.add(meanElem.text());
-        }
+      Element wordType = HtmlHelper.getElement(meanGroup, "label[class*=word-type]", 0);
+      if (wordType != null) {
+        meaning.setWordType(wordType.text());
       }
 
-      meaning.setExamples(examples);
-      meanings.add(meaning);
+      Elements meanElements = meanGroup.select("ol.ol-decimal>li");
+      for (Element meanElem : meanElements) {
+        Element mean = HtmlHelper.getElement(meanElem, "span.nvmn-meaning", 0);
+        if (mean != null) {
+          meaning.setMeaning(wordType.text());
+        }
+
+        List<String> examples = new ArrayList<>();
+        Elements exampleElems = meanElem.select("ul.ul-disc>li");
+        for (Element exampleElem : exampleElems) {
+          examples.add(exampleElem.text());
+        }
+        if (!examples.isEmpty()) {
+          meaning.setExamples(examples);
+        }
+      }
     }
 
     return HtmlHelper.buildMeaning(word, type, phonetic, meanings);
@@ -182,6 +184,6 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getDictionaryName() {
-    return "Lac Viet Dictionary";
+    return "J-Dict Dictionary";
   }
 }

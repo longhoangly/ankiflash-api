@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.HtmlHelper;
-import theflash.flashcard.utils.Meaning;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.HtmlHelper;
+import theflash.flashcard.utility.Meaning;
+import theflash.flashcard.utility.Translation;
 
 public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 
@@ -18,14 +18,14 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
     this.translation = translation;
 
     boolean isConnectionEstablished = false;
-    String url;
+    String url = "";
     if (translation.equals(Translation.EN_CN_TD)) {
       url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_TD, word);
     } else if (translation.equals(Translation.EN_CN_SP)) {
       url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_SP, word);
     } else if (translation.equals(Translation.EN_FR)) {
       url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_FR, word);
-    } else {
+    } else if (translation.equals(Translation.EN_JP)) {
       url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_JP, word);
     }
     doc = HtmlHelper.getDocument(url);
@@ -55,9 +55,10 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getWordType() {
 
     if (type == null) {
-      type = "(" + HtmlHelper.getText(doc, "span.pos", 0) + ")";
+      type = HtmlHelper.getText(doc, "span.pos", 0);
+      type = type.isEmpty() ? "" : "(" + type + ")";
     }
-    return type.isEmpty() ? "" : type;
+    return type;
   }
 
   @Override

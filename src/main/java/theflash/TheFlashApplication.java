@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.cors.CorsConfiguration;
@@ -20,13 +21,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class TheFlashApplication {
 
   private static final Logger logger = LoggerFactory.getLogger(TheFlashApplication.class);
+  private static ApplicationContext applicationContext;
 
   @Value("${spring.security.allowed.origins}")
   private String origins;
 
   public static void main(String[] args) {
-    SpringApplication.run(TheFlashApplication.class, args);
+    applicationContext = SpringApplication.run(TheFlashApplication.class, args);
     logger.info("TheFlashApplication Started");
+    displayAllBeans();
+  }
+
+  public static void displayAllBeans() {
+    String[] allBeanNames = applicationContext.getBeanDefinitionNames();
+    for (String beanName : allBeanNames) {
+      logger.info(beanName);
+    }
   }
 
   @Bean

@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.HtmlHelper;
-import theflash.flashcard.utils.Meaning;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.HtmlHelper;
+import theflash.flashcard.utility.Meaning;
+import theflash.flashcard.utility.Translation;
 import theflash.utility.TheFlashProperties;
 
 public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
@@ -33,8 +33,8 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isWordingCorrect() {
 
     String title = HtmlHelper.getText(doc, "title", 0);
-    if (title.contains(Constants.DICT_OXFORD_SPELLING_WRONG_1) ||
-        title.contains(Constants.DICT_OXFORD_SPELLING_WRONG_2)) {
+    if (title.contains(Constants.DICT_OXFORD_SPELLING_WRONG) ||
+        title.contains(Constants.DICT_OXFORD_WORD_NOT_FOUND)) {
       return false;
     }
 
@@ -50,9 +50,11 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getWordType() {
 
     if (type == null) {
-      type = "(" + HtmlHelper.getText(doc, "span.pos", 0) + ")";
+      type = HtmlHelper.getText(doc, "span.pos", 0);
+
+      type = type.isEmpty() ? "" : "(" + type + ")";
     }
-    return type.isEmpty() ? "" : type;
+    return type;
   }
 
   @Override

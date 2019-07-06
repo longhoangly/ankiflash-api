@@ -1,8 +1,10 @@
 package theflash.security.service;
 
 import java.util.Collection;
+import org.springframework.stereotype.Service;
 import theflash.security.dto.User;
 
+@Service
 public interface UserService {
 
   User save(User user);

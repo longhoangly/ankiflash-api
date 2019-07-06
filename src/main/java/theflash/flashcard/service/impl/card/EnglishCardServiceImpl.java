@@ -9,9 +9,9 @@ import theflash.flashcard.service.DictionaryService;
 import theflash.flashcard.service.impl.dictionary.CambridgeDictionaryServiceImpl;
 import theflash.flashcard.service.impl.dictionary.LacVietDictionaryServiceImpl;
 import theflash.flashcard.service.impl.dictionary.OxfordDictionaryServiceImpl;
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.Status;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.Status;
+import theflash.flashcard.utility.Translation;
 
 public class EnglishCardServiceImpl extends CardServiceImpl {
 
@@ -26,6 +26,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
 
     logger.info("Word = " + word);
+    logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
     //English to English

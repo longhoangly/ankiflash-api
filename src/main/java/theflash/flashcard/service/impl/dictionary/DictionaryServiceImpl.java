@@ -2,7 +2,7 @@ package theflash.flashcard.service.impl.dictionary;
 
 import org.jsoup.nodes.Document;
 import theflash.flashcard.service.DictionaryService;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Translation;
 
 public abstract class DictionaryServiceImpl implements DictionaryService {
 

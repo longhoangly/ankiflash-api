@@ -6,10 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.service.DictionaryService;
+import theflash.flashcard.service.impl.dictionary.JDictDictionaryServiceImpl;
 import theflash.flashcard.service.impl.dictionary.LacVietDictionaryServiceImpl;
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.Status;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.Status;
+import theflash.flashcard.utility.Translation;
 
 public class VietnameseCardServiceImpl extends CardServiceImpl {
 
@@ -20,13 +21,15 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
 
     Card card = new Card(word);
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
+    DictionaryService jDict = new JDictDictionaryServiceImpl();
 
     logger.info("Word = " + word);
+    logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
-    // Vietnamese to English
-    // Vietnamese to French
-    if (translation.equals(Translation.VN_EN) || translation.equals(Translation.VN_FR)) {
+    // Vietnamese to English/French
+    if (translation.equals(Translation.VN_EN)
+        || translation.equals(Translation.VN_FR)) {
 
       if (!lacVietDict.isConnectionEstablished(word, translation)) {
         card.setStatus(Status.CONNECTION_FAILED);
@@ -43,6 +46,32 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));
 
+      card.setExample(lacVietDict.getExample());
+      card.setPron(lacVietDict.getPron(username, "embed"));
+      card.setImage(lacVietDict.getImage("", ""));
+
+      // Vietnamese to Japanese
+    } else if (translation.equals(Translation.VN_JP)) {
+
+      if (!jDict.isConnectionEstablished(word, translation)) {
+        card.setStatus(Status.CONNECTION_FAILED);
+        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        return card;
+      } else if (!jDict.isWordingCorrect()) {
+        card.setStatus(Status.WORD_NOT_FOUND);
+        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        return card;
+      }
+
+      card.setWordType(jDict.getWordType());
+      card.setPhonetic(jDict.getPhonetic());
+      card.setMeaning(jDict.getMeaning());
+      card.setCopyright(String.format(Constants.DICT_COPYRIGHT, jDict.getDictionaryName()));
+
+      card.setExample(jDict.getExample());
+      card.setPron(jDict.getPron(username, ""));
+      card.setImage(jDict.getImage("", ""));
+
     } else {
       card.setStatus(Status.NOT_SUPPORTED_TRANSLATION);
       card.setComment(String.format(Constants.DICT_NOT_SUPPORTED_TRANSLATION,
@@ -50,9 +79,6 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       return card;
     }
 
-    card.setExample(lacVietDict.getExample());
-    card.setPron(lacVietDict.getPron(username, "embed"));
-    card.setImage(lacVietDict.getImage("any", "any"));
     card.setTag(lacVietDict.getTag());
     card.setStatus(Status.SUCCESS);
     card.setComment(Constants.DICT_SUCCESS);

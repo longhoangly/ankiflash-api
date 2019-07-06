@@ -1,8 +1,8 @@
 package theflash.flashcard.service.impl.dictionary;
 
-import theflash.flashcard.utils.Constants;
-import theflash.flashcard.utils.HtmlHelper;
-import theflash.flashcard.utils.Translation;
+import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.HtmlHelper;
+import theflash.flashcard.utility.Translation;
 
 public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
 
@@ -13,7 +13,7 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
     this.translation = translation;
 
     boolean isConnectionEstablished = false;
-    String url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_TD, word);
+    String url = HtmlHelper.lookupUrl(Constants.DICT_WORD_REFERENCE_URL_EN_SP, word);
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
       isConnectionEstablished = true;
@@ -26,7 +26,7 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
 
     boolean isWordingCorrect = true;
     String title = HtmlHelper.getText(doc, "title", 0);
-    if (title.contains(Constants.DICT_CAMBRIDGE_SPELLING_WRONG)) {
+    if (title.contains(Constants.DICT_WORD_REFERENCE_SPELLING_WRONG)) {
       isWordingCorrect = false;
     }
     String word = HtmlHelper.getText(doc, "span.headword>span", 0);

@@ -1,4 +1,4 @@
-package theflash.flashcard.utils;
+package theflash.flashcard.utility;
 
 public class Translation {
 
@@ -17,10 +17,10 @@ public class Translation {
   public static Translation FR_EN = new Translation(Constants.FRENCH, Constants.ENGLISH);
 
   public static Translation JP_EN = new Translation(Constants.JAPANESE, Constants.ENGLISH);
+  // TODO: these following translation are not ready!
   public static Translation JP_VN = new Translation(Constants.JAPANESE, Constants.VIETNAMESE);
 
   private String source;
-
   private String target;
 
   /**

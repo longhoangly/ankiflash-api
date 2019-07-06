@@ -15,11 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import theflash.counter.service.CounterService;
-import theflash.utility.TheFlashProperties;
-import theflash.utility.exception.BadRequestException;
 import theflash.security.dto.User;
-import theflash.security.utility.jwt.Generator;
-import theflash.security.utility.jwt.Validation;
 import theflash.security.payload.LoginRequest;
 import theflash.security.payload.LoginResponse;
 import theflash.security.payload.ResetPassRequest;
@@ -28,6 +24,10 @@ import theflash.security.service.EmailService;
 import theflash.security.service.UserService;
 import theflash.security.utility.PassEncoding;
 import theflash.security.utility.Roles;
+import theflash.security.utility.jwt.Generator;
+import theflash.security.utility.jwt.Validation;
+import theflash.utility.TheFlashProperties;
+import theflash.utility.exception.BadRequestException;
 
 @RestController
 @RequestMapping("/api/auth")

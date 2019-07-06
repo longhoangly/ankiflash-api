@@ -1,7 +1,9 @@
 package theflash.counter.service;
 
+import org.springframework.stereotype.Service;
 import theflash.counter.dto.Counter;
 
+@Service
 public interface CounterService {
 
   Counter save(Counter counter);
