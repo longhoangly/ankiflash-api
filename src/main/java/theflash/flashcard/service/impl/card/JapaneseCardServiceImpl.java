@@ -18,6 +18,8 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
   @Override
   public Card generateCard(String word, Translation translation, String username) {
 
+
+
     Card card = new Card(word);
     DictionaryService jDict = new JDictDictionaryServiceImpl();
 
@@ -45,7 +47,7 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
 
       card.setExample(jDict.getExample());
       card.setPron(jDict.getPron(username, ""));
-      card.setImage(jDict.getImage("", ""));
+      card.setImage(jDict.getImage(username, ""));
 
     } else {
       card.setStatus(Status.NOT_SUPPORTED_TRANSLATION);

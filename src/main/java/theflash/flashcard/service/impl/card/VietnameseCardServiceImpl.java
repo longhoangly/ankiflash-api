@@ -48,7 +48,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
 
       card.setExample(lacVietDict.getExample());
       card.setPron(lacVietDict.getPron(username, "embed"));
-      card.setImage(lacVietDict.getImage("", ""));
+      card.setImage(lacVietDict.getImage(username, ""));
+      card.setTag(lacVietDict.getTag());
 
       // Vietnamese to Japanese
     } else if (translation.equals(Translation.VN_JP)) {
@@ -70,7 +71,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
 
       card.setExample(jDict.getExample());
       card.setPron(jDict.getPron(username, ""));
-      card.setImage(jDict.getImage("", ""));
+      card.setImage(jDict.getImage(username, ""));
+      card.setTag(jDict.getTag());
 
     } else {
       card.setStatus(Status.NOT_SUPPORTED_TRANSLATION);
@@ -79,7 +81,6 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       return card;
     }
 
-    card.setTag(lacVietDict.getTag());
     card.setStatus(Status.SUCCESS);
     card.setComment(Constants.DICT_SUCCESS);
 

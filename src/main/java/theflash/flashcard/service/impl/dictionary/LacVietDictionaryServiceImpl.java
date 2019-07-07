@@ -20,8 +20,8 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     this.word = word;
     this.translation = translation;
 
-    boolean isConnectionEstablished = false;
     String url = "";
+    boolean isConnectionEstablished = false;
     if (translation.equals(Translation.VN_EN)) {
       url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_VN_EN, word);
     } else if (translation.equals(Translation.VN_FR)) {

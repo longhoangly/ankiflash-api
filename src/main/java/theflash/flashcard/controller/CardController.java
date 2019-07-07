@@ -5,9 +5,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.validation.Valid;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,7 @@ import theflash.flashcard.service.impl.card.JapaneseCardServiceImpl;
 import theflash.flashcard.service.impl.card.SpanishCardServiceImpl;
 import theflash.flashcard.service.impl.card.VietnameseCardServiceImpl;
 import theflash.flashcard.utility.Constants;
+import theflash.flashcard.utility.HtmlHelper;
 import theflash.flashcard.utility.Status;
 import theflash.flashcard.utility.Translation;
 import theflash.security.service.UserService;
@@ -64,7 +69,14 @@ public class CardController {
 
     // Generate Card
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
-    Card card = cardService.generateCard(reqCard.getWords(), translation, username);
+    String word = reqCard.getWords();
+
+    // Special pre-process for Japanese
+    if (translation.equals(Translation.JP_VN) || translation.equals(Translation.VN_JP)) {
+      word = getJDictWord(word);
+    }
+
+    Card card = cardService.generateCard(word, translation, username);
     return ResponseEntity.ok().body(card);
   }
 
@@ -89,6 +101,16 @@ public class CardController {
     // Generate Cards
     List<String> words = Arrays.asList(reqCard.getWords().split(";"));
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
+
+    // Special pre-process for Japanese
+    if (translation.equals(Translation.JP_VN) || translation.equals(Translation.VN_JP)) {
+      List<String> jdWords = new ArrayList<>();
+      for (String word : words) {
+        jdWords.addAll(getJDictWords(word, false));
+      }
+      words = jdWords;
+    }
+
     List<Card> cards = cardService.generateCards(words, translation, username);
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.SUCCESS) == 0) {
@@ -174,5 +196,27 @@ public class CardController {
     }
 
     return cardService;
+  }
+
+  private String getJDictWord(String word) {
+    List<String> words = getJDictWords(word, true);
+    return words.isEmpty() ? "" : words.get(0);
+  }
+
+  private List<String> getJDictWords(String word, boolean firstOnly) {
+    List<String> jdictWords = new ArrayList<>();
+    String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
+    Document document = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
+    Elements wordElms = document.select("ul>li");
+    for (Element wordElem : wordElms) {
+      if (wordElem.attr("title").toLowerCase().contains(word.toLowerCase())
+          && !wordElem.attr("data-id").isEmpty()) {
+        jdictWords.add(wordElem.attr("title") + ":" + wordElem.attr("data-id"));
+        if (firstOnly) {
+          break;
+        }
+      }
+    }
+    return jdictWords;
   }
 }

@@ -21,20 +21,21 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isConnectionEstablished(String word, Translation translation) {
 
+    String wordId = "";
+    String[] wordParts = word.split(":");
+    if (wordParts.length == 2) {
+      word = wordParts[0];
+      wordId = wordParts[1];
+    }
+
     this.word = word;
     this.translation = translation;
 
-    boolean isConnectionEstablished = false;
-    String url = "";
-    if (translation.equals(Translation.VN_JP)) {
-      url = Constants.DICT_JDICT_URL_VN_JP;
-    } else if (translation.equals(Translation.JP_VN)) {
-      url = Constants.DICT_JDICT_URL_VN_JP;
-    }
+    String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", wordId);
+    logger.info("urlParameters={}", urlParameters);
+    doc = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
 
-    String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
-    logger.info(urlParameters);
-    doc = HtmlHelper.getJDictDoc(url, urlParameters);
+    boolean isConnectionEstablished = false;
     if (doc != null) {
       isConnectionEstablished = true;
     }
@@ -49,7 +50,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       return false;
     }
 
-    elements = doc.select("dict-result-word-list");
+    elements = doc.select("#word-detail-info");
     if (elements.isEmpty()) {
       return false;
     }
@@ -105,8 +106,8 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     String google_image = "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
         + "\" style=\"font-size: 15px; color: blue\">Images for this word</a>";
 
-    String img_link = HtmlHelper.getAttribute(doc, "a[class*=img]", 0, "href");
-    if (img_link.isEmpty()) {
+    String img_link = HtmlHelper.getAttribute(doc, "a.fancybox.img", 0, "href");
+    if (img_link.isEmpty() || img_link.contains("no-image")) {
       return google_image;
     }
 
@@ -163,20 +164,21 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
 
       Elements meanElements = meanGroup.select("ol.ol-decimal>li");
       for (Element meanElem : meanElements) {
-        Element mean = HtmlHelper.getElement(meanElem, "span.nvmn-meaning", 0);
+        Element mean = HtmlHelper.getElement(meanElem, ".nvmn-meaning", 0);
         if (mean != null) {
-          meaning.setMeaning(wordType.text());
+          meaning.setMeaning(mean.text());
         }
 
         List<String> examples = new ArrayList<>();
-        Elements exampleElems = meanElem.select("ul.ul-disc>li");
-        for (Element exampleElem : exampleElems) {
+        Elements exampleElms = doc.select("ul.ul-disc>li");
+        for (Element exampleElem : exampleElms) {
           examples.add(exampleElem.text());
         }
         if (!examples.isEmpty()) {
           meaning.setExamples(examples);
         }
       }
+      meanings.add(meaning);
     }
 
     return HtmlHelper.buildMeaning(word, type, phonetic, meanings);

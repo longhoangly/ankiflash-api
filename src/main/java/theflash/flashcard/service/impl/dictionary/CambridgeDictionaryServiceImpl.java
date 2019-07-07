@@ -17,8 +17,8 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
     this.word = word;
     this.translation = translation;
 
-    boolean isConnectionEstablished = false;
     String url = "";
+    boolean isConnectionEstablished = false;
     if (translation.equals(Translation.EN_CN_TD)) {
       url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_TD, word);
     } else if (translation.equals(Translation.EN_CN_SP)) {

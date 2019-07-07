@@ -44,7 +44,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
       card.setPron(lacVietDict.getPron(username, "embed"));
-      card.setImage(lacVietDict.getImage("", ""));
+      card.setImage(lacVietDict.getImage(username, ""));
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));
@@ -66,7 +66,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(collinsDict.getPhonetic());
       card.setExample(collinsDict.getExample());
       card.setPron(collinsDict.getPron(username, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr"));
-      card.setImage(collinsDict.getImage("", ""));
+      card.setImage(collinsDict.getImage(username, ""));
       card.setTag(collinsDict.getTag());
       card.setMeaning(collinsDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));

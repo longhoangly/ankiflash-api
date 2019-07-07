@@ -50,8 +50,7 @@ public class Constants {
   public static String DICT_JISHO_URL_JP_EN = "";
 
   // JDICT
-  public static String DICT_JDICT_URL_VN_JP = "https://j-dict.com/postrequest.ashx";
-  public static String DICT_JDICT_URL_JP_VN = "https://j-dict.com/postrequest.ashx";
+  public static String DICT_JDICT_URL_VN_JP_OR_JP_VN = "https://j-dict.com/postrequest.ashx";
 
   // WORD REFERENCE
   public static String DICT_WORD_REFERENCE_SPELLING_WRONG = "";

@@ -28,8 +28,8 @@ public class TheFlashApplication {
 
   public static void main(String[] args) {
     applicationContext = SpringApplication.run(TheFlashApplication.class, args);
-    logger.info("TheFlashApplication Started");
     displayAllBeans();
+    logger.info("TheFlashApplication Started");
   }
 
   public static void displayAllBeans() {
