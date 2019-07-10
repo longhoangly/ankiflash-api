@@ -10,7 +10,6 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isConnectionEstablished(String word, Translation translation) {
 
     this.word = word;
-    this.translation = translation;
 
     boolean isConnectionEstablished = false;
     String url = HtmlHelper.lookupUrl(Constants.DICT_JISHO_URL_JP_EN, word);

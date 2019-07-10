@@ -64,10 +64,10 @@ public class CardController {
       throw new BadRequestException("Cannot find your user info!!!");
     }
 
-    // Initialize CardService per Translation
+    // Initialize cardService
     cardService = getCardService(reqCard.getSource());
 
-    // Generate Card
+    // Get request info
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
     String word = reqCard.getWords();
 
@@ -76,6 +76,7 @@ public class CardController {
       word = getJDictWord(word);
     }
 
+    // Generate card
     Card card = cardService.generateCard(word, translation, username);
     return ResponseEntity.ok().body(card);
   }
@@ -90,7 +91,7 @@ public class CardController {
       throw new BadRequestException("Cannot find your user info!!!");
     }
 
-    // Initialize CardService per Translation
+    // Initialize CardService
     cardService = getCardService(reqCard.getSource());
 
     // Create AnkiFlashcards per User
@@ -98,7 +99,7 @@ public class CardController {
     IOUtility.clean(ankiDir);
     IOUtility.createDirs(ankiDir);
 
-    // Generate Cards
+    // Get request info
     List<String> words = Arrays.asList(reqCard.getWords().split(";"));
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
@@ -111,17 +112,19 @@ public class CardController {
       words = jdWords;
     }
 
+    // Generate cards
     List<Card> cards = cardService.generateCards(words, translation, username);
     for (Card card : cards) {
-      if (card.getStatus().compareTo(Status.SUCCESS) == 0) {
+      if (card.getStatus().compareTo(Status.Success) == 0) {
         IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, card.getContent());
       } else {
-        IOUtility.write(ankiDir + "/" + Constants.ANKI_FAILURE, card.getWord() + " => " + card.getStatus() + "\n");
+        IOUtility.write(ankiDir + "/" + Constants.ANKI_FAILURE,
+            card.getWord() + " => " + card.getStatus() + "\n");
       }
     }
 
-    IOUtility
-        .write(ankiDir + "/" + Constants.ANKI_LANGUAGE, translation.getSource() + "-" + translation.getTarget() + "\n");
+    IOUtility.write(ankiDir + "/" + Constants.ANKI_LANGUAGE,
+        translation.getSource() + "-" + translation.getTarget() + "\n");
     return ResponseEntity.ok().body(cards);
   }
 
@@ -198,25 +201,27 @@ public class CardController {
     return cardService;
   }
 
-  private String getJDictWord(String word) {
-    List<String> words = getJDictWords(word, true);
-    return words.isEmpty() ? "" : words.get(0);
-  }
-
   private List<String> getJDictWords(String word, boolean firstOnly) {
-    List<String> jdictWords = new ArrayList<>();
     String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
     Document document = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
     Elements wordElms = document.select("ul>li");
+
+    List<String> jDictWords = new ArrayList<>();
     for (Element wordElem : wordElms) {
       if (wordElem.attr("title").toLowerCase().contains(word.toLowerCase())
           && !wordElem.attr("data-id").isEmpty()) {
-        jdictWords.add(wordElem.attr("title") + ":" + wordElem.attr("data-id"));
-        if (firstOnly) {
-          break;
-        }
+        jDictWords.add(wordElem.attr("title") + ":" + wordElem.attr("data-id") + ":" + word);
+      }
+
+      if (firstOnly) {
+        break;
       }
     }
-    return jdictWords;
+    return jDictWords;
+  }
+
+  private String getJDictWord(String word) {
+    List<String> words = getJDictWords(word, true);
+    return words.isEmpty() ? "" : words.get(0);
   }
 }

@@ -18,7 +18,6 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isConnectionEstablished(String word, Translation translation) {
 
     this.word = word;
-    this.translation = translation;
 
     String url = "";
     boolean isConnectionEstablished = false;

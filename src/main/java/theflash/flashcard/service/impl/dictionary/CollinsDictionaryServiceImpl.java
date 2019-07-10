@@ -18,7 +18,6 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isConnectionEstablished(String word, Translation translation) {
 
     this.word = word;
-    this.translation = translation;
 
     boolean isConnectionEstablished = false;
     String url = HtmlHelper.lookupUrl(Constants.DICT_COLLINS_URL_FR_EN, word);

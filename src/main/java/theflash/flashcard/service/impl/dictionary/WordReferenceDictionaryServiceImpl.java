@@ -10,7 +10,6 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isConnectionEstablished(String word, Translation translation) {
 
     this.word = word;
-    this.translation = translation;
 
     boolean isConnectionEstablished = false;
     String url = HtmlHelper.lookupUrl(Constants.DICT_WORD_REFERENCE_URL_EN_SP, word);

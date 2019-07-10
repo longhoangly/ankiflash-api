@@ -1,7 +1,5 @@
 package theflash.flashcard.service.impl.card;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import theflash.flashcard.dto.Card;
@@ -20,24 +18,24 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
   @Override
   public Card generateCard(String word, Translation translation, String username) {
 
+    logger.info("Word = " + word);
+    logger.info("Source = " + translation.getSource());
+    logger.info("Target = " + translation.getTarget());
+
     Card card = new Card(word);
     DictionaryService oxfordDict = new OxfordDictionaryServiceImpl();
     DictionaryService cambridgeDict = new CambridgeDictionaryServiceImpl();
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
 
-    logger.info("Word = " + word);
-    logger.info("Source = " + translation.getSource());
-    logger.info("Target = " + translation.getTarget());
-
     //English to English
     if (translation.equals(Translation.EN_EN)) {
 
       if (!oxfordDict.isConnectionEstablished(word, translation)) {
-        card.setStatus(Status.CONNECTION_FAILED);
+        card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.DICT_CONNECTION_FAILED);
         return card;
       } else if (!oxfordDict.isWordingCorrect()) {
-        card.setStatus(Status.WORD_NOT_FOUND);
+        card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.DICT_WORD_NOT_FOUND);
         return card;
       }
@@ -55,11 +53,11 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
 
       if (!oxfordDict.isConnectionEstablished(word, translation) ||
           !cambridgeDict.isConnectionEstablished(word, translation)) {
-        card.setStatus(Status.CONNECTION_FAILED);
+        card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.DICT_CONNECTION_FAILED);
         return card;
       } else if (!oxfordDict.isWordingCorrect() || !cambridgeDict.isWordingCorrect()) {
-        card.setStatus(Status.WORD_NOT_FOUND);
+        card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.DICT_WORD_NOT_FOUND);
         return card;
       }
@@ -75,11 +73,11 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
 
       if (!oxfordDict.isConnectionEstablished(word, translation) ||
           !lacVietDict.isConnectionEstablished(word, translation)) {
-        card.setStatus(Status.CONNECTION_FAILED);
+        card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.DICT_CONNECTION_FAILED);
         return card;
       } else if (!oxfordDict.isWordingCorrect() || !lacVietDict.isWordingCorrect()) {
-        card.setStatus(Status.WORD_NOT_FOUND);
+        card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.DICT_WORD_NOT_FOUND);
         return card;
       }
@@ -91,7 +89,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
           String.join(", and ", oxfordDict.getDictionaryName(), lacVietDict.getDictionaryName())));
 
     } else {
-      card.setStatus(Status.NOT_SUPPORTED_TRANSLATION);
+      card.setStatus(Status.Not_Supported_Translation);
       card.setComment(String.format(Constants.DICT_NOT_SUPPORTED_TRANSLATION,
           translation.getSource(), translation.getTarget()));
       return card;
@@ -103,7 +101,8 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     card.setPron("BrE " + ukPron + " NAmE " + usPron);
     card.setImage(oxfordDict.getImage(username, "a.topic"));
     card.setTag(oxfordDict.getTag());
-    card.setStatus(Status.SUCCESS);
+
+    card.setStatus(Status.Success);
     card.setComment(Constants.DICT_SUCCESS);
 
     String cardContent = card.getWord() + Constants.TAB + card.getWordType() + Constants.TAB
@@ -113,14 +112,5 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     card.setContent(cardContent);
 
     return card;
-  }
-
-  @Override
-  public List<Card> generateCards(List<String> words, Translation translation, String username) {
-    List<Card> cardCollection = new ArrayList<>();
-    for (String word : words) {
-      cardCollection.add(generateCard(word, translation, username));
-    }
-    return cardCollection;
   }
 }

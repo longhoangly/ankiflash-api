@@ -1,9 +1,7 @@
 package theflash.flashcard.service;
 
-import org.springframework.stereotype.Service;
 import theflash.flashcard.utility.Translation;
 
-@Service
 public interface DictionaryService {
 
   boolean isConnectionEstablished(String word, Translation translation);

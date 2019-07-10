@@ -1,11 +1,9 @@
 package theflash.flashcard.service;
 
 import java.util.List;
-import org.springframework.stereotype.Service;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.utility.Translation;
 
-@Service
 public interface CardService {
 
   Card generateCard(String word, Translation translation, String username);

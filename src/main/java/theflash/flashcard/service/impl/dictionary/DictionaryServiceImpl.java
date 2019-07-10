@@ -1,9 +1,11 @@
 package theflash.flashcard.service.impl.dictionary;
 
 import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Service;
 import theflash.flashcard.service.DictionaryService;
 import theflash.flashcard.utility.Translation;
 
+@Service
 public abstract class DictionaryServiceImpl implements DictionaryService {
 
   protected Document doc;
@@ -13,8 +15,6 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
   protected String type;
 
   protected String phonetic;
-
-  protected Translation translation;
 
   public abstract boolean isConnectionEstablished(String word, Translation translation);
 

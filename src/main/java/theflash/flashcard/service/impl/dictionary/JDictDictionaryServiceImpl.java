@@ -18,18 +18,19 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
 
   private static final Logger logger = LoggerFactory.getLogger(JDictDictionaryServiceImpl.class);
 
+  private String originalWord;
+
+  private String wordId;
+
   @Override
   public boolean isConnectionEstablished(String word, Translation translation) {
 
-    String wordId = "";
     String[] wordParts = word.split(":");
-    if (wordParts.length == 2) {
-      word = wordParts[0];
-      wordId = wordParts[1];
+    if (word.contains(":") && wordParts.length == 3) {
+      this.word = wordParts[0];
+      this.wordId = wordParts[1];
+      this.originalWord = wordParts[2];
     }
-
-    this.word = word;
-    this.translation = translation;
 
     String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", wordId);
     logger.info("urlParameters={}", urlParameters);
@@ -82,8 +83,8 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       } else if (example.isEmpty()) {
         break;
       } else {
-        word = word.toLowerCase();
-        example = example.toLowerCase().replaceAll(word, "{{c1::" + word + "}}");
+        String lowerWord = this.originalWord.toLowerCase();
+        example = example.toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}");
         examples.add(example);
       }
     }

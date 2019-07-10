@@ -3,17 +3,25 @@ package theflash.flashcard.service.impl.card;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 import theflash.flashcard.dto.Card;
 import theflash.flashcard.service.CardService;
 import theflash.flashcard.utility.Translation;
 import theflash.utility.IOUtility;
 import theflash.utility.TheFlashProperties;
 
+@Service
 public abstract class CardServiceImpl implements CardService {
 
   public abstract Card generateCard(String word, Translation translation, String username);
 
-  public abstract List<Card> generateCards(List<String> wordList, Translation translation, String username);
+  public List<Card> generateCards(List<String> words, Translation translation, String username) {
+    List<Card> cardCollection = new ArrayList<>();
+    for (String word : words) {
+      cardCollection.add(generateCard(word, translation, username));
+    }
+    return cardCollection;
+  }
 
   public String compressResources(String username) {
 
