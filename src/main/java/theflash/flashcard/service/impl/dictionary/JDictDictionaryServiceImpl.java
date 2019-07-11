@@ -154,33 +154,51 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    Elements meanGroups = doc.select("#word-detail-info");
-    for (Element meanGroup : meanGroups) {
+    Meaning meaning = new Meaning();
 
-      Meaning meaning = new Meaning();
-      Element wordType = HtmlHelper.getElement(meanGroup, "label[class*=word-type]", 0);
-      if (wordType != null) {
-        meaning.setWordType(wordType.text());
+    Element meanGroup = HtmlHelper.getElement(doc, "#word-detail-info", 0);
+    Element wordType = HtmlHelper.getElement(meanGroup, "label[class*=word-type]", 0);
+    if (wordType != null) {
+      meaning.setWordType(wordType.text());
+    }
+    meanings.add(meaning);
+
+    Elements meanElements = meanGroup.select("ol.ol-decimal>li");
+    for (Element meanElem : meanElements) {
+      meaning = new Meaning();
+      Element mean = HtmlHelper.getElement(meanElem, ".nvmn-meaning", 0);
+      if (mean != null) {
+        meaning.setMeaning(mean.text());
       }
 
-      Elements meanElements = meanGroup.select("ol.ol-decimal>li");
-      for (Element meanElem : meanElements) {
-        Element mean = HtmlHelper.getElement(meanElem, ".nvmn-meaning", 0);
-        if (mean != null) {
-          meaning.setMeaning(mean.text());
-        }
+      List<String> innerExamples = new ArrayList<>();
+      Elements exampleElms = meanElem.select("ul.ul-disc>li");
+      for (Element exampleElem : exampleElms) {
+        innerExamples.add(exampleElem.text());
+      }
 
-        List<String> examples = new ArrayList<>();
-        Elements exampleElms = doc.select("ul.ul-disc>li");
-        for (Element exampleElem : exampleElms) {
-          examples.add(exampleElem.text());
-        }
-        if (!examples.isEmpty()) {
-          meaning.setExamples(examples);
-        }
+      if (!innerExamples.isEmpty()) {
+        meaning.setExamples(innerExamples);
       }
       meanings.add(meaning);
     }
+
+    meaning = new Meaning();
+    String kanji = HtmlHelper.getOuterHtml(meanGroup, "#search-kanji-list", 0);
+    if (!kanji.isEmpty()) {
+      meaning.setMeaning(kanji);
+    }
+
+    List<String> examples = new ArrayList<>();
+    Elements exampleElms = meanGroup.select(">ul.ul-disc>li");
+    for (Element exampleElem : exampleElms) {
+      examples.add(exampleElem.text());
+    }
+
+    if (!examples.isEmpty()) {
+      meaning.setExamples(examples);
+    }
+    meanings.add(meaning);
 
     return HtmlHelper.buildMeaning(word, type, phonetic, meanings);
   }

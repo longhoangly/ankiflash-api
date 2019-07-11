@@ -91,6 +91,21 @@ public class HtmlHelper {
     return element != null ? element.html() : "";
   }
 
+  public static String getInnerHtml(Element element, String selector, int index) {
+    Element elm = getElement(element, selector, index);
+    return elm != null ? elm.html() : "";
+  }
+
+  public static String getOuterHtml(Document doc, String selector, int index) {
+    Element element = getElement(doc, selector, index);
+    return element != null ? element.outerHtml() : "";
+  }
+
+  public static String getOuterHtml(Element element, String selector, int index) {
+    Element elm = getElement(element, selector, index);
+    return elm != null ? elm.outerHtml() : "";
+  }
+
   public static String getAttribute(Document doc, String selector, int index, String attr) {
     Element element = getElement(doc, selector, index);
     return element != null ? element.attr(attr) : "";
