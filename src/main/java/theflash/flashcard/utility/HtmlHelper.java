@@ -30,21 +30,6 @@ public class HtmlHelper {
     return String.format(dictUrl, word);
   }
 
-  public static Document getJDictDoc(String url, String body) {
-
-    Document document;
-    if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
-      Proxy proxy = new Proxy(Type.HTTP,
-          new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
-      JsonObject json = JsonHelper.postRequest(url, body, proxy);
-      document = Jsoup.parse(json.get("Content").getAsString());
-    } else {
-      JsonObject json = JsonHelper.postRequest(url, body);
-      document = Jsoup.parse(json.get("Content").getAsString());
-    }
-    return document;
-  }
-
   public static Document getDocument(String url) {
 
     Document document = null;
@@ -146,13 +131,24 @@ public class HtmlHelper {
     }
     htmlBuilder.append("</ul>");
     htmlBuilder.append("</div>");
+
     return htmlBuilder.toString();
   }
 
   public static String buildMeaning(String word, String type, String phonetic, List<Meaning> meanings) {
 
+    return buildMeaning(word, type, phonetic, meanings, false);
+  }
+
+  public static String buildMeaning(String word, String type, String phonetic, List<Meaning> meanings,
+      boolean isJapanese) {
+
     StringBuilder htmlBuilder = new StringBuilder();
-    htmlBuilder.append("<div class=\"content-container\">");
+    if (isJapanese) {
+      htmlBuilder.append("<div class=\"content-container japan-font\">");
+    } else {
+      htmlBuilder.append("<div class=\"content-container\">");
+    }
     htmlBuilder.append("<h2 class=\"h\">" + word + "</h2>");
     htmlBuilder.append("<span class=\"content-type\">" + type + "</span>");
     htmlBuilder.append("<span class=\"content-phonetic\">" + phonetic + "</span>");
@@ -176,6 +172,23 @@ public class HtmlHelper {
     }
     htmlBuilder.append("</ol>");
     htmlBuilder.append("</div>");
+
     return htmlBuilder.toString();
+  }
+
+  public static Document getJDictDoc(String url, String body) {
+
+    logger.info("body={}", body);
+    Document document;
+    if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
+      Proxy proxy = new Proxy(Type.HTTP,
+          new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
+      JsonObject json = JsonHelper.postRequest(url, body, proxy);
+      document = Jsoup.parse(json.get("Content").getAsString());
+    } else {
+      JsonObject json = JsonHelper.postRequest(url, body);
+      document = Jsoup.parse(json.get("Content").getAsString());
+    }
+    return document;
   }
 }

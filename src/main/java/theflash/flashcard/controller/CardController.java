@@ -202,6 +202,7 @@ public class CardController {
   }
 
   private List<String> getJDictWords(String word, boolean firstOnly) {
+
     String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
     Document document = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
     Elements wordElms = document.select("ul>li");

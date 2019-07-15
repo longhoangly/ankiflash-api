@@ -3,7 +3,9 @@ package theflash.flashcard.service.impl.dictionary;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -33,7 +35,6 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", wordId);
-    logger.info("urlParameters={}", urlParameters);
     doc = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
 
     boolean isConnectionEstablished = false;
@@ -75,18 +76,22 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getExample() {
 
-    List<String> examples = new ArrayList<>();
+    Elements exampleElms = new Elements();
     for (int i = 0; i < 4; i++) {
-      String example = HtmlHelper.getText(doc, "ul.ul-disc>li", i);
-      if (example.isEmpty() && i == 0) {
+      Element example = HtmlHelper.getElement(doc, "ul.ul-disc>li>u,ul.ul-disc>li>p", i);
+      if (example == null && i == 0) {
         return Constants.DICT_NO_EXAMPLE;
-      } else if (example.isEmpty()) {
+      } else if (example == null) {
         break;
       } else {
-        String lowerWord = this.originalWord.toLowerCase();
-        example = example.toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}");
-        examples.add(example);
+        exampleElms.add(example);
       }
+    }
+
+    List<String> examples = getJDictExamples(exampleElms);
+    String lowerWord = this.originalWord.toLowerCase();
+    for (int i = 0; i < examples.size(); i++) {
+      examples.set(i, examples.get(i).toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}"));
     }
 
     return HtmlHelper.buildExample(examples);
@@ -171,12 +176,8 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
         meaning.setMeaning(mean.text());
       }
 
-      List<String> innerExamples = new ArrayList<>();
-      Elements exampleElms = meanElem.select("ul.ul-disc>li");
-      for (Element exampleElem : exampleElms) {
-        innerExamples.add(exampleElem.text());
-      }
-
+      Elements exampleElms = meanElem.select("ul.ul-disc>li>u,ul.ul-disc>li>p");
+      List<String> innerExamples = getJDictExamples(exampleElms);
       if (!innerExamples.isEmpty()) {
         meaning.setExamples(innerExamples);
       }
@@ -186,25 +187,53 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     meaning = new Meaning();
     String kanji = HtmlHelper.getOuterHtml(meanGroup, "#search-kanji-list", 0);
     if (!kanji.isEmpty()) {
-      meaning.setMeaning(kanji);
+      meaning.setMeaning(kanji.replaceAll("\n", ""));
     }
 
-    List<String> examples = new ArrayList<>();
-    Elements exampleElms = meanGroup.select(">ul.ul-disc>li");
-    for (Element exampleElem : exampleElms) {
-      examples.add(exampleElem.text());
-    }
-
+    Elements exampleElms = meanGroup.select("#word-detail-info>ul.ul-disc>li>u,#word-detail-info>ul.ul-disc>li>p");
+    List<String> examples = getJDictExamples(exampleElms);
     if (!examples.isEmpty()) {
       meaning.setExamples(examples);
     }
     meanings.add(meaning);
 
-    return HtmlHelper.buildMeaning(word, type, phonetic, meanings);
+    return HtmlHelper.buildMeaning(word, type, phonetic, meanings, true);
   }
 
   @Override
   public String getDictionaryName() {
     return "J-Dict Dictionary";
+  }
+
+  private static List<String> getJDictExamples(Elements exampleElms) {
+
+    List<String> examples = new ArrayList<>();
+    if (!exampleElms.isEmpty()) {
+      List<String> jpExamples = new ArrayList<>();
+      for (Element exampleElem : exampleElms) {
+        if (exampleElem.hasAttr("class")) {
+          examples.add(">>>>>" + exampleElem.text());
+          jpExamples.add(exampleElem.text());
+        } else {
+          examples.add(exampleElem.text());
+        }
+      }
+
+      String sentencesChain = String.join("=>=>=>=>=>", jpExamples);
+      String urlParams = String.format("m=dictionary&fn=furigana&keyword=%1$s", sentencesChain);
+      Document doc = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParams);
+      sentencesChain = doc != null ? doc.body().html().replaceAll("\n", "") : sentencesChain;
+      jpExamples = Arrays.asList(sentencesChain.split("=&gt;=&gt;=&gt;=&gt;=&gt;"));
+
+      int index = 0;
+      for (int i = 0; i < examples.size(); i++) {
+        if (examples.get(i).contains(">>>>>") && index < jpExamples.size()) {
+          examples.set(i, jpExamples.get(index));
+          index++;
+        }
+      }
+    }
+
+    return examples;
   }
 }
