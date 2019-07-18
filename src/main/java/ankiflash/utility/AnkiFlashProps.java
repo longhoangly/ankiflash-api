@@ -4,24 +4,29 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TheFlashProperties {
+public class AnkiFlashProps {
 
+  public static String ANKI_DIR_FLASHCARDS;
   public static String API_SERVER_URL;
   public static String WEB_SERVER_URL;
+
   public static String PROXY_ADDRESS;
   public static int PROXY_PORT;
-  public static String ANKI_DIR_FLASHCARDS;
+
   public static int CONNECTION_TIMEOUT;
   public static int READ_TIMEOUT;
+  public static int TOKEN_TIMEOUT;
+
   public static String MAIL_HOST;
   public static int MAIL_PORT;
+
+  public static String MAIL_FROM;
   public static String MAIL_USERNAME;
   public static String MAIL_PASSWORD;
   public static String MAIL_PROTOCOL;
   public static boolean MAIL_AUTH;
   public static boolean MAIL_SSL;
   public static boolean MAIL_DEBUG;
-  public static String MAIL_FROM;
 
 
   @Value("${server.api.url}")
@@ -40,8 +45,13 @@ public class TheFlashProperties {
   }
 
   @Value("${ankiflash.proxy.port}")
-  public void setProxyPort(int proxyPort) {
-    PROXY_PORT = proxyPort;
+  public void setProxyPort(String proxyPort) {
+
+    if (proxyPort.isEmpty()) {
+      PROXY_PORT = 0;
+    } else {
+      PROXY_PORT = Integer.parseInt(proxyPort);
+    }
   }
 
   @Value("${ankiflash.anki.root}")
@@ -57,6 +67,11 @@ public class TheFlashProperties {
   @Value("${ankiflash.timeout.read}")
   public void setReadTimeout(int timeout) {
     READ_TIMEOUT = timeout * 1000;
+  }
+
+  @Value("${ankiflash.timeout.token}")
+  public void setTokenTimeout(int timeout) {
+    TOKEN_TIMEOUT = timeout * 1000;
   }
 
   @Value("${spring.mail.host}")

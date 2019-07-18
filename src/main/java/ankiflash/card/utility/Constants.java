@@ -6,7 +6,7 @@ public class Constants {
   public static String ANKI_DECK = "ankiDeck.csv";
   public static String ANKI_FAILURE = "failures.csv";
   public static String ANKI_LANGUAGE = "Language.csv";
-  public static String ANKI_GENERATOR_SINGLE_FORM = "AnkiGeneratorSingleFormABC.apkg";
+  public static String ANKI_FLASH_SINGLE_FORM_TEMPLATE = "AnkiFlashFormTemplate.apkg";
 
   // LANGUAGES
   public static String ENGLISH = "English";

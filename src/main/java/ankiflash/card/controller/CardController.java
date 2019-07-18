@@ -15,7 +15,7 @@ import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
 import ankiflash.security.service.UserService;
 import ankiflash.utility.IOUtility;
-import ankiflash.utility.TheFlashProperties;
+import ankiflash.utility.AnkiFlashProps;
 import ankiflash.utility.exception.BadRequestException;
 import java.io.File;
 import java.io.IOException;
@@ -94,7 +94,7 @@ public class CardController {
     cardService = getCardService(reqCard.getSource());
 
     // Create AnkiFlashcards per User
-    String ankiDir = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString();
+    String ankiDir = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
     IOUtility.clean(ankiDir);
     IOUtility.createDirs(ankiDir);
 

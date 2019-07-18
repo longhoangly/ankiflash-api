@@ -1,7 +1,7 @@
 package ankiflash.card.utility;
 
 import ankiflash.card.dto.Meaning;
-import ankiflash.utility.TheFlashProperties;
+import ankiflash.utility.AnkiFlashProps;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -41,9 +41,9 @@ public class HtmlHelper {
 
     Document document = null;
     try {
-      if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
+      if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
         Proxy proxy = new Proxy(Type.HTTP,
-            new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
+            new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
         document = Jsoup.connect(url).proxy(proxy).get();
       } else {
         document = Jsoup.connect(url).get();
@@ -189,9 +189,9 @@ public class HtmlHelper {
 
     logger.info("body={}", body);
     Document document;
-    if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
+    if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
       Proxy proxy = new Proxy(Type.HTTP,
-          new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
+          new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
       JsonObject json = JsonHelper.postRequest(url, body, proxy);
       document = Jsoup.parse(json.get("Content").getAsString());
     } else {

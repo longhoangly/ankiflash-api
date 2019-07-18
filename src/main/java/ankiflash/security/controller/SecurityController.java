@@ -12,7 +12,7 @@ import ankiflash.security.utility.PassEncoding;
 import ankiflash.security.utility.Roles;
 import ankiflash.security.utility.jwt.Generator;
 import ankiflash.security.utility.jwt.Validation;
-import ankiflash.utility.TheFlashProperties;
+import ankiflash.utility.AnkiFlashProps;
 import ankiflash.utility.exception.BadRequestException;
 import java.util.Calendar;
 import java.util.Date;
@@ -138,7 +138,7 @@ public class SecurityController {
     }
 
     if (!user.getToken().equals(token)) {
-      return new ModelAndView("redirect:" + TheFlashProperties.WEB_SERVER_URL +
+      return new ModelAndView("redirect:" + AnkiFlashProps.WEB_SERVER_URL +
           "/status?code=400&message=Key not found, please select 'Forgot Password' on 'Login' page to try again!");
     }
 
@@ -146,7 +146,7 @@ public class SecurityController {
     user.setVerified(true);
     userService.save(user);
 
-    return new ModelAndView("redirect:" + TheFlashProperties.WEB_SERVER_URL +
+    return new ModelAndView("redirect:" + AnkiFlashProps.WEB_SERVER_URL +
         "/status?code=200&message=Email verified successfully!");
   }
 

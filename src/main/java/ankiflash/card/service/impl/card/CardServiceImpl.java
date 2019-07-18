@@ -4,7 +4,7 @@ import ankiflash.card.dto.Card;
 import ankiflash.card.service.CardService;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
-import ankiflash.utility.TheFlashProperties;
+import ankiflash.utility.AnkiFlashProps;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public abstract class CardServiceImpl implements CardService {
     ClassLoader classLoader = getClass().getClassLoader();
     String attachmentPath = classLoader.getResource("attachment").getPath();
 
-    String ankiDir = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString();
+    String ankiDir = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
     IOUtility.copyFolder(attachmentPath, ankiDir);
 
     IOUtility.zipFolder(ankiDir, ankiDir + ".zip");

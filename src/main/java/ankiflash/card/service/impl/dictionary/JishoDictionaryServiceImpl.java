@@ -5,7 +5,7 @@ import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
-import ankiflash.utility.TheFlashProperties;
+import ankiflash.utility.AnkiFlashProps;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -109,9 +109,9 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     String pro_name = pro_link_els[pro_link_els.length - 1];
 
     boolean isSuccess = false;
-    File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
+    File dir = new File(Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
-      String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, pro_name).toString();
+      String output = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS, pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
     }
 

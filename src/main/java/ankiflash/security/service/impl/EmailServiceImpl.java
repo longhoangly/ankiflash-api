@@ -4,7 +4,7 @@ import ankiflash.security.dto.User;
 import ankiflash.security.service.EmailService;
 import ankiflash.security.service.UserService;
 import ankiflash.security.utility.jwt.Generator;
-import ankiflash.utility.TheFlashProperties;
+import ankiflash.utility.AnkiFlashProps;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,16 +36,16 @@ public class EmailServiceImpl implements EmailService {
 
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
     try {
-      mailSender.setHost(TheFlashProperties.MAIL_HOST);
-      mailSender.setPort(TheFlashProperties.MAIL_PORT);
-      mailSender.setUsername(TheFlashProperties.MAIL_USERNAME);
-      mailSender.setPassword(TheFlashProperties.MAIL_PASSWORD);
-      mailSender.setProtocol(TheFlashProperties.MAIL_PROTOCOL);
+      mailSender.setHost(AnkiFlashProps.MAIL_HOST);
+      mailSender.setPort(AnkiFlashProps.MAIL_PORT);
+      mailSender.setUsername(AnkiFlashProps.MAIL_USERNAME);
+      mailSender.setPassword(AnkiFlashProps.MAIL_PASSWORD);
+      mailSender.setProtocol(AnkiFlashProps.MAIL_PROTOCOL);
 
       Properties props = mailSender.getJavaMailProperties();
-      props.put("mail.smtp.auth", TheFlashProperties.MAIL_AUTH);
-      props.put("mail.smtp.starttls.enable", TheFlashProperties.MAIL_SSL);
-      props.put("mail.debug", TheFlashProperties.MAIL_DEBUG);
+      props.put("mail.smtp.auth", AnkiFlashProps.MAIL_AUTH);
+      props.put("mail.smtp.starttls.enable", AnkiFlashProps.MAIL_SSL);
+      props.put("mail.debug", AnkiFlashProps.MAIL_DEBUG);
     } catch (Exception e) {
       logger.error("Exception: ", e);
     }
@@ -59,7 +59,7 @@ public class EmailServiceImpl implements EmailService {
     message.setTo(to);
     message.setSubject(subject);
     message.setText(msg);
-    message.setFrom(TheFlashProperties.MAIL_FROM);
+    message.setFrom(AnkiFlashProps.MAIL_FROM);
     mailSender.send(message);
   }
 
@@ -89,7 +89,7 @@ public class EmailServiceImpl implements EmailService {
 
     String token24h = generator.generate(user, 24 * 60 * 60);
     String verificationUrl = String
-        .format("%1$s/api/auth/verify-email-address?key=%2$s", TheFlashProperties.API_SERVER_URL, token24h);
+        .format("%1$s/api/auth/verify-email-address?key=%2$s", AnkiFlashProps.API_SERVER_URL, token24h);
     emailContent = String.format(emailContent, user.getUsername(), verificationUrl);
     sendSimpleMessage(user.getEmail(), emailTitle, emailContent);
 
@@ -123,7 +123,7 @@ public class EmailServiceImpl implements EmailService {
         .toString();
 
     String token20m = generator.generate(user, 20 * 60);
-    String resetUrl = String.format("%1$s/reset-password?key=%2$s", TheFlashProperties.WEB_SERVER_URL, token20m);
+    String resetUrl = String.format("%1$s/reset-password?key=%2$s", AnkiFlashProps.WEB_SERVER_URL, token20m);
     emailContent = String.format(emailContent, user.getUsername(), resetUrl);
     sendSimpleMessage(user.getEmail(), emailTitle, emailContent);
 
