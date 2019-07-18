@@ -9,6 +9,7 @@ import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 public class SkipPathRequestMatcher implements RequestMatcher {
+
   private OrRequestMatcher matchers;
   private RequestMatcher processingMatcher;
 

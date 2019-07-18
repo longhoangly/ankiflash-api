@@ -1,10 +1,10 @@
 package ankiflash.card.service.impl.dictionary;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
 

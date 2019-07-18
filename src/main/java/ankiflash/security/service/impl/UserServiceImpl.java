@@ -1,5 +1,9 @@
 package ankiflash.security.service.impl;
 
+import ankiflash.security.dto.User;
+import ankiflash.security.repository.UserRepository;
+import ankiflash.security.service.UserService;
+import ankiflash.security.utility.PassEncoding;
 import java.util.Calendar;
 import java.util.Collection;
 import javax.transaction.Transactional;
@@ -7,10 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import ankiflash.security.dto.User;
-import ankiflash.security.repository.UserRepository;
-import ankiflash.security.service.UserService;
-import ankiflash.security.utility.PassEncoding;
 
 @Service
 @Transactional

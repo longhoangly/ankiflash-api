@@ -1,5 +1,10 @@
 package ankiflash.security.service.impl;
 
+import ankiflash.security.dto.User;
+import ankiflash.security.service.EmailService;
+import ankiflash.security.service.UserService;
+import ankiflash.security.utility.jwt.Generator;
+import ankiflash.utility.TheFlashProperties;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,11 +14,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import ankiflash.security.dto.User;
-import ankiflash.security.service.EmailService;
-import ankiflash.security.service.UserService;
-import ankiflash.security.utility.jwt.Generator;
-import ankiflash.utility.TheFlashProperties;
 
 @Service
 public class EmailServiceImpl implements EmailService {

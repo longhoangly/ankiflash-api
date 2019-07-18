@@ -1,5 +1,11 @@
 package ankiflash.card.service.impl.dictionary;
 
+import ankiflash.card.dto.Meaning;
+import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.HtmlHelper;
+import ankiflash.card.utility.Translation;
+import ankiflash.utility.IOUtility;
+import ankiflash.utility.TheFlashProperties;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -8,11 +14,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ankiflash.card.utility.Constants;
-import ankiflash.card.utility.HtmlHelper;
-import ankiflash.card.dto.Meaning;
-import ankiflash.card.utility.Translation;
-import ankiflash.utility.TheFlashProperties;
 
 public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
@@ -107,7 +108,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getImage(String username, String selector) {
 
     return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
-        + "\" style=\"font-size: 15px; color: blue\">Images for this word</a>";
+        + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
   }
 
   @Override
@@ -126,7 +127,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
       String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, pro_name).toString();
-      isSuccess = HtmlHelper.download(pro_link, output);
+      isSuccess = IOUtility.download(pro_link, output);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";

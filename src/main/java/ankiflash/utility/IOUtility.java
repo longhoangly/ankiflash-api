@@ -4,6 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Proxy.Type;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -136,5 +142,30 @@ public class IOUtility {
     } catch (IOException e) {
       logger.error("Exception Occurred: ", e);
     }
+  }
+
+  public static boolean download(String url, String target) {
+    try {
+      URL site = new URL(url);
+      URLConnection connection;
+      if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
+        Proxy proxy = new Proxy(Type.HTTP,
+            new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
+        connection = site.openConnection(proxy);
+      } else {
+        connection = site.openConnection();
+      }
+      connection.addRequestProperty("User-Agent", "Mozilla/5.0 Gecko/20100101 Firefox/47.0");
+      connection.setConnectTimeout(TheFlashProperties.CONNECTION_TIMEOUT);
+      connection.setReadTimeout(TheFlashProperties.READ_TIMEOUT);
+
+      InputStream in = connection.getInputStream();
+      Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      logger.error("Exception Occurred: ", e);
+      return false;
+    }
+
+    return true;
   }
 }

@@ -1,30 +1,5 @@
 package ankiflash.card.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.validation.Valid;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import ankiflash.card.dto.Card;
 import ankiflash.card.payload.CardRequest;
 import ankiflash.card.service.CardService;
@@ -42,6 +17,28 @@ import ankiflash.security.service.UserService;
 import ankiflash.utility.IOUtility;
 import ankiflash.utility.TheFlashProperties;
 import ankiflash.utility.exception.BadRequestException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/anki-flash-card")
@@ -73,7 +70,9 @@ public class CardController {
 
     // Special pre-process for Japanese
     if (translation.equals(Translation.JP_VN) || translation.equals(Translation.VN_JP)) {
-      word = getJDictWord(word);
+      word = HtmlHelper.getJDictWord(word);
+    } else if (translation.equals(Translation.JP_EN)) {
+      word = HtmlHelper.getJishoWord(word);
     }
 
     // Generate card
@@ -104,10 +103,15 @@ public class CardController {
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     // Special pre-process for Japanese
+    List<String> jdWords = new ArrayList<>();
     if (translation.equals(Translation.JP_VN) || translation.equals(Translation.VN_JP)) {
-      List<String> jdWords = new ArrayList<>();
       for (String word : words) {
-        jdWords.addAll(getJDictWords(word, false));
+        jdWords.addAll(HtmlHelper.getJDictWords(word, false));
+      }
+      words = jdWords;
+    } else if (translation.equals(Translation.JP_EN)) {
+      for (String word : words) {
+        jdWords.addAll(HtmlHelper.getJishoWords(word, false));
       }
       words = jdWords;
     }
@@ -199,30 +203,5 @@ public class CardController {
     }
 
     return cardService;
-  }
-
-  private List<String> getJDictWords(String word, boolean firstOnly) {
-
-    String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
-    Document document = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
-    Elements wordElms = document.select("ul>li");
-
-    List<String> jDictWords = new ArrayList<>();
-    for (Element wordElem : wordElms) {
-      if (wordElem.attr("title").toLowerCase().contains(word.toLowerCase())
-          && !wordElem.attr("data-id").isEmpty()) {
-        jDictWords.add(wordElem.attr("title") + ":" + wordElem.attr("data-id") + ":" + word);
-      }
-
-      if (firstOnly) {
-        break;
-      }
-    }
-    return jDictWords;
-  }
-
-  private String getJDictWord(String word) {
-    List<String> words = getJDictWords(word, true);
-    return words.isEmpty() ? "" : words.get(0);
   }
 }

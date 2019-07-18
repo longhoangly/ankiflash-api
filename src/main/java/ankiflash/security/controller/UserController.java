@@ -1,5 +1,11 @@
 package ankiflash.security.controller;
 
+import ankiflash.security.dto.User;
+import ankiflash.security.payload.SignUpRequest;
+import ankiflash.security.service.UserService;
+import ankiflash.security.utility.PassEncoding;
+import ankiflash.security.utility.Roles;
+import ankiflash.utility.exception.BadRequestException;
 import java.util.Calendar;
 import java.util.Date;
 import javax.validation.Valid;
@@ -14,12 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ankiflash.security.dto.User;
-import ankiflash.security.payload.SignUpRequest;
-import ankiflash.security.service.UserService;
-import ankiflash.security.utility.PassEncoding;
-import ankiflash.security.utility.Roles;
-import ankiflash.utility.exception.BadRequestException;
 
 @RestController
 @RequestMapping("/api/user")

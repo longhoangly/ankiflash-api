@@ -1,9 +1,9 @@
 package ankiflash.card.service.impl.dictionary;
 
-import org.jsoup.nodes.Document;
-import org.springframework.stereotype.Service;
 import ankiflash.card.service.DictionaryService;
 import ankiflash.card.utility.Translation;
+import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Service;
 
 @Service
 public abstract class DictionaryServiceImpl implements DictionaryService {

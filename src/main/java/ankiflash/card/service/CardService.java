@@ -1,8 +1,8 @@
 package ankiflash.card.service;
 
-import java.util.List;
 import ankiflash.card.dto.Card;
 import ankiflash.card.utility.Translation;
+import java.util.List;
 
 public interface CardService {
 

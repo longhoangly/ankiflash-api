@@ -1,5 +1,8 @@
 package ankiflash.security.utility.jwt;
 
+import ankiflash.security.dto.JwtAuthToken;
+import ankiflash.security.dto.User;
+import ankiflash.security.dto.UserDetail;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -10,9 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ankiflash.security.dto.JwtAuthToken;
-import ankiflash.security.dto.User;
-import ankiflash.security.dto.UserDetail;
 
 @Component
 public class AuthProvider extends AbstractUserDetailsAuthenticationProvider {

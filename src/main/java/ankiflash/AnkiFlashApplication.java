@@ -18,18 +18,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableAsync
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
-public class TheFlashApplication {
+public class AnkiFlashApplication {
 
-  private static final Logger logger = LoggerFactory.getLogger(TheFlashApplication.class);
+  private static final Logger logger = LoggerFactory.getLogger(AnkiFlashApplication.class);
   private static ApplicationContext applicationContext;
 
   @Value("${spring.security.allowed.origins}")
   private String origins;
 
   public static void main(String[] args) {
-    applicationContext = SpringApplication.run(TheFlashApplication.class, args);
+    applicationContext = SpringApplication.run(AnkiFlashApplication.class, args);
     displayAllBeans();
-    logger.info("TheFlashApplication Started");
+    logger.info("AnkiFlashApplication Started");
   }
 
   public static void displayAllBeans() {

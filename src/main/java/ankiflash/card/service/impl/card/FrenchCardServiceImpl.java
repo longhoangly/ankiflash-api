@@ -1,7 +1,5 @@
 package ankiflash.card.service.impl.card;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ankiflash.card.dto.Card;
 import ankiflash.card.service.DictionaryService;
 import ankiflash.card.service.impl.dictionary.CollinsDictionaryServiceImpl;
@@ -9,6 +7,8 @@ import ankiflash.card.service.impl.dictionary.LacVietDictionaryServiceImpl;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FrenchCardServiceImpl extends CardServiceImpl {
 

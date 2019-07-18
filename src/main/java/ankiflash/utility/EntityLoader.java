@@ -1,15 +1,15 @@
 package ankiflash.utility;
 
-import java.util.Calendar;
-import java.util.Date;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import ankiflash.counter.dto.Counter;
 import ankiflash.counter.service.CounterService;
 import ankiflash.security.dto.User;
 import ankiflash.security.service.UserService;
 import ankiflash.security.utility.PassEncoding;
+import java.util.Calendar;
+import java.util.Date;
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class EntityLoader {

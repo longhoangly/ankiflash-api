@@ -1,7 +1,7 @@
 package ankiflash.card.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import ankiflash.card.utility.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Card {
 

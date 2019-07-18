@@ -17,7 +17,7 @@ public class CardRequest {
   @NotEmpty
   private String target;
 
-  public CardRequest(String source, String target){
+  public CardRequest(String source, String target) {
     this.source = source;
     this.target = target;
   }

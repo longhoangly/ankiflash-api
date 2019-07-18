@@ -1,19 +1,5 @@
 package ankiflash.security.controller;
 
-import java.util.Calendar;
-import java.util.Date;
-import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import ankiflash.counter.service.CounterService;
 import ankiflash.security.dto.User;
 import ankiflash.security.payload.LoginRequest;
@@ -28,6 +14,20 @@ import ankiflash.security.utility.jwt.Generator;
 import ankiflash.security.utility.jwt.Validation;
 import ankiflash.utility.TheFlashProperties;
 import ankiflash.utility.exception.BadRequestException;
+import java.util.Calendar;
+import java.util.Date;
+import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/api/auth")

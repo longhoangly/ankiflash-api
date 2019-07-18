@@ -50,7 +50,8 @@ public class Constants {
 
   // JISHO
   public static String DICT_JISHO_WORD_NOT_FOUND = "Sorry, couldn't find anything matching";
-  public static String DICT_JISHO_URL_JP_EN = "https://jisho.org/search/%1$s";
+  public static String DICT_JISHO_WORD_URL_JP_EN = "https://jisho.org/word/%1$s";
+  public static String DICT_JISHO_SEARCH_URL_JP_EN = "https://jisho.org/search/%1$s";
 
   // WORD REFERENCE
   public static String DICT_WORD_REFERENCE_SPELLING_WRONG = "";

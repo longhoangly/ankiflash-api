@@ -1,5 +1,11 @@
 package ankiflash.card.service.impl.dictionary;
 
+import ankiflash.card.dto.Meaning;
+import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.HtmlHelper;
+import ankiflash.card.utility.Translation;
+import ankiflash.utility.IOUtility;
+import ankiflash.utility.TheFlashProperties;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,11 +16,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ankiflash.card.utility.Constants;
-import ankiflash.card.utility.HtmlHelper;
-import ankiflash.card.dto.Meaning;
-import ankiflash.card.utility.Translation;
-import ankiflash.utility.TheFlashProperties;
 
 public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
 
@@ -32,6 +33,8 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       this.word = wordParts[0];
       this.wordId = wordParts[1];
       this.originalWord = wordParts[2];
+    } else {
+      this.word = word;
     }
 
     String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", wordId);
@@ -94,7 +97,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       examples.set(i, examples.get(i).toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}"));
     }
 
-    return HtmlHelper.buildExample(examples);
+    return HtmlHelper.buildExample(examples, true);
   }
 
   @Override
@@ -110,7 +113,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getImage(String username, String selector) {
 
     String google_image = "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
-        + "\" style=\"font-size: 15px; color: blue\">Images for this word</a>";
+        + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
 
     String img_link = HtmlHelper.getAttribute(doc, "a.fancybox.img", 0, "href");
     if (img_link.isEmpty() || img_link.contains("no-image")) {
@@ -125,7 +128,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
       String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, img_name).toString();
-      isSuccess = HtmlHelper.download(img_link, output);
+      isSuccess = IOUtility.download(img_link, output);
     }
 
     return isSuccess ? "<img src=\"" + img_name + "\"/>" : google_image;
@@ -146,7 +149,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
       String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, pro_name).toString();
-      isSuccess = HtmlHelper.download(pro_link, output);
+      isSuccess = IOUtility.download(pro_link, output);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";

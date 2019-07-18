@@ -29,7 +29,9 @@
     </Root>
 
     <!-- LOG "com.ankiflash*" at TRACE level -->
-    <Logger name="com.ankiflash" level="info"></Logger>
+    <Logger name="com.ankiflash*" level="trace">
+      <AppenderRef ref="Console"/>
+    </Logger>
   </Loggers>
 
 </Configuration>

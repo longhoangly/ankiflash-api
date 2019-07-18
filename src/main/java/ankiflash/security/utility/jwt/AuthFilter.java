@@ -1,5 +1,7 @@
 package ankiflash.security.utility.jwt;
 
+import ankiflash.security.dto.JwtAuthToken;
+import ankiflash.security.dto.User;
 import java.io.IOException;
 import java.util.Collection;
 import javax.servlet.FilterChain;
@@ -15,8 +17,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import ankiflash.security.dto.JwtAuthToken;
-import ankiflash.security.dto.User;
 
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 

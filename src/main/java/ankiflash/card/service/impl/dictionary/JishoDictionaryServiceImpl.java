@@ -1,10 +1,20 @@
 package ankiflash.card.service.impl.dictionary;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ankiflash.card.dto.Meaning;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
+import ankiflash.utility.IOUtility;
+import ankiflash.utility.TheFlashProperties;
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
 
@@ -16,7 +26,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     this.word = word;
 
     boolean isConnectionEstablished = false;
-    String url = HtmlHelper.lookupUrl(Constants.DICT_JISHO_URL_JP_EN, word);
+    String url = HtmlHelper.lookupUrl(Constants.DICT_JISHO_WORD_URL_JP_EN, word);
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
       isConnectionEstablished = true;
@@ -28,11 +38,10 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isWordingCorrect() {
 
     boolean isWordingCorrect = true;
-    String title = HtmlHelper.getText(doc, "title", 0);
-    if (title.contains(Constants.DICT_JISHO_SPELLING_WRONG)) {
+    if (doc.outerHtml().contains(Constants.DICT_JISHO_WORD_NOT_FOUND)) {
       isWordingCorrect = false;
     }
-    String word = HtmlHelper.getText(doc, "span.headword>span", 0);
+    String word = HtmlHelper.getText(doc, ".concept_light-representation", 0);
     if (word.isEmpty()) {
       isWordingCorrect = false;
     }
@@ -41,36 +50,152 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
 
   @Override
   public String getWordType() {
-    throw new UnsupportedOperationException();
+
+    if (type == null) {
+      Elements elements = doc.select("div.concept_light.clearfix div.meaning-tags");
+      List<String> wordTypes = new ArrayList<>();
+      for (Element element : elements) {
+        if (element.hasText() && !element.text().equals("Wikipedia definition")
+            && !element.text().equals("Other forms")) {
+          wordTypes.add("[" + element.text() + "]");
+        }
+      }
+
+      type = wordTypes.isEmpty() ? "" : "(" + String.join(" / ", wordTypes) + ")";
+    }
+
+    return type;
   }
 
   @Override
   public String getExample() {
-    throw new UnsupportedOperationException();
+
+    List<String> examples = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      String example = HtmlHelper.getInnerHtml(doc, ".sentence", i);
+      if (example.isEmpty() && i == 0) {
+        return Constants.DICT_NO_EXAMPLE;
+      } else if (example.isEmpty()) {
+        break;
+      } else {
+        word = word.toLowerCase();
+        example = example.toLowerCase().replaceAll(word, "{{c1::" + word + "}}");
+        examples.add(example.replaceAll("\n", ""));
+      }
+    }
+
+    return HtmlHelper.buildExample(examples, true);
   }
 
   @Override
   public String getPhonetic() {
-    throw new UnsupportedOperationException();
+
+    return "";
   }
 
   @Override
   public String getImage(String username, String selector) {
-    throw new UnsupportedOperationException();
+
+    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+        + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
   }
 
   @Override
   public String getPron(String username, String selector) {
-    throw new UnsupportedOperationException();
+
+    String pro_link = HtmlHelper.getAttribute(doc, "audio>source[type=audio/mpeg]", 0, "src");
+    if (pro_link.isEmpty()) {
+      return "";
+    }
+
+    pro_link = "https:" + pro_link;
+    String[] pro_link_els = pro_link.split("/");
+    String pro_name = pro_link_els[pro_link_els.length - 1];
+
+    boolean isSuccess = false;
+    File dir = new File(Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS).toString());
+    if (dir.exists()) {
+      String output = Paths.get(username, TheFlashProperties.ANKI_DIR_FLASHCARDS, pro_name).toString();
+      isSuccess = IOUtility.download(pro_link, output);
+    }
+
+    return isSuccess ? "[sound:" + pro_name + "]" : "";
   }
 
   @Override
   public String getMeaning() {
-    throw new UnsupportedOperationException();
+
+    getWordType();
+    getPhonetic();
+
+    List<Meaning> meanings = new ArrayList<>();
+    Element meanGroup = HtmlHelper.getElement(doc, ".meanings-wrapper", 0);
+    if (meanGroup != null) {
+
+      Meaning meaning;
+      Elements meanElements = meanGroup.select(".meaning-tags,.meaning-wrapper");
+      for (Element meanElem : meanElements) {
+
+        if (meanElem.hasClass("meaning-tags")) {
+          meaning = new Meaning();
+          meaning.setWordType(meanElem.text());
+          meanings.add(meaning);
+        }
+
+        if (meanElem.hasClass("meaning-wrapper")) {
+          meaning = new Meaning();
+          Element mean = HtmlHelper.getElement(meanElem, ".meaning-meaning", 0);
+          if (mean != null) {
+            meaning.setMeaning(mean.text());
+          }
+
+          List<String> examples = new ArrayList<>();
+          Elements exampleElms = meanElem.select(".sentence");
+          for (Element exampleElm : exampleElms) {
+            if (exampleElm != null) {
+              examples.add(exampleElm.html().replaceAll("\n", ""));
+            }
+          }
+          meaning.setExamples(examples);
+          meanings.add(meaning);
+        }
+      }
+
+      meaning = new Meaning();
+      List<String> extraExamples = getJishoJapaneseSentences(word);
+      if (!extraExamples.isEmpty()) {
+        meaning.setWordType("Extra Examples");
+        meaning.setExamples(extraExamples);
+        meanings.add(meaning);
+      }
+    }
+
+    return HtmlHelper.buildMeaning(word, type, phonetic, meanings, true);
   }
 
   @Override
   public String getDictionaryName() {
     return "Jisho Dictionary";
+  }
+
+  private static List<String> getJishoJapaneseSentences(String word) {
+
+    String url = HtmlHelper.lookupUrl(Constants.DICT_JISHO_SEARCH_URL_JP_EN, word + "%20%23sentences");
+    Document document = HtmlHelper.getDocument(url);
+
+    List<String> sentences = new ArrayList<>();
+    Elements sentenceElms = document.select(".sentence_content");
+
+    int maxCount = 1;
+    for (Element sentenceElm : sentenceElms) {
+      sentences.add(sentenceElm.html().replaceAll("\n", ""));
+
+      if (maxCount >= 10) {
+        break;
+      }
+      maxCount++;
+    }
+
+    return sentences;
   }
 }

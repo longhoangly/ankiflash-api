@@ -1,16 +1,15 @@
 package ankiflash.card.utility;
 
+import ankiflash.card.dto.Meaning;
+import ankiflash.utility.TheFlashProperties;
 import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Proxy.Type;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.Jsoup;
@@ -19,8 +18,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ankiflash.card.dto.Meaning;
-import ankiflash.utility.TheFlashProperties;
 
 public class HtmlHelper {
 
@@ -29,6 +26,15 @@ public class HtmlHelper {
   public static String lookupUrl(String dictUrl, String word) {
     word = word.replaceAll(" ", "%20");
     return String.format(dictUrl, word);
+  }
+
+  private static String decodeValue(String value) {
+    try {
+      return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
+    } catch (UnsupportedEncodingException e) {
+      logger.error("Exception Occurred: ", e);
+    }
+    return "";
   }
 
   public static Document getDocument(String url) {
@@ -97,35 +103,19 @@ public class HtmlHelper {
     return element != null ? element.attr(attr) : "";
   }
 
-  public static boolean download(String url, String target) {
-    try {
-      URL site = new URL(url);
-      URLConnection connection;
-      if (!TheFlashProperties.PROXY_ADDRESS.isEmpty() && TheFlashProperties.PROXY_PORT != 0) {
-        Proxy proxy = new Proxy(Type.HTTP,
-            new InetSocketAddress(TheFlashProperties.PROXY_ADDRESS, TheFlashProperties.PROXY_PORT));
-        connection = site.openConnection(proxy);
-      } else {
-        connection = site.openConnection();
-      }
-      connection.addRequestProperty("User-Agent", "Mozilla/5.0 Gecko/20100101 Firefox/47.0");
-      connection.setConnectTimeout(TheFlashProperties.CONNECTION_TIMEOUT);
-      connection.setReadTimeout(TheFlashProperties.READ_TIMEOUT);
-
-      InputStream in = connection.getInputStream();
-      Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      logger.error("Exception Occurred: ", e);
-      return false;
-    }
-
-    return true;
-  }
-
   public static String buildExample(List<String> examples) {
 
+    return buildExample(examples, false);
+  }
+
+  public static String buildExample(List<String> examples, boolean isJapanese) {
+
     StringBuilder htmlBuilder = new StringBuilder();
-    htmlBuilder.append("<div class=\"content-container\">");
+    if (isJapanese) {
+      htmlBuilder.append("<div class=\"content-container japan-font\">");
+    } else {
+      htmlBuilder.append("<div class=\"content-container\">");
+    }
     htmlBuilder.append("<ul class=\"content-circle\">");
     for (String example : examples) {
       htmlBuilder.append("<li class=\"content-example\">" + example + "</li>");
@@ -150,9 +140,16 @@ public class HtmlHelper {
     } else {
       htmlBuilder.append("<div class=\"content-container\">");
     }
+
     htmlBuilder.append("<h2 class=\"h\">" + word + "</h2>");
-    htmlBuilder.append("<span class=\"content-type\">" + type + "</span>");
-    htmlBuilder.append("<span class=\"content-phonetic\">" + phonetic + "</span>");
+    if (type != null && !type.isEmpty()) {
+      htmlBuilder.append("<span class=\"content-type\">" + type + "</span>");
+    }
+
+    if (phonetic != null && !phonetic.isEmpty()) {
+      htmlBuilder.append("<span class=\"content-phonetic\">" + phonetic + "</span>");
+    }
+
     htmlBuilder.append("<ol class=\"content-order\">");
     for (Meaning meaning : meanings) {
       if (meaning.getWordType() != null && !meaning.getWordType().isEmpty()) {
@@ -163,8 +160,9 @@ public class HtmlHelper {
         htmlBuilder.append("<li class=\"content-meaning\">" + meaning.getMeaning() + "</li>");
       }
 
-      if (meaning.getExamples() != null && meaning.getExamples().size() > 0) {
+      if (meaning.getExamples() != null && !meaning.getExamples().isEmpty()) {
         htmlBuilder.append("<ul class=\"content-circle\">");
+
         for (String example : meaning.getExamples()) {
           htmlBuilder.append("<li class=\"content-example\">" + example + "</li>");
         }
@@ -177,6 +175,16 @@ public class HtmlHelper {
     return htmlBuilder.toString();
   }
 
+
+  /*=== Jdict Specific Methods ===*/
+
+  /**
+   * To get Jdict HTML source, we need to send a post request to Jdict
+   *
+   * @param url post url
+   * @param body json input for post request
+   * @return Jsoup doucument
+   */
   public static Document getJDictDoc(String url, String body) {
 
     logger.info("body={}", body);
@@ -191,5 +199,64 @@ public class HtmlHelper {
       document = Jsoup.parse(json.get("Content").getAsString());
     }
     return document;
+  }
+
+  public static List<String> getJDictWords(String word, boolean firstOnly) {
+
+    String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
+    Document document = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
+    Elements wordElms = document.select("ul>li");
+
+    List<String> jDictWords = new ArrayList<>();
+    for (Element wordElem : wordElms) {
+      if (wordElem.attr("title").toLowerCase().contains(word.toLowerCase())
+          && !wordElem.attr("data-id").isEmpty()) {
+        jDictWords.add(wordElem.attr("title") + ":" + wordElem.attr("data-id") + ":" + word);
+      }
+
+      if (firstOnly) {
+        break;
+      }
+    }
+    return jDictWords;
+  }
+
+  public static String getJDictWord(String word) {
+    List<String> words = getJDictWords(word, true);
+    return words.isEmpty() ? "" : words.get(0);
+  }
+
+  /*=== Jisho Specific Methods ===*/
+
+  public static List<String> getJishoWords(String word, boolean firstOnly) {
+
+    String url = HtmlHelper.lookupUrl(Constants.DICT_JISHO_SEARCH_URL_JP_EN, word);
+    Document document = HtmlHelper.getDocument(url);
+
+    Elements wordElms = document.select(".concept_light.clearfix");
+    List<String> jDictWords = new ArrayList<>();
+    for (Element wordElem : wordElms) {
+
+      Element foundWordElm = HtmlHelper.getElement(wordElem, ".concept_light-representation", 0);
+      Element detailLink = HtmlHelper.getElement(wordElem, ".light-details_link", 0);
+
+      if (foundWordElm != null && foundWordElm.text().toLowerCase().contains(word.toLowerCase())
+          && detailLink != null && !detailLink.text().isEmpty()) {
+
+        String[] detailLinkEls = detailLink.attr("href").split("/");
+        jDictWords.add(decodeValue(detailLinkEls[detailLinkEls.length - 1]));
+      }
+
+      if (firstOnly) {
+        break;
+      }
+    }
+
+    return jDictWords;
+  }
+
+  public static String getJishoWord(String word) {
+    List<String> words = getJishoWords(word, true);
+    return words.isEmpty() ? "" : words.get(0);
   }
 }

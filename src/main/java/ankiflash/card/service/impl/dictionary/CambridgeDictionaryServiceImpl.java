@@ -1,15 +1,15 @@
 package ankiflash.card.service.impl.dictionary;
 
+import ankiflash.card.dto.Meaning;
+import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.HtmlHelper;
+import ankiflash.card.utility.Translation;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ankiflash.card.utility.Constants;
-import ankiflash.card.utility.HtmlHelper;
-import ankiflash.card.dto.Meaning;
-import ankiflash.card.utility.Translation;
 
 public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 

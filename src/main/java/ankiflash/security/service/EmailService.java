@@ -1,7 +1,7 @@
 package ankiflash.security.service;
 
-import org.springframework.stereotype.Service;
 import ankiflash.security.dto.User;
+import org.springframework.stereotype.Service;
 
 @Service
 public interface EmailService {

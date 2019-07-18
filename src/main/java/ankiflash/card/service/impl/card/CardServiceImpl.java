@@ -1,14 +1,14 @@
 package ankiflash.card.service.impl.card;
 
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Service;
 import ankiflash.card.dto.Card;
 import ankiflash.card.service.CardService;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
 import ankiflash.utility.TheFlashProperties;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public abstract class CardServiceImpl implements CardService {

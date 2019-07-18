@@ -1,8 +1,8 @@
 package ankiflash.security.service;
 
+import ankiflash.security.dto.User;
 import java.util.Collection;
 import org.springframework.stereotype.Service;
-import ankiflash.security.dto.User;
 
 @Service
 public interface UserService {

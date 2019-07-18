@@ -1,9 +1,9 @@
 package ankiflash.card.service.impl.card;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ankiflash.card.dto.Card;
 import ankiflash.card.utility.Translation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SpanishCardServiceImpl extends CardServiceImpl {
 

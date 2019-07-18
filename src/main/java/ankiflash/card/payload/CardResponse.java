@@ -1,9 +1,9 @@
 package ankiflash.card.payload;
 
+import ankiflash.card.dto.Card;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
-import ankiflash.card.dto.Card;
 
 public class CardResponse {
 

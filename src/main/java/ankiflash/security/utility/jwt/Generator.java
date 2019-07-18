@@ -1,12 +1,12 @@
 package ankiflash.security.utility.jwt;
 
+import ankiflash.security.dto.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ankiflash.security.dto.User;
 
 @Component
 public class Generator {
@@ -24,7 +24,7 @@ public class Generator {
     Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
     return Jwts.builder()
                .setClaims(claims)
-               .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds*1000))
+               .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds * 1000))
                .signWith(SignatureAlgorithm.HS512, secret)
                .compact();
   }
@@ -33,7 +33,7 @@ public class Generator {
     Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
     return Jwts.builder()
                .setClaims(claims)
-               .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds*1000))
+               .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds * 1000))
                .signWith(SignatureAlgorithm.HS512, secret)
                .compact();
   }

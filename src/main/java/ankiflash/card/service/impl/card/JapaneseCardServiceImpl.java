@@ -1,13 +1,14 @@
 package ankiflash.card.service.impl.card;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ankiflash.card.dto.Card;
 import ankiflash.card.service.DictionaryService;
 import ankiflash.card.service.impl.dictionary.JDictDictionaryServiceImpl;
+import ankiflash.card.service.impl.dictionary.JishoDictionaryServiceImpl;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JapaneseCardServiceImpl extends CardServiceImpl {
 
@@ -29,6 +30,7 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
     logger.info("Target = " + translation.getTarget());
 
     DictionaryService jDict = new JDictDictionaryServiceImpl();
+    DictionaryService jishoDict = new JishoDictionaryServiceImpl();
 
     // Japanese to Vietnamese
     if (translation.equals(Translation.JP_VN)) {
@@ -51,6 +53,28 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setTag(jDict.getTag());
       card.setMeaning(jDict.getMeaning());
       card.setCopyright(String.format(Constants.DICT_COPYRIGHT, jDict.getDictionaryName()));
+
+      // Japanese to English
+    } else if (translation.equals(Translation.JP_EN)) {
+
+      if (!jishoDict.isConnectionEstablished(word, translation)) {
+        card.setStatus(Status.Connection_Failed);
+        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        return card;
+      } else if (!jishoDict.isWordingCorrect()) {
+        card.setStatus(Status.Word_Not_Found);
+        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        return card;
+      }
+
+      card.setWordType(jishoDict.getWordType());
+      card.setPhonetic(jishoDict.getPhonetic());
+      card.setExample(jishoDict.getExample());
+      card.setPron(jishoDict.getPron(username, ""));
+      card.setImage(jishoDict.getImage(username, ""));
+      card.setTag(jishoDict.getTag());
+      card.setMeaning(jishoDict.getMeaning());
+      card.setCopyright(String.format(Constants.DICT_COPYRIGHT, jishoDict.getDictionaryName()));
 
     } else {
       card.setStatus(Status.Not_Supported_Translation);
