@@ -11,32 +11,29 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(WordReferenceDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionEstablished(String word, Translation translation) {
+  public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
 
-    boolean isConnectionEstablished = false;
-    String url = HtmlHelper.lookupUrl(Constants.DICT_WORD_REFERENCE_URL_EN_SP, word);
+    boolean isConnectionFailed = true;
+    String url = HtmlHelper.lookupUrl(Constants.WORD_REFERENCE_URL_EN_SP, word);
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
-      isConnectionEstablished = true;
+      isConnectionFailed = false;
     }
-    return isConnectionEstablished;
+    return isConnectionFailed;
   }
 
   @Override
-  public boolean isWordingCorrect() {
+  public boolean isWordNotFound() {
 
-    boolean isWordingCorrect = true;
     String title = HtmlHelper.getText(doc, "title", 0);
-    if (title.contains(Constants.DICT_WORD_REFERENCE_SPELLING_WRONG)) {
-      isWordingCorrect = false;
+    if (title.contains(Constants.WORD_REFERENCE_SPELLING_WRONG)) {
+      return true;
     }
+
     String word = HtmlHelper.getText(doc, "span.headword>span", 0);
-    if (word.isEmpty()) {
-      isWordingCorrect = false;
-    }
-    return isWordingCorrect;
+    return word.isEmpty();
   }
 
   @Override

@@ -30,20 +30,20 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     //English to English
     if (translation.equals(Translation.EN_EN)) {
 
-      if (!oxfordDict.isConnectionEstablished(word, translation)) {
+      if (oxfordDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
-        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (!oxfordDict.isWordingCorrect()) {
+      } else if (oxfordDict.isWordNotFound()) {
         card.setStatus(Status.Word_Not_Found);
-        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        card.setComment(Constants.WORD_NOT_FOUND);
         return card;
       }
 
       card.setWordType(oxfordDict.getWordType());
       card.setPhonetic(oxfordDict.getPhonetic());
       card.setMeaning(oxfordDict.getMeaning());
-      card.setCopyright(String.format(Constants.DICT_COPYRIGHT, oxfordDict.getDictionaryName()));
+      card.setCopyright(String.format(Constants.COPYRIGHT, oxfordDict.getDictionaryName()));
 
       //English to Chinese/French/Japanese
     } else if (translation.equals(Translation.EN_CN_TD)
@@ -51,46 +51,46 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
         || translation.equals(Translation.EN_JP)
         || translation.equals(Translation.EN_FR)) {
 
-      if (!oxfordDict.isConnectionEstablished(word, translation) ||
-          !cambridgeDict.isConnectionEstablished(word, translation)) {
+      if (oxfordDict.isConnectionFailed(word, translation) ||
+          cambridgeDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
-        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (!oxfordDict.isWordingCorrect() || !cambridgeDict.isWordingCorrect()) {
+      } else if (oxfordDict.isWordNotFound() || cambridgeDict.isWordNotFound()) {
         card.setStatus(Status.Word_Not_Found);
-        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        card.setComment(Constants.WORD_NOT_FOUND);
         return card;
       }
 
       card.setWordType(oxfordDict.getWordType());
       card.setPhonetic(oxfordDict.getPhonetic());
       card.setMeaning(cambridgeDict.getMeaning());
-      card.setCopyright(String.format(Constants.DICT_COPYRIGHT,
+      card.setCopyright(String.format(Constants.COPYRIGHT,
           String.join(", and ", oxfordDict.getDictionaryName(), cambridgeDict.getDictionaryName())));
 
       //English to Vietnamese
     } else if (translation.equals(Translation.EN_VN)) {
 
-      if (!oxfordDict.isConnectionEstablished(word, translation) ||
-          !lacVietDict.isConnectionEstablished(word, translation)) {
+      if (oxfordDict.isConnectionFailed(word, translation) ||
+          lacVietDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
-        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (!oxfordDict.isWordingCorrect() || !lacVietDict.isWordingCorrect()) {
+      } else if (oxfordDict.isWordNotFound() || lacVietDict.isWordNotFound()) {
         card.setStatus(Status.Word_Not_Found);
-        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        card.setComment(Constants.WORD_NOT_FOUND);
         return card;
       }
 
       card.setWordType(oxfordDict.getWordType());
       card.setPhonetic(oxfordDict.getPhonetic());
       card.setMeaning(lacVietDict.getMeaning());
-      card.setCopyright(String.format(Constants.DICT_COPYRIGHT,
+      card.setCopyright(String.format(Constants.COPYRIGHT,
           String.join(", and ", oxfordDict.getDictionaryName(), lacVietDict.getDictionaryName())));
 
     } else {
       card.setStatus(Status.Not_Supported_Translation);
-      card.setComment(String.format(Constants.DICT_NOT_SUPPORTED_TRANSLATION,
+      card.setComment(String.format(Constants.NOT_SUPPORTED_TRANSLATION,
           translation.getSource(), translation.getTarget()));
       return card;
     }
@@ -103,7 +103,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     card.setTag(oxfordDict.getTag());
 
     card.setStatus(Status.Success);
-    card.setComment(Constants.DICT_SUCCESS);
+    card.setComment(Constants.SUCCESS);
 
     String cardContent = card.getWord() + Constants.TAB + card.getWordType() + Constants.TAB
         + card.getPhonetic() + Constants.TAB + card.getExample() + Constants.TAB + card.getPron() + Constants.TAB

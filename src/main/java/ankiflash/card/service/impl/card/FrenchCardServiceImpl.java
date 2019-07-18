@@ -28,13 +28,13 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
     // French to Vietnamese
     if (translation.equals(Translation.FR_VN)) {
 
-      if (!lacVietDict.isConnectionEstablished(word, translation)) {
+      if (lacVietDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
-        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (!lacVietDict.isWordingCorrect()) {
+      } else if (lacVietDict.isWordNotFound()) {
         card.setStatus(Status.Word_Not_Found);
-        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        card.setComment(Constants.WORD_NOT_FOUND);
         return card;
       }
 
@@ -45,18 +45,18 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setImage(lacVietDict.getImage(username, ""));
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
-      card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));
+      card.setCopyright(String.format(Constants.COPYRIGHT, lacVietDict.getDictionaryName()));
 
       // French to English
     } else if (translation.equals(Translation.FR_EN)) {
 
-      if (!collinsDict.isConnectionEstablished(word, translation)) {
+      if (collinsDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
-        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (!collinsDict.isWordingCorrect()) {
+      } else if (collinsDict.isWordNotFound()) {
         card.setStatus(Status.Word_Not_Found);
-        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        card.setComment(Constants.WORD_NOT_FOUND);
         return card;
       }
 
@@ -67,19 +67,19 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setImage(collinsDict.getImage(username, ""));
       card.setTag(collinsDict.getTag());
       card.setMeaning(collinsDict.getMeaning());
-      card.setCopyright(String.format(Constants.DICT_COPYRIGHT, lacVietDict.getDictionaryName()));
+      card.setCopyright(String.format(Constants.COPYRIGHT, lacVietDict.getDictionaryName()));
 
     } else {
 
       card.setStatus(Status.Not_Supported_Translation);
-      card.setComment(String.format(Constants.DICT_NOT_SUPPORTED_TRANSLATION,
+      card.setComment(String.format(Constants.NOT_SUPPORTED_TRANSLATION,
           translation.getSource(), translation.getTarget()));
 
       return card;
     }
 
     card.setStatus(Status.Success);
-    card.setComment(Constants.DICT_SUCCESS);
+    card.setComment(Constants.SUCCESS);
 
     String cardContent = card.getWord() + Constants.TAB + card.getWordType() + Constants.TAB
         + card.getPhonetic() + Constants.TAB + card.getExample() + Constants.TAB + card.getPron() + Constants.TAB

@@ -26,7 +26,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   private String wordId;
 
   @Override
-  public boolean isConnectionEstablished(String word, Translation translation) {
+  public boolean isConnectionFailed(String word, Translation translation) {
 
     String[] wordParts = word.split(":");
     if (word.contains(":") && wordParts.length == 3) {
@@ -38,29 +38,25 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", wordId);
-    doc = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
+    doc = HtmlHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
 
-    boolean isConnectionEstablished = false;
+    boolean isConnectionFailed = true;
     if (doc != null) {
-      isConnectionEstablished = true;
+      isConnectionFailed = false;
     }
-    return isConnectionEstablished;
+    return isConnectionFailed;
   }
 
   @Override
-  public boolean isWordingCorrect() {
+  public boolean isWordNotFound() {
 
     Elements elements = doc.select("#txtKanji");
     if (elements.isEmpty()) {
-      return false;
+      return true;
     }
 
     elements = doc.select("#word-detail-info");
-    if (elements.isEmpty()) {
-      return false;
-    }
-
-    return true;
+    return elements.isEmpty();
   }
 
   @Override
@@ -83,7 +79,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     for (int i = 0; i < 4; i++) {
       Element example = HtmlHelper.getElement(doc, "ul.ul-disc>li>u,ul.ul-disc>li>p", i);
       if (example == null && i == 0) {
-        return Constants.DICT_NO_EXAMPLE;
+        return Constants.NO_EXAMPLE;
       } else if (example == null) {
         break;
       } else {
@@ -224,7 +220,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
 
       String sentencesChain = String.join("=>=>=>=>=>", jpExamples);
       String urlParams = String.format("m=dictionary&fn=furigana&keyword=%1$s", sentencesChain);
-      Document doc = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParams);
+      Document doc = HtmlHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParams);
       sentencesChain = doc != null ? doc.body().html().replaceAll("\n", "") : sentencesChain;
       jpExamples = Arrays.asList(sentencesChain.split("=&gt;=&gt;=&gt;=&gt;=&gt;"));
 

@@ -21,31 +21,27 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(JishoDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionEstablished(String word, Translation translation) {
+  public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
 
-    boolean isConnectionEstablished = false;
-    String url = HtmlHelper.lookupUrl(Constants.DICT_JISHO_WORD_URL_JP_EN, word);
+    boolean isConnectionFailed = true;
+    String url = HtmlHelper.lookupUrl(Constants.JISHO_WORD_URL_JP_EN, word);
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
-      isConnectionEstablished = true;
+      isConnectionFailed = false;
     }
-    return isConnectionEstablished;
+    return isConnectionFailed;
   }
 
   @Override
-  public boolean isWordingCorrect() {
+  public boolean isWordNotFound() {
 
-    boolean isWordingCorrect = true;
-    if (doc.outerHtml().contains(Constants.DICT_JISHO_WORD_NOT_FOUND)) {
-      isWordingCorrect = false;
+    if (doc.outerHtml().contains(Constants.JISHO_WORD_NOT_FOUND)) {
+      return true;
     }
     String word = HtmlHelper.getText(doc, ".concept_light-representation", 0);
-    if (word.isEmpty()) {
-      isWordingCorrect = false;
-    }
-    return isWordingCorrect;
+    return word.isEmpty();
   }
 
   @Override
@@ -74,7 +70,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     for (int i = 0; i < 4; i++) {
       String example = HtmlHelper.getInnerHtml(doc, ".sentence", i);
       if (example.isEmpty() && i == 0) {
-        return Constants.DICT_NO_EXAMPLE;
+        return Constants.NO_EXAMPLE;
       } else if (example.isEmpty()) {
         break;
       } else {
@@ -180,7 +176,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
 
   private static List<String> getJishoJapaneseSentences(String word) {
 
-    String url = HtmlHelper.lookupUrl(Constants.DICT_JISHO_SEARCH_URL_JP_EN, word + "%20%23sentences");
+    String url = HtmlHelper.lookupUrl(Constants.JISHO_SEARCH_URL_JP_EN, word + "%20%23sentences");
     Document document = HtmlHelper.getDocument(url);
 
     List<String> sentences = new ArrayList<>();

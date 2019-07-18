@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,12 +75,12 @@ public class JsonHelper {
       // To write content to the connection output stream
       con.setDoOutput(true);
       try (OutputStream os = con.getOutputStream()) {
-        byte[] bodyBytes = body.getBytes("utf-8");
+        byte[] bodyBytes = body.getBytes(StandardCharsets.UTF_8);
         os.write(bodyBytes, 0, bodyBytes.length);
       }
 
       InputStream is = con.getInputStream();
-      BufferedReader br = new BufferedReader(new InputStreamReader(is, "utf-8"));
+      BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
       String jsonText = readAll(br);
       json = new JsonParser().parse(jsonText).getAsJsonObject();
       is.close();

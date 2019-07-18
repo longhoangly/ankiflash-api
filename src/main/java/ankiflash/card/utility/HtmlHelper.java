@@ -204,7 +204,7 @@ public class HtmlHelper {
   public static List<String> getJDictWords(String word, boolean firstOnly) {
 
     String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
-    Document document = HtmlHelper.getJDictDoc(Constants.DICT_JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
+    Document document = HtmlHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
     Elements wordElms = document.select("ul>li");
 
     List<String> jDictWords = new ArrayList<>();
@@ -230,7 +230,7 @@ public class HtmlHelper {
 
   public static List<String> getJishoWords(String word, boolean firstOnly) {
 
-    String url = HtmlHelper.lookupUrl(Constants.DICT_JISHO_SEARCH_URL_JP_EN, word);
+    String url = HtmlHelper.lookupUrl(Constants.JISHO_SEARCH_URL_JP_EN, word);
     Document document = HtmlHelper.getDocument(url);
 
     Elements wordElms = document.select(".concept_light.clearfix");

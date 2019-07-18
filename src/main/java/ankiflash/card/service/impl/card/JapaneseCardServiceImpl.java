@@ -35,13 +35,13 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
     // Japanese to Vietnamese
     if (translation.equals(Translation.JP_VN)) {
 
-      if (!jDict.isConnectionEstablished(word, translation)) {
+      if (jDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
-        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (!jDict.isWordingCorrect()) {
+      } else if (jDict.isWordNotFound()) {
         card.setStatus(Status.Word_Not_Found);
-        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        card.setComment(Constants.WORD_NOT_FOUND);
         return card;
       }
 
@@ -52,18 +52,18 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setImage(jDict.getImage(username, ""));
       card.setTag(jDict.getTag());
       card.setMeaning(jDict.getMeaning());
-      card.setCopyright(String.format(Constants.DICT_COPYRIGHT, jDict.getDictionaryName()));
+      card.setCopyright(String.format(Constants.COPYRIGHT, jDict.getDictionaryName()));
 
       // Japanese to English
     } else if (translation.equals(Translation.JP_EN)) {
 
-      if (!jishoDict.isConnectionEstablished(word, translation)) {
+      if (jishoDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
-        card.setComment(Constants.DICT_CONNECTION_FAILED);
+        card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (!jishoDict.isWordingCorrect()) {
+      } else if (jishoDict.isWordNotFound()) {
         card.setStatus(Status.Word_Not_Found);
-        card.setComment(Constants.DICT_WORD_NOT_FOUND);
+        card.setComment(Constants.WORD_NOT_FOUND);
         return card;
       }
 
@@ -74,17 +74,17 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setImage(jishoDict.getImage(username, ""));
       card.setTag(jishoDict.getTag());
       card.setMeaning(jishoDict.getMeaning());
-      card.setCopyright(String.format(Constants.DICT_COPYRIGHT, jishoDict.getDictionaryName()));
+      card.setCopyright(String.format(Constants.COPYRIGHT, jishoDict.getDictionaryName()));
 
     } else {
       card.setStatus(Status.Not_Supported_Translation);
-      card.setComment(String.format(Constants.DICT_NOT_SUPPORTED_TRANSLATION,
+      card.setComment(String.format(Constants.NOT_SUPPORTED_TRANSLATION,
           translation.getSource(), translation.getTarget()));
       return card;
     }
 
     card.setStatus(Status.Success);
-    card.setComment(Constants.DICT_SUCCESS);
+    card.setComment(Constants.SUCCESS);
 
     String cardContent = card.getWord() + Constants.TAB + card.getWordType() + Constants.TAB
         + card.getPhonetic() + Constants.TAB + card.getExample() + Constants.TAB + card.getPron() + Constants.TAB

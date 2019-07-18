@@ -16,9 +16,9 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   protected String phonetic;
 
-  public abstract boolean isConnectionEstablished(String word, Translation translation);
+  public abstract boolean isConnectionFailed(String word, Translation translation);
 
-  public abstract boolean isWordingCorrect();
+  public abstract boolean isWordNotFound();
 
   public abstract String getWordType();
 

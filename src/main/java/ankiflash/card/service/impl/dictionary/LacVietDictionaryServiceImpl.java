@@ -20,42 +20,38 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(LacVietDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionEstablished(String word, Translation translation) {
+  public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
 
     String url = "";
-    boolean isConnectionEstablished = false;
+    boolean isConnectionFailed = true;
     if (translation.equals(Translation.VN_EN)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_VN_EN, word);
+      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_VN_EN, word);
     } else if (translation.equals(Translation.VN_FR)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_VN_FR, word);
+      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_VN_FR, word);
     } else if (translation.equals(Translation.EN_VN)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_EN_VN, word);
+      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_EN_VN, word);
     } else if (translation.equals(Translation.FR_VN)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_LACVIET_URL_FR_VN, word);
+      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_FR_VN, word);
     }
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
-      isConnectionEstablished = true;
+      isConnectionFailed = false;
     }
-    return isConnectionEstablished;
+    return isConnectionFailed;
   }
 
   @Override
-  public boolean isWordingCorrect() {
+  public boolean isWordNotFound() {
 
     Elements words = doc.select("div.w.fl");
     if (words.isEmpty()) {
-      return false;
+      return true;
     }
 
     String warning = HtmlHelper.getText(doc, "div.i.p10", 0);
-    if (warning.contains(Constants.DICT_LACVIET_SPELLING_WRONG)) {
-      return false;
-    }
-
-    return true;
+    return warning.contains(Constants.LACVIET_SPELLING_WRONG);
   }
 
   @Override
@@ -82,7 +78,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     for (int i = 0; i < 4; i++) {
       String example = HtmlHelper.getText(doc, "div.e", i);
       if (example.isEmpty() && i == 0) {
-        return Constants.DICT_NO_EXAMPLE;
+        return Constants.NO_EXAMPLE;
       } else if (example.isEmpty()) {
         break;
       } else {

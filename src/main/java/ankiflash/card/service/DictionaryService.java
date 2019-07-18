@@ -4,9 +4,9 @@ import ankiflash.card.utility.Translation;
 
 public interface DictionaryService {
 
-  boolean isConnectionEstablished(String word, Translation translation);
+  boolean isConnectionFailed(String word, Translation translation);
 
-  boolean isWordingCorrect();
+  boolean isWordNotFound();
 
   String getWordType();
 

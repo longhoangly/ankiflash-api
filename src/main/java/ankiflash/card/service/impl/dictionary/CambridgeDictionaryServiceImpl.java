@@ -16,42 +16,38 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(CambridgeDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionEstablished(String word, Translation translation) {
+  public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
 
     String url = "";
-    boolean isConnectionEstablished = false;
+    boolean isConnectionFailed = true;
     if (translation.equals(Translation.EN_CN_TD)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_TD, word);
+      url = HtmlHelper.lookupUrl(Constants.CAMBRIDGE_URL_EN_CN_TD, word);
     } else if (translation.equals(Translation.EN_CN_SP)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_CN_SP, word);
+      url = HtmlHelper.lookupUrl(Constants.CAMBRIDGE_URL_EN_CN_SP, word);
     } else if (translation.equals(Translation.EN_FR)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_FR, word);
+      url = HtmlHelper.lookupUrl(Constants.CAMBRIDGE_URL_EN_FR, word);
     } else if (translation.equals(Translation.EN_JP)) {
-      url = HtmlHelper.lookupUrl(Constants.DICT_CAMBRIDGE_URL_EN_JP, word);
+      url = HtmlHelper.lookupUrl(Constants.CAMBRIDGE_URL_EN_JP, word);
     }
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
-      isConnectionEstablished = true;
+      isConnectionFailed = false;
     }
-    return isConnectionEstablished;
+    return isConnectionFailed;
   }
 
   @Override
-  public boolean isWordingCorrect() {
+  public boolean isWordNotFound() {
 
     String title = HtmlHelper.getText(doc, "title", 0);
-    if (title.contains(Constants.DICT_CAMBRIDGE_SPELLING_WRONG)) {
-      return false;
+    if (title.contains(Constants.CAMBRIDGE_SPELLING_WRONG)) {
+      return true;
     }
 
     String word = HtmlHelper.getText(doc, "span.headword>span,.hw", 0);
-    if (word.isEmpty()) {
-      return false;
-    }
-
-    return true;
+    return word.isEmpty();
   }
 
   @Override

@@ -20,33 +20,29 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(CollinsDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionEstablished(String word, Translation translation) {
+  public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
 
-    boolean isConnectionEstablished = false;
-    String url = HtmlHelper.lookupUrl(Constants.DICT_COLLINS_URL_FR_EN, word);
+    boolean isConnectionFailed = true;
+    String url = HtmlHelper.lookupUrl(Constants.COLLINS_URL_FR_EN, word);
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
-      isConnectionEstablished = true;
+      isConnectionFailed = false;
     }
-    return isConnectionEstablished;
+    return isConnectionFailed;
   }
 
   @Override
-  public boolean isWordingCorrect() {
+  public boolean isWordNotFound() {
 
     String mainContent = HtmlHelper.getText(doc, "div.content-box", 0);
-    if (mainContent.contains(Constants.DICT_COLLINS_SPELLING_WRONG)) {
-      return false;
+    if (mainContent.contains(Constants.COLLINS_SPELLING_WRONG)) {
+      return true;
     }
 
     String word = HtmlHelper.getText(doc, "h2.h2_entry>span", 0);
-    if (word.isEmpty()) {
-      return false;
-    }
-
-    return true;
+    return word.isEmpty();
   }
 
   @Override
@@ -66,7 +62,7 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     for (int i = 0; i < 4; i++) {
       String example = HtmlHelper.getText(doc, ".re.type-phr,.cit.type-example", i);
       if (example.isEmpty() && i == 0) {
-        return Constants.DICT_NO_EXAMPLE;
+        return Constants.NO_EXAMPLE;
       } else if (example.isEmpty()) {
         break;
       } else {

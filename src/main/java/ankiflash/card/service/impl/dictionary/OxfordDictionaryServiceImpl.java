@@ -20,34 +20,30 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(OxfordDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionEstablished(String word, Translation translation) {
+  public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
 
-    boolean isConnectionEstablished = false;
-    String url = HtmlHelper.lookupUrl(Constants.DICT_OXFORD_URL_EN_EN, word);
+    boolean isConnectionFailed = true;
+    String url = HtmlHelper.lookupUrl(Constants.OXFORD_URL_EN_EN, word);
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
-      isConnectionEstablished = true;
+      isConnectionFailed = false;
     }
-    return isConnectionEstablished;
+    return isConnectionFailed;
   }
 
   @Override
-  public boolean isWordingCorrect() {
+  public boolean isWordNotFound() {
 
     String title = HtmlHelper.getText(doc, "title", 0);
-    if (title.contains(Constants.DICT_OXFORD_SPELLING_WRONG) ||
-        title.contains(Constants.DICT_OXFORD_WORD_NOT_FOUND)) {
-      return false;
+    if (title.contains(Constants.OXFORD_SPELLING_WRONG) ||
+        title.contains(Constants.OXFORD_WORD_NOT_FOUND)) {
+      return true;
     }
 
     String word = HtmlHelper.getText(doc, "h2", 0);
-    if (word.isEmpty()) {
-      return false;
-    }
-
-    return true;
+    return word.isEmpty();
   }
 
   @Override
@@ -68,7 +64,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     for (int i = 0; i < 4; i++) {
       String example = HtmlHelper.getText(doc, "span.x", i);
       if (example.isEmpty() && i == 0) {
-        return Constants.DICT_NO_EXAMPLE;
+        return Constants.NO_EXAMPLE;
       } else if (example.isEmpty()) {
         break;
       } else {
