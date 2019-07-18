@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 
-public class CardResponse {
+class CardResponse {
 
   @NotNull
   private List<Card> cardCollection;

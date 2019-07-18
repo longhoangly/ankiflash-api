@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Card {
 
-  private String word;
+  private final String word;
 
   private String wordType;
 

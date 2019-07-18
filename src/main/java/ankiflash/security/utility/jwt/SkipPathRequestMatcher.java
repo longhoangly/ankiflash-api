@@ -8,14 +8,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-public class SkipPathRequestMatcher implements RequestMatcher {
+class SkipPathRequestMatcher implements RequestMatcher {
 
-  private OrRequestMatcher matchers;
-  private RequestMatcher processingMatcher;
+  private final OrRequestMatcher matchers;
+  private final RequestMatcher processingMatcher;
 
   public SkipPathRequestMatcher(List<String> pathsToSkip, String processingPath) {
     Assert.notNull(pathsToSkip);
-    List<RequestMatcher> m = pathsToSkip.stream().map(path -> new AntPathRequestMatcher(path)).collect(
+    List<RequestMatcher> m = pathsToSkip.stream().map(AntPathRequestMatcher::new).collect(
         Collectors.toList());
     matchers = new OrRequestMatcher(m);
     processingMatcher = new AntPathRequestMatcher(processingPath);

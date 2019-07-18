@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User findById(int id) {
+    //noinspection OptionalGetWithoutIsPresent
     return userRepository.findById(id).get();
   }
 

@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -161,7 +162,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     Meaning meaning = new Meaning();
 
     Element meanGroup = HtmlHelper.getElement(doc, "#word-detail-info", 0);
-    Element wordType = HtmlHelper.getElement(meanGroup, "label[class*=word-type]", 0);
+    Element wordType = HtmlHelper.getElement(Objects.requireNonNull(meanGroup), "label[class*=word-type]", 0);
     if (wordType != null) {
       meaning.setWordType(wordType.text());
     }

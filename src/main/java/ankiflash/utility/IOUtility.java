@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FileUtils;
@@ -81,7 +82,7 @@ public class IOUtility {
     }
   }
 
-  public static void copyFile(String srcPath, String desPath) {
+  private static void copyFile(String srcPath, String desPath) {
 
     try {
       Files.copy(Paths.get(srcPath), Paths.get(desPath), StandardCopyOption.COPY_ATTRIBUTES);
@@ -94,9 +95,7 @@ public class IOUtility {
 
     logger.info(String.format("Zipping directory, %1$s", dirPath));
     try {
-      FileOutputStream fos = null;
-      fos = new FileOutputStream(outputPath);
-
+      FileOutputStream fos = new FileOutputStream(outputPath);
       ZipOutputStream zipOut = new ZipOutputStream(fos);
       File fileToZip = new File(dirPath);
 
@@ -124,7 +123,7 @@ public class IOUtility {
           zipOut.closeEntry();
         }
         File[] children = fileToZip.listFiles();
-        for (File childFile : children) {
+        for (File childFile : Objects.requireNonNull(children)) {
           zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
         }
         return;

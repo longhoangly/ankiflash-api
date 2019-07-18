@@ -26,9 +26,9 @@ public class EmailServiceImpl implements EmailService {
   @Autowired
   private UserService userService;
 
-  private JavaMailSender mailSender;
+  private final JavaMailSender mailSender;
 
-  public EmailServiceImpl() {
+  private EmailServiceImpl() {
     mailSender = getMailSender();
   }
 
@@ -68,24 +68,22 @@ public class EmailServiceImpl implements EmailService {
   public void sendVerificationEmail(User user) {
 
     String emailTitle = "TheFlash Verify Email Address!";
-    String emailContent = new StringBuilder()
-        .append("Hi %1$s,\n")
-        .append("\n")
-        .append("Welcome to TheFlash!\n")
-        .append("\n")
-        .append("Please click on the link below for email verification.\n")
-        .append("\n")
-        .append("%2$s\n")
-        .append("\n")
-        .append("The link will be expired in 24 hours.\n")
-        .append("\n")
-        .append("If the above link does not work, copy and paste the link manually into your browser.\n")
-        .append("\n")
-        .append("Thanks for using our site!\n")
-        .append("\n")
-        .append("Thanks,\n")
-        .append("TheFlash Team\n")
-        .toString();
+    String emailContent = "Hi %1$s,\n"
+        + "\n"
+        + "Welcome to TheFlash!\n"
+        + "\n"
+        + "Please click on the link below for email verification.\n"
+        + "\n"
+        + "%2$s\n"
+        + "\n"
+        + "The link will be expired in 24 hours.\n"
+        + "\n"
+        + "If the above link does not work, copy and paste the link manually into your browser.\n"
+        + "\n"
+        + "Thanks for using our site!\n"
+        + "\n"
+        + "Thanks,\n"
+        + "TheFlash Team\n";
 
     String token24h = generator.generate(user, 24 * 60 * 60);
     String verificationUrl = String
@@ -102,25 +100,22 @@ public class EmailServiceImpl implements EmailService {
   public void sendResetPasswordEmail(User user) {
 
     String emailTitle = "TheFlash Password Reset!";
-    String emailContent = new StringBuilder()
-        .append("Hi %1$s,\n")
-        .append("\n")
-        .append(
-            "You're receiving this email because you requested a password reset for your user account at TheFlash.\n")
-        .append("\n")
-        .append("Please go to the following page and choose a new password.\n")
-        .append("\n")
-        .append("%2$s\n")
-        .append("\n")
-        .append("The link will be expired in 20 minutes.\n")
-        .append("\n")
-        .append("If the above link does not work, copy and paste the link manually into your browser.\n")
-        .append("\n")
-        .append("Thanks for using our site!\n")
-        .append("\n")
-        .append("Thanks,\n")
-        .append("TheFlash Team\n")
-        .toString();
+    String emailContent = "Hi %1$s,\n"
+        + "\n"
+        + "You're receiving this email because you requested a password reset for your user account at TheFlash.\n"
+        + "\n"
+        + "Please go to the following page and choose a new password.\n"
+        + "\n"
+        + "%2$s\n"
+        + "\n"
+        + "The link will be expired in 20 minutes.\n"
+        + "\n"
+        + "If the above link does not work, copy and paste the link manually into your browser.\n"
+        + "\n"
+        + "Thanks for using our site!\n"
+        + "\n"
+        + "Thanks,\n"
+        + "TheFlash Team\n";
 
     String token20m = generator.generate(user, 20 * 60);
     String resetUrl = String.format("%1$s/reset-password?key=%2$s", AnkiFlashProps.WEB_SERVER_URL, token20m);

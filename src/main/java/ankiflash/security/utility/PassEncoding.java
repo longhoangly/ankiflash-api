@@ -4,9 +4,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class PassEncoding {
 
-  private static PassEncoding passEncoding = new PassEncoding();
+  private static final PassEncoding passEncoding = new PassEncoding();
 
-  public BCryptPasswordEncoder passwordEncoder;
+  public final BCryptPasswordEncoder passwordEncoder;
 
   public static PassEncoding getInstance() {
     if (passEncoding != null) {

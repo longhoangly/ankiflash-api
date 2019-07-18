@@ -31,7 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/api/auth")
-public class SecurityController {
+class SecurityController {
 
   private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 

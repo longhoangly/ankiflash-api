@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private AuthProvider authProvider;
@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public AuthFilter jwtAuthFilter() {
+  protected AuthFilter jwtAuthFilter() {
     List<String> pathsToSkip = Arrays.asList(tokenEndpoint, anonymousEndpoint);
     SkipPathRequestMatcher matcher = new SkipPathRequestMatcher(pathsToSkip, basedEndpoint);
     AuthFilter filter = new AuthFilter(matcher);

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminController {
+class AdminController {
 
   private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 

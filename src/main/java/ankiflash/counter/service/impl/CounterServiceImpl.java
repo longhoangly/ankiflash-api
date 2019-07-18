@@ -39,6 +39,7 @@ public class CounterServiceImpl implements CounterService {
 
   @Override
   public void addCustomer() {
+    //noinspection OptionalGetWithoutIsPresent
     Counter counter = counterRepository.findById(1).get();
     counter.setCustomer(counter.getCustomer() + 1);
     counterRepository.save(counter);
@@ -46,6 +47,7 @@ public class CounterServiceImpl implements CounterService {
 
   @Override
   public void addVisit() {
+    //noinspection OptionalGetWithoutIsPresent
     Counter counter = counterRepository.findById(1).get();
     counter.setVisit(counter.getVisit() + 1);
     counterRepository.save(counter);
@@ -53,6 +55,7 @@ public class CounterServiceImpl implements CounterService {
 
   @Override
   public void addCard() {
+    //noinspection OptionalGetWithoutIsPresent
     Counter counter = counterRepository.findById(1).get();
     counter.setCard(counter.getCard() + 1);
     counterRepository.save(counter);

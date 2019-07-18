@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+class UserController {
 
   private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -80,7 +80,7 @@ public class UserController {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     User user = userService.findByUsername(auth.getName());
-    if (user != null) {
+    if (user == null) {
       throw new BadRequestException(String.format("User %1$s does not exist!", auth.getName()));
     }
 
@@ -96,7 +96,7 @@ public class UserController {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     User user = userService.findByUsername(auth.getName());
-    if (user != null) {
+    if (user == null) {
       throw new BadRequestException(String.format("User %1$s does not exist!", auth.getName()));
     }
 

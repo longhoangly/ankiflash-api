@@ -8,6 +8,7 @@ import ankiflash.utility.AnkiFlashProps;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +27,7 @@ public abstract class CardServiceImpl implements CardService {
   public String compressResources(String username) {
 
     ClassLoader classLoader = getClass().getClassLoader();
-    String attachmentPath = classLoader.getResource("attachment").getPath();
+    String attachmentPath = Objects.requireNonNull(classLoader.getResource("attachment")).getPath();
 
     String ankiDir = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
     IOUtility.copyFolder(attachmentPath, ankiDir);

@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/anki-flash-card")
-public class CardController {
+class CardController {
 
   private static final Logger logger = LoggerFactory.getLogger(CardController.class);
 

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 @Service
 public abstract class DictionaryServiceImpl implements DictionaryService {
 
-  protected Document doc;
+  Document doc;
 
-  protected String word;
+  String word;
 
-  protected String type;
+  String type;
 
-  protected String phonetic;
+  String phonetic;
 
   public abstract boolean isConnectionFailed(String word, Translation translation);
 

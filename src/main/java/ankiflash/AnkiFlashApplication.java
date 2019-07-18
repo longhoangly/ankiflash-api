@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableAsync
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
-public class AnkiFlashApplication {
+class AnkiFlashApplication {
 
   private static final Logger logger = LoggerFactory.getLogger(AnkiFlashApplication.class);
   private static ApplicationContext applicationContext;
@@ -32,7 +32,7 @@ public class AnkiFlashApplication {
     logger.info("AnkiFlashApplication Started");
   }
 
-  public static void displayAllBeans() {
+  private static void displayAllBeans() {
     String[] allBeanNames = applicationContext.getBeanDefinitionNames();
     for (String beanName : allBeanNames) {
       logger.info(beanName);

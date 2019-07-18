@@ -118,7 +118,7 @@ public class HtmlHelper {
     }
     htmlBuilder.append("<ul class=\"content-circle\">");
     for (String example : examples) {
-      htmlBuilder.append("<li class=\"content-example\">" + example + "</li>");
+      htmlBuilder.append(String.format("<li class=\"content-example\">%s</li>", example));
     }
     htmlBuilder.append("</ul>");
     htmlBuilder.append("</div>");
@@ -141,30 +141,30 @@ public class HtmlHelper {
       htmlBuilder.append("<div class=\"content-container\">");
     }
 
-    htmlBuilder.append("<h2 class=\"h\">" + word + "</h2>");
+    htmlBuilder.append(String.format("<h2 class=\"h\">%s</h2>", word));
     if (type != null && !type.isEmpty()) {
-      htmlBuilder.append("<span class=\"content-type\">" + type + "</span>");
+      htmlBuilder.append(String.format("<span class=\"content-type\">%s</span>", type));
     }
 
     if (phonetic != null && !phonetic.isEmpty()) {
-      htmlBuilder.append("<span class=\"content-phonetic\">" + phonetic + "</span>");
+      htmlBuilder.append(String.format("<span class=\"content-phonetic\">%s</span>", phonetic));
     }
 
     htmlBuilder.append("<ol class=\"content-order\">");
     for (Meaning meaning : meanings) {
       if (meaning.getWordType() != null && !meaning.getWordType().isEmpty()) {
-        htmlBuilder.append("<h3 class=\"content-type\">" + meaning.getWordType() + "</h3>");
+        htmlBuilder.append(String.format("<h3 class=\"content-type\">%s</h3>", meaning.getWordType()));
       }
 
       if (meaning.getMeaning() != null && !meaning.getMeaning().isEmpty()) {
-        htmlBuilder.append("<li class=\"content-meaning\">" + meaning.getMeaning() + "</li>");
+        htmlBuilder.append(String.format("<li class=\"content-meaning\">%s</li>", meaning.getMeaning()));
       }
 
       if (meaning.getExamples() != null && !meaning.getExamples().isEmpty()) {
         htmlBuilder.append("<ul class=\"content-circle\">");
 
         for (String example : meaning.getExamples()) {
-          htmlBuilder.append("<li class=\"content-example\">" + example + "</li>");
+          htmlBuilder.append(String.format("<li class=\"content-example\">%s</li>", example));
         }
         htmlBuilder.append("</ul>");
       }

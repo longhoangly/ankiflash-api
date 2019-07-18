@@ -1,6 +1,3 @@
-/**
- *
- */
 package ankiflash.security.dto;
 
 import java.util.Collection;
@@ -10,11 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserDetail implements UserDetails {
 
-  private String username;
+  private final String username;
 
-  private String password;
+  private final String password;
 
-  private Collection<? extends GrantedAuthority> authorities;
+  private final Collection<? extends GrantedAuthority> authorities;
 
   public UserDetail(String userName, String password, List<GrantedAuthority> grantedAuthorities) {
     this.username = userName;

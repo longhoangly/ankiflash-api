@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/anonymous")
-public class CounterController {
+class CounterController {
 
   private static final Logger logger = LoggerFactory.getLogger(CounterController.class);
 
