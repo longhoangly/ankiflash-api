@@ -14,8 +14,8 @@ import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
 import ankiflash.security.service.UserService;
-import ankiflash.utility.IOUtility;
 import ankiflash.utility.AnkiFlashProps;
+import ankiflash.utility.IOUtility;
 import ankiflash.utility.exception.BadRequestException;
 import java.io.File;
 import java.io.IOException;
@@ -170,36 +170,21 @@ class CardController {
   private CardService getCardService(String sourceLanguage) {
 
     CardService cardService;
-
     if (sourceLanguage.equalsIgnoreCase(Constants.ENGLISH)) {
-
       cardService = new EnglishCardServiceImpl();
-
     } else if (sourceLanguage.equalsIgnoreCase(Constants.VIETNAMESE)) {
-
       cardService = new VietnameseCardServiceImpl();
-
     } else if (sourceLanguage.equalsIgnoreCase(Constants.FRENCH)) {
-
       cardService = new FrenchCardServiceImpl();
-
     } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE_TD)
         || sourceLanguage.equalsIgnoreCase(Constants.CHINESE_SP)) {
-
       cardService = new ChineseCardServiceImpl();
-
     } else if (sourceLanguage.equalsIgnoreCase(Constants.JAPANESE)) {
-
       cardService = new JapaneseCardServiceImpl();
-
     } else if (sourceLanguage.equalsIgnoreCase(Constants.SPANISH)) {
-
       cardService = new SpanishCardServiceImpl();
-
     } else {
-
       throw new BadRequestException(String.format("The language [%s] is not supported!", sourceLanguage));
-
     }
 
     return cardService;

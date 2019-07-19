@@ -6,7 +6,7 @@ public class Constants {
   public static final String ANKI_DECK = "ankiDeck.csv";
   public static final String ANKI_FAILURE = "failures.csv";
   public static final String ANKI_LANGUAGE = "Language.csv";
-  public static String ANKI_FLASH_SINGLE_FORM_TEMPLATE = "AnkiFlashFormTemplate.apkg";
+  public static final String ANKI_FLASH_SINGLE_FORM_TEMPLATE = "AnkiFlashFormTemplate.apkg";
 
   // LANGUAGES
   public static final String ENGLISH = "English";
@@ -51,7 +51,7 @@ public class Constants {
   // WORD REFERENCE
   public static final String WORD_REFERENCE_SPELLING_WRONG = "";
   public static final String WORD_REFERENCE_URL_EN_SP = "";
-  public static String WORD_REFERENCE_URL_SP_EN = "";
+  public static final String WORD_REFERENCE_URL_SP_EN = "";
 
   // CONSTANTS
   public static final String TAB = "\t";

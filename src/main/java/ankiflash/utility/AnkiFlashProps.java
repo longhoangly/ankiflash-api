@@ -15,7 +15,6 @@ public class AnkiFlashProps {
 
   public static int CONNECTION_TIMEOUT;
   public static int READ_TIMEOUT;
-  public static int TOKEN_TIMEOUT;
 
   public static String MAIL_HOST;
   public static int MAIL_PORT;
@@ -67,11 +66,6 @@ public class AnkiFlashProps {
   @Value("${ankiflash.timeout.read}")
   public void setReadTimeout(int timeout) {
     READ_TIMEOUT = timeout * 1000;
-  }
-
-  @Value("${ankiflash.timeout.token}")
-  public void setTokenTimeout(int timeout) {
-    TOKEN_TIMEOUT = timeout * 1000;
   }
 
   @Value("${spring.mail.host}")

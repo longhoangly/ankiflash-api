@@ -28,7 +28,7 @@ class EntityLoader {
       user = new User();
       user.setUsername("hoanglongtc7");
       user.setEmail("hoanglongtc7@gmail.com");
-      user.setPassword(PassEncoding.getInstance().passwordEncoder.encode("password"));
+      user.setPassword(PassEncoding.getInstance().passwordEncoder.encode("longlee@123"));
       user.setVerified(true);
       user.setActive(true);
 

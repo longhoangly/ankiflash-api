@@ -17,7 +17,6 @@ public class Translation {
   public static final Translation FR_EN = new Translation(Constants.FRENCH, Constants.ENGLISH);
 
   public static final Translation JP_EN = new Translation(Constants.JAPANESE, Constants.ENGLISH);
-  // TODO: these following translation are not ready!
   public static final Translation JP_VN = new Translation(Constants.JAPANESE, Constants.VIETNAMESE);
 
   private String source;

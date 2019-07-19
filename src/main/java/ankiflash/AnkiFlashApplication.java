@@ -21,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 class AnkiFlashApplication {
 
   private static final Logger logger = LoggerFactory.getLogger(AnkiFlashApplication.class);
+
   private static ApplicationContext applicationContext;
 
   @Value("${spring.security.allowed.origins}")
@@ -60,7 +61,7 @@ class AnkiFlashApplication {
     // The value of the 'Access-Control-Allow-Origin' header in the response must not be
     // the wildcard '*' when the request's credentials mode is 'include'.
     configuration.setAllowCredentials(true);
-    // setAllowedHeaders is important! Without it, OPTIONS preflight request
+    // setAllowedHeaders is important! Without it, OPTIONS pre-flight request
     // will fail with 403 Invalid CORS request
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
     configuration.setMaxAge(86400L);
