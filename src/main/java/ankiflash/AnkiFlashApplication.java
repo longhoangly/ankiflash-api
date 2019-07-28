@@ -1,5 +1,6 @@
 package ankiflash;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableAsync
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@PropertySource("classpath:ankiflash.properties")
 class AnkiFlashApplication {
 
   private static final Logger logger = LoggerFactory.getLogger(AnkiFlashApplication.class);
@@ -29,14 +32,24 @@ class AnkiFlashApplication {
 
   public static void main(String[] args) {
     applicationContext = SpringApplication.run(AnkiFlashApplication.class, args);
-    displayAllBeans();
-    logger.info("AnkiFlashApplication Started");
+    displayInitInfo();
+    logger.info("AnkiFlashApplication Started...");
   }
 
-  private static void displayAllBeans() {
+  private static void displayInitInfo() {
     String[] allBeanNames = applicationContext.getBeanDefinitionNames();
     for (String beanName : allBeanNames) {
       logger.info(beanName);
+    }
+
+    Class clazz = applicationContext.getBean("ankiFlashProps").getClass();
+    Field[] fields = clazz.getDeclaredFields();
+    for (Field field : fields) {
+      try {
+        logger.info(field.getName() + "=" + field.get(applicationContext).toString());
+      } catch (IllegalAccessException e) {
+        logger.error("Exception Occurred: ", e);
+      }
     }
   }
 

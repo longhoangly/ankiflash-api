@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -16,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
+@DependsOn({"ankiFlashProps"})
 public class EmailServiceImpl implements EmailService {
 
   private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
@@ -36,6 +38,15 @@ public class EmailServiceImpl implements EmailService {
 
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
     try {
+      logger.info("MAIL_HOST=" + AnkiFlashProps.MAIL_HOST);
+      logger.info("MAIL_PORT=" + AnkiFlashProps.MAIL_PORT);
+      logger.info("MAIL_USERNAME=" + AnkiFlashProps.MAIL_USERNAME);
+      logger.info("MAIL_PASSWORD=" + AnkiFlashProps.MAIL_PASSWORD);
+      logger.info("MAIL_PROTOCOL=" + AnkiFlashProps.MAIL_PROTOCOL);
+      logger.info("MAIL_AUTH=" + AnkiFlashProps.MAIL_AUTH);
+      logger.info("MAIL_SSL=" + AnkiFlashProps.MAIL_SSL);
+      logger.info("MAIL_DEBUG=" + AnkiFlashProps.MAIL_DEBUG);
+
       mailSender.setHost(AnkiFlashProps.MAIL_HOST);
       mailSender.setPort(AnkiFlashProps.MAIL_PORT);
       mailSender.setUsername(AnkiFlashProps.MAIL_USERNAME);
@@ -47,7 +58,7 @@ public class EmailServiceImpl implements EmailService {
       props.put("mail.smtp.starttls.enable", AnkiFlashProps.MAIL_SSL);
       props.put("mail.debug", AnkiFlashProps.MAIL_DEBUG);
     } catch (Exception e) {
-      logger.error("Exception: ", e);
+      logger.error("Exception Occurred: ", e);
     }
 
     return mailSender;

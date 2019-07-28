@@ -18,15 +18,18 @@ public class AnkiFlashProps {
 
   public static String MAIL_HOST;
   public static int MAIL_PORT;
-
-  public static String MAIL_FROM;
   public static String MAIL_USERNAME;
   public static String MAIL_PASSWORD;
   public static String MAIL_PROTOCOL;
+  public static String MAIL_FROM;
   public static boolean MAIL_AUTH;
   public static boolean MAIL_SSL;
   public static boolean MAIL_DEBUG;
 
+  @Value("${ankiflash.anki.root}")
+  public void setAnkiDirFlashcards(String ankiDirFlashcards) {
+    ANKI_DIR_FLASHCARDS = ankiDirFlashcards;
+  }
 
   @Value("${server.api.url}")
   public void setApiServerUrl(String apiServerUrl) {
@@ -51,11 +54,6 @@ public class AnkiFlashProps {
     } else {
       PROXY_PORT = Integer.parseInt(proxyPort);
     }
-  }
-
-  @Value("${ankiflash.anki.root}")
-  public void setAnkiDirFlashcards(String ankiDirFlashcards) {
-    ANKI_DIR_FLASHCARDS = ankiDirFlashcards;
   }
 
   @Value("${ankiflash.timeout.connection}")
@@ -93,6 +91,11 @@ public class AnkiFlashProps {
     MAIL_PROTOCOL = mailProtocol;
   }
 
+  @Value("${spring.mail.from}")
+  public void setMailFrom(String mailFrom) {
+    MAIL_FROM = mailFrom;
+  }
+
   @Value("${spring.mail.smtp.auth}")
   public void setMailAuth(boolean mailAuth) {
     MAIL_AUTH = mailAuth;
@@ -106,10 +109,5 @@ public class AnkiFlashProps {
   @Value("${spring.mail.debug}")
   public void setMailDebug(boolean mailDebug) {
     MAIL_DEBUG = mailDebug;
-  }
-
-  @Value("${spring.mail.from}")
-  public void setMailFrom(String mailFrom) {
-    MAIL_FROM = mailFrom;
   }
 }
