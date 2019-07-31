@@ -64,6 +64,8 @@ public class UserServiceImpl implements UserService {
     User user = userRepository.findByUsername(username);
     if (user == null) {
       return null;
+    } else if (user.getPassword() == "***") {
+      return null;
     } else {
       if (PassEncoding.getInstance().passwordEncoder.matches(password, user.getPassword())) {
         userRepository.updateLastLogin(Calendar.getInstance().getTime(), user.getUsername());

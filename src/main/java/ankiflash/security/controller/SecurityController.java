@@ -6,7 +6,9 @@ import ankiflash.security.payload.LoginRequest;
 import ankiflash.security.payload.LoginResponse;
 import ankiflash.security.payload.ResetPassRequest;
 import ankiflash.security.payload.SignUpRequest;
+import ankiflash.security.payload.SocialLoginRequest;
 import ankiflash.security.service.EmailService;
+import ankiflash.security.service.SocialAuthService;
 import ankiflash.security.service.UserService;
 import ankiflash.security.utility.PassEncoding;
 import ankiflash.security.utility.Roles;
@@ -42,6 +44,9 @@ class SecurityController {
   private EmailService emailService;
 
   @Autowired
+  private SocialAuthService socialAuthService;
+
+  @Autowired
   private CounterService counterService;
 
   @Autowired
@@ -71,6 +76,21 @@ class SecurityController {
     }
 
     resUser.setToken(generator.generate(user));
+    return ResponseEntity.ok().body(resUser);
+  }
+
+  @PostMapping("/social-login")
+  public ResponseEntity socialLogin(@RequestBody @Valid SocialLoginRequest socialReq) {
+
+    logger.info("/api/auth/social-login");
+
+    User user = socialAuthService.verify(socialReq.getIdTokenString());
+    if (user == null) {
+      throw new BadRequestException("Social user info not found!");
+    }
+
+    LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(),
+        user.isVerified(), generator.generate(user));
     return ResponseEntity.ok().body(resUser);
   }
 
