@@ -2,6 +2,7 @@ package ankiflash.card.utility;
 
 import ankiflash.card.dto.Meaning;
 import ankiflash.utility.AnkiFlashProps;
+import ankiflash.utility.JsonUtility;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -188,17 +189,8 @@ public class HtmlHelper {
   public static Document getJDictDoc(String url, String body) {
 
     logger.info("body={}", body);
-    Document document;
-    if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
-      Proxy proxy = new Proxy(Type.HTTP,
-          new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
-      JsonObject json = JsonHelper.postRequest(url, body, proxy);
-      document = Jsoup.parse(json.get("Content").getAsString());
-    } else {
-      JsonObject json = JsonHelper.postRequest(url, body);
-      document = Jsoup.parse(json.get("Content").getAsString());
-    }
-    return document;
+    JsonObject json = JsonUtility.postRequest(url, body);
+    return Jsoup.parse(json.get("Content").getAsString());
   }
 
   public static List<String> getJDictWords(String word, boolean firstOnly) {

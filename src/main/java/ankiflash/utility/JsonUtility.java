@@ -1,4 +1,4 @@
-package ankiflash.card.utility;
+package ankiflash.utility;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -9,16 +9,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.Proxy.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class JsonHelper {
+public class JsonUtility {
 
-  private static final Logger logger = LoggerFactory.getLogger(JsonHelper.class);
+  private static final Logger logger = LoggerFactory.getLogger(JsonUtility.class);
 
   private static String readAll(Reader reader) {
 
@@ -37,10 +39,10 @@ class JsonHelper {
 
   public static JsonObject getRequest(String url) {
 
-    return getRequest(url, null);
-  }
-
-  public static JsonObject getRequest(String url, Proxy proxy) {
+    Proxy proxy = null;
+    if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
+      proxy = new Proxy(Type.HTTP, new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
+    }
 
     JsonObject json = new JsonObject();
     try {
@@ -58,16 +60,17 @@ class JsonHelper {
 
   public static JsonObject postRequest(String url, String body) {
 
-    return postRequest(url, body, null);
-  }
-
-  public static JsonObject postRequest(String url, String body, Proxy proxy) {
+    Proxy proxy = null;
+    if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
+      proxy = new Proxy(Type.HTTP, new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
+    }
 
     JsonObject json = new JsonObject();
     try {
       URL ur = new URL(url);
-      HttpURLConnection con =
-          proxy == null ? (HttpURLConnection) ur.openConnection() : (HttpURLConnection) ur.openConnection(proxy);
+      HttpURLConnection con = proxy == null ?
+          (HttpURLConnection) ur.openConnection() :
+          (HttpURLConnection) ur.openConnection(proxy);
       con.setRequestMethod("POST");
       con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
       con.setRequestProperty("Accept", "application/json");

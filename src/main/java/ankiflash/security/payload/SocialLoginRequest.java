@@ -9,6 +9,10 @@ public class SocialLoginRequest {
   @NotEmpty
   private String idTokenString;
 
+  @NotNull
+  @NotEmpty
+  private String provider;
+
   public SocialLoginRequest() {
   }
 
@@ -18,5 +22,13 @@ public class SocialLoginRequest {
 
   public void setIdTokenString(String idTokenString) {
     this.idTokenString = idTokenString;
+  }
+
+  public String getProvider() {
+    return provider;
+  }
+
+  public void setProvider(String provider) {
+    this.provider = provider;
   }
 }

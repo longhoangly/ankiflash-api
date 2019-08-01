@@ -84,13 +84,24 @@ class SecurityController {
 
     logger.info("/api/auth/social-login");
 
-    User user = socialAuthService.verify(socialReq.getIdTokenString());
+    User user = null;
+    switch (socialReq.getProvider()) {
+      case "google":
+        user = socialAuthService.googleVerify(socialReq.getIdTokenString());
+        break;
+      case "facebook":
+        user = socialAuthService.facebookVerify(socialReq.getIdTokenString());
+        break;
+      default:
+        throw new BadRequestException("Un-supported social provider!");
+    }
+
     if (user == null) {
       throw new BadRequestException("Social user info not found!");
     }
 
-    LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified(), generator.generate(user));
+    LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(), user.isVerified(),
+        generator.generate(user));
     return ResponseEntity.ok().body(resUser);
   }
 
