@@ -37,23 +37,17 @@ class SecurityController {
 
   private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
-  @Autowired
-  private EmailService emailService;
+  @Autowired private EmailService emailService;
 
-  @Autowired
-  private SocialAuthService socialAuthService;
+  @Autowired private SocialAuthService socialAuthService;
 
-  @Autowired
-  private CounterService counterService;
+  @Autowired private CounterService counterService;
 
-  @Autowired
-  private Generator generator;
+  @Autowired private Generator generator;
 
-  @Autowired
-  private Validation validator;
+  @Autowired private Validation validator;
 
   @PostMapping("/login")
   public ResponseEntity login(@RequestBody @Valid LoginRequest reqUser) {
@@ -65,8 +59,9 @@ class SecurityController {
       throw new BadRequestException("Username or Password is not correct!");
     }
 
-    LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified(), null);
+    LoginResponse resUser =
+        new LoginResponse(
+            user.getUsername(), user.getRole(), user.isActive(), user.isVerified(), null);
     if (!user.isVerified()) {
       return ResponseEntity.ok().body(resUser);
     }
@@ -100,8 +95,13 @@ class SecurityController {
       throw new BadRequestException("Social user info not found!");
     }
 
-    LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(), user.isVerified(),
-        generator.generate(user));
+    LoginResponse resUser =
+        new LoginResponse(
+            user.getUsername(),
+            user.getRole(),
+            user.isActive(),
+            user.isVerified(),
+            generator.generate(user));
     return ResponseEntity.ok().body(resUser);
   }
 
@@ -135,8 +135,9 @@ class SecurityController {
     emailService.sendVerificationEmail(user);
 
     counterService.addCustomer();
-    LoginResponse resUser = new LoginResponse(user.getUsername(), user.getRole(), user.isActive(),
-        user.isVerified(), null);
+    LoginResponse resUser =
+        new LoginResponse(
+            user.getUsername(), user.getRole(), user.isActive(), user.isVerified(), null);
     return ResponseEntity.ok().body(resUser);
   }
 
@@ -169,16 +170,20 @@ class SecurityController {
     }
 
     if (!user.getToken().equals(token)) {
-      return new ModelAndView("redirect:" + AnkiFlashProps.WEB_SERVER_URL +
-          "/status?code=400&message=Key not found, please select 'Forgot Password' on 'Login' page to try again!");
+      return new ModelAndView(
+          "redirect:"
+              + AnkiFlashProps.WEB_SERVER_URL
+              + "/status?code=400&message=Key not found, please select 'Forgot Password' on 'Login' page to try again!");
     }
 
     user.setActive(true);
     user.setVerified(true);
     userService.save(user);
 
-    return new ModelAndView("redirect:" + AnkiFlashProps.WEB_SERVER_URL +
-        "/status?code=200&message=Email verified successfully!");
+    return new ModelAndView(
+        "redirect:"
+            + AnkiFlashProps.WEB_SERVER_URL
+            + "/status?code=200&message=Email verified successfully!");
   }
 
   @GetMapping("/request-reset-password-link")
@@ -211,7 +216,8 @@ class SecurityController {
     }
 
     if (!user.getToken().equals(token)) {
-      throw new BadRequestException("Key not found, please select 'Forgot Password' on 'Login' page to try again!");
+      throw new BadRequestException(
+          "Key not found, please select 'Forgot Password' on 'Login' page to try again!");
     }
 
     user.setPassword(PassEncoding.getInstance().passwordEncoder.encode(reqUser.getPassword()));

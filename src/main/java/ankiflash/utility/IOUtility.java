@@ -67,16 +67,18 @@ public class IOUtility {
     Path src = Paths.get(srcPath);
     Path dest = Paths.get(desPath);
     try {
-      Files.walk(src).forEach(source -> {
-        Path destination = dest.resolve(src.relativize(source));
-        if (Files.isDirectory(source)) {
-          if (!Files.exists(destination)) {
-            createDirs(destination.toString());
-          }
-          return;
-        }
-        copyFile(source.toString(), destination.toString());
-      });
+      Files.walk(src)
+          .forEach(
+              source -> {
+                Path destination = dest.resolve(src.relativize(source));
+                if (Files.isDirectory(source)) {
+                  if (!Files.exists(destination)) {
+                    createDirs(destination.toString());
+                  }
+                  return;
+                }
+                copyFile(source.toString(), destination.toString());
+              });
     } catch (IOException e) {
       logger.error("Exception Occurred: ", e);
     }
@@ -148,8 +150,10 @@ public class IOUtility {
       URL site = new URL(url);
       URLConnection connection;
       if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
-        Proxy proxy = new Proxy(Type.HTTP,
-            new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
+        Proxy proxy =
+            new Proxy(
+                Type.HTTP,
+                new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
         connection = site.openConnection(proxy);
       } else {
         connection = site.openConnection();

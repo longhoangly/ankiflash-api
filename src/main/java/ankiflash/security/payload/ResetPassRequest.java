@@ -5,16 +5,11 @@ import javax.validation.constraints.NotNull;
 
 public class ResetPassRequest {
 
-  @NotNull
-  @NotEmpty
-  private String key;
+  @NotNull @NotEmpty private String key;
 
-  @NotNull
-  @NotEmpty
-  private String password;
+  @NotNull @NotEmpty private String password;
 
-  public ResetPassRequest() {
-  }
+  public ResetPassRequest() {}
 
   public String getKey() {
     return key;

@@ -28,19 +28,19 @@ public class SocialAuthServiceImpl implements SocialAuthService {
 
   private static final Logger logger = LoggerFactory.getLogger(SocialAuthServiceImpl.class);
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
-  @Autowired
-  private CounterService counterService;
+  @Autowired private CounterService counterService;
 
   NetHttpTransport transport = new NetHttpTransport();
   GsonFactory jsonFactory = new GsonFactory();
 
-  GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
-      .setAudience(Collections
-          .singletonList("956431695223-po5d2ahv7mejsm84hl911vg03696k9n8.apps.googleusercontent.com"))
-      .build();
+  GoogleIdTokenVerifier verifier =
+      new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+          .setAudience(
+              Collections.singletonList(
+                  "956431695223-po5d2ahv7mejsm84hl911vg03696k9n8.apps.googleusercontent.com"))
+          .build();
 
   @Override
   public User googleVerify(String idTokenString) {

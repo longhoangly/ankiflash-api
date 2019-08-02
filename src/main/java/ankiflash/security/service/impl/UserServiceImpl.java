@@ -16,8 +16,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @Override
   public User save(User user) {
@@ -40,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User findById(int id) {
-    //noinspection OptionalGetWithoutIsPresent
+    // noinspection OptionalGetWithoutIsPresent
     return userRepository.findById(id).get();
   }
 

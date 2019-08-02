@@ -5,17 +5,11 @@ import javax.validation.constraints.NotNull;
 
 public class CardRequest {
 
-  @NotNull
-  @NotEmpty
-  private String words;
+  @NotNull @NotEmpty private String words;
 
-  @NotNull
-  @NotEmpty
-  private String source;
+  @NotNull @NotEmpty private String source;
 
-  @NotNull
-  @NotEmpty
-  private String target;
+  @NotNull @NotEmpty private String target;
 
   public CardRequest(String source, String target) {
     this.source = source;

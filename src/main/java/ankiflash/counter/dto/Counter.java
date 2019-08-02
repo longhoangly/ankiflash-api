@@ -30,8 +30,7 @@ public class Counter {
   @Column(name = "counter4")
   private int counter4;
 
-  public Counter() {
-  }
+  public Counter() {}
 
   public int getId() {
     return id;

@@ -15,8 +15,8 @@ class SkipPathRequestMatcher implements RequestMatcher {
 
   public SkipPathRequestMatcher(List<String> pathsToSkip, String processingPath) {
     Assert.notNull(pathsToSkip);
-    List<RequestMatcher> m = pathsToSkip.stream().map(AntPathRequestMatcher::new).collect(
-        Collectors.toList());
+    List<RequestMatcher> m =
+        pathsToSkip.stream().map(AntPathRequestMatcher::new).collect(Collectors.toList());
     matchers = new OrRequestMatcher(m);
     processingMatcher = new AntPathRequestMatcher(processingPath);
   }

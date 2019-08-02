@@ -5,16 +5,11 @@ import javax.validation.constraints.NotNull;
 
 public class SocialLoginRequest {
 
-  @NotNull
-  @NotEmpty
-  private String idTokenString;
+  @NotNull @NotEmpty private String idTokenString;
 
-  @NotNull
-  @NotEmpty
-  private String provider;
+  @NotNull @NotEmpty private String provider;
 
-  public SocialLoginRequest() {
-  }
+  public SocialLoginRequest() {}
 
   public String getIdTokenString() {
     return idTokenString;

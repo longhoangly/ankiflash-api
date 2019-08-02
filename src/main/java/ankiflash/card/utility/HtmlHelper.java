@@ -43,8 +43,10 @@ public class HtmlHelper {
     Document document = null;
     try {
       if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
-        Proxy proxy = new Proxy(Type.HTTP,
-            new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
+        Proxy proxy =
+            new Proxy(
+                Type.HTTP,
+                new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
         document = Jsoup.connect(url).proxy(proxy).get();
       } else {
         document = Jsoup.connect(url).get();
@@ -127,13 +129,14 @@ public class HtmlHelper {
     return htmlBuilder.toString();
   }
 
-  public static String buildMeaning(String word, String type, String phonetic, List<Meaning> meanings) {
+  public static String buildMeaning(
+      String word, String type, String phonetic, List<Meaning> meanings) {
 
     return buildMeaning(word, type, phonetic, meanings, false);
   }
 
-  public static String buildMeaning(String word, String type, String phonetic, List<Meaning> meanings,
-      boolean isJapanese) {
+  public static String buildMeaning(
+      String word, String type, String phonetic, List<Meaning> meanings, boolean isJapanese) {
 
     StringBuilder htmlBuilder = new StringBuilder();
     if (isJapanese) {
@@ -154,11 +157,13 @@ public class HtmlHelper {
     htmlBuilder.append("<ol class=\"content-order\">");
     for (Meaning meaning : meanings) {
       if (meaning.getWordType() != null && !meaning.getWordType().isEmpty()) {
-        htmlBuilder.append(String.format("<h3 class=\"content-type\">%s</h3>", meaning.getWordType()));
+        htmlBuilder.append(
+            String.format("<h3 class=\"content-type\">%s</h3>", meaning.getWordType()));
       }
 
       if (meaning.getMeaning() != null && !meaning.getMeaning().isEmpty()) {
-        htmlBuilder.append(String.format("<li class=\"content-meaning\">%s</li>", meaning.getMeaning()));
+        htmlBuilder.append(
+            String.format("<li class=\"content-meaning\">%s</li>", meaning.getMeaning()));
       }
 
       if (meaning.getExamples() != null && !meaning.getExamples().isEmpty()) {
@@ -176,8 +181,7 @@ public class HtmlHelper {
     return htmlBuilder.toString();
   }
 
-
-  /*=== Jdict Specific Methods ===*/
+  /* === Jdict Specific Methods === */
 
   /**
    * To get Jdict HTML source, we need to send a post request to Jdict
@@ -195,7 +199,8 @@ public class HtmlHelper {
 
   public static List<String> getJDictWords(String word, boolean firstOnly) {
 
-    String urlParameters = String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
+    String urlParameters =
+        String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
     Document document = HtmlHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
     Elements wordElms = document.select("ul>li");
 
@@ -218,7 +223,7 @@ public class HtmlHelper {
     return words.isEmpty() ? "" : words.get(0);
   }
 
-  /*=== Jisho Specific Methods ===*/
+  /* === Jisho Specific Methods === */
 
   public static List<String> getJishoWords(String word, boolean firstOnly) {
 
@@ -232,8 +237,10 @@ public class HtmlHelper {
       Element foundWordElm = HtmlHelper.getElement(wordElem, ".concept_light-representation", 0);
       Element detailLink = HtmlHelper.getElement(wordElem, ".light-details_link", 0);
 
-      if (foundWordElm != null && foundWordElm.text().toLowerCase().contains(word.toLowerCase())
-          && detailLink != null && !detailLink.text().isEmpty()) {
+      if (foundWordElm != null
+          && foundWordElm.text().toLowerCase().contains(word.toLowerCase())
+          && detailLink != null
+          && !detailLink.text().isEmpty()) {
 
         String[] detailLinkEls = detailLink.attr("href").split("/");
         jDictWords.add(decodeValue(detailLinkEls[detailLinkEls.length - 1]));

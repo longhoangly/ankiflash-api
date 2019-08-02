@@ -21,11 +21,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired
-  private AuthProvider authProvider;
+  @Autowired private AuthProvider authProvider;
 
-  @Autowired
-  private AuthEntryPoint entryPoint;
+  @Autowired private AuthEntryPoint entryPoint;
 
   @Value("${jwt.token.endpoint}")
   private String tokenEndpoint;
@@ -55,18 +53,29 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.cors();
-    http.csrf().disable()
-        .authorizeRequests().antMatchers(tokenEndpoint).permitAll()
+    http.csrf()
+        .disable()
+        .authorizeRequests()
+        .antMatchers(tokenEndpoint)
+        .permitAll()
         .and()
-        .authorizeRequests().antMatchers(anonymousEndpoint).permitAll()
+        .authorizeRequests()
+        .antMatchers(anonymousEndpoint)
+        .permitAll()
         .and()
-        .authorizeRequests().antMatchers(basedEndpoint).authenticated()
+        .authorizeRequests()
+        .antMatchers(basedEndpoint)
+        .authenticated()
         .and()
-        .authorizeRequests().anyRequest().authenticated()
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated()
         .and()
-        .exceptionHandling().authenticationEntryPoint(entryPoint)
+        .exceptionHandling()
+        .authenticationEntryPoint(entryPoint)
         .and()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
     http.headers().cacheControl();
   }

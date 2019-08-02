@@ -11,17 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class Validation {
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
   @Value("${jwt.token.secret}")
   private String secret;
 
   public User validate(String token) {
-    Claims body = Jwts.parser()
-                      .setSigningKey(secret)
-                      .parseClaimsJws(token)
-                      .getBody();
+    Claims body = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     return userService.findByUsername(body.getSubject());
   }
 }

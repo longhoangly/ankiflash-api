@@ -51,7 +51,8 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
       Elements elements = doc.select("div.concept_light.clearfix div.meaning-tags");
       List<String> wordTypes = new ArrayList<>();
       for (Element element : elements) {
-        if (element.hasText() && !element.text().equals("Wikipedia definition")
+        if (element.hasText()
+            && !element.text().equals("Wikipedia definition")
             && !element.text().equals("Other forms")) {
           wordTypes.add("[" + element.text() + "]");
         }
@@ -92,7 +93,8 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getImage(String username, String selector) {
 
-    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
+        + word
         + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
   }
 

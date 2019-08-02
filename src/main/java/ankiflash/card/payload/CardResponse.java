@@ -7,8 +7,7 @@ import javax.validation.constraints.NotNull;
 
 class CardResponse {
 
-  @NotNull
-  private List<Card> cardCollection;
+  @NotNull private List<Card> cardCollection;
 
   public CardResponse() {
     this.cardCollection = new ArrayList<>();

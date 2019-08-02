@@ -22,11 +22,9 @@ public class EmailServiceImpl implements EmailService {
 
   private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
 
-  @Autowired
-  private Generator generator;
+  @Autowired private Generator generator;
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
   private final JavaMailSender mailSender;
 
@@ -79,26 +77,28 @@ public class EmailServiceImpl implements EmailService {
   public void sendVerificationEmail(User user) {
 
     String emailTitle = "TheFlash Verify Email Address!";
-    String emailContent = "Hi %1$s,\n"
-        + "\n"
-        + "Welcome to TheFlash!\n"
-        + "\n"
-        + "Please click on the link below for email verification.\n"
-        + "\n"
-        + "%2$s\n"
-        + "\n"
-        + "The link will be expired in 24 hours.\n"
-        + "\n"
-        + "If the above link does not work, copy and paste the link manually into your browser.\n"
-        + "\n"
-        + "Thanks for using our site!\n"
-        + "\n"
-        + "Thanks,\n"
-        + "TheFlash Team\n";
+    String emailContent =
+        "Hi %1$s,\n"
+            + "\n"
+            + "Welcome to TheFlash!\n"
+            + "\n"
+            + "Please click on the link below for email verification.\n"
+            + "\n"
+            + "%2$s\n"
+            + "\n"
+            + "The link will be expired in 24 hours.\n"
+            + "\n"
+            + "If the above link does not work, copy and paste the link manually into your browser.\n"
+            + "\n"
+            + "Thanks for using our site!\n"
+            + "\n"
+            + "Thanks,\n"
+            + "TheFlash Team\n";
 
     String token24h = generator.generate(user, 24 * 60 * 60);
-    String verificationUrl = String
-        .format("%1$s/api/auth/verify-email-address?key=%2$s", AnkiFlashProps.API_SERVER_URL, token24h);
+    String verificationUrl =
+        String.format(
+            "%1$s/api/auth/verify-email-address?key=%2$s", AnkiFlashProps.API_SERVER_URL, token24h);
     emailContent = String.format(emailContent, user.getUsername(), verificationUrl);
     sendSimpleMessage(user.getEmail(), emailTitle, emailContent);
 
@@ -111,25 +111,27 @@ public class EmailServiceImpl implements EmailService {
   public void sendResetPasswordEmail(User user) {
 
     String emailTitle = "TheFlash Password Reset!";
-    String emailContent = "Hi %1$s,\n"
-        + "\n"
-        + "You're receiving this email because you requested a password reset for your user account at TheFlash.\n"
-        + "\n"
-        + "Please go to the following page and choose a new password.\n"
-        + "\n"
-        + "%2$s\n"
-        + "\n"
-        + "The link will be expired in 20 minutes.\n"
-        + "\n"
-        + "If the above link does not work, copy and paste the link manually into your browser.\n"
-        + "\n"
-        + "Thanks for using our site!\n"
-        + "\n"
-        + "Thanks,\n"
-        + "TheFlash Team\n";
+    String emailContent =
+        "Hi %1$s,\n"
+            + "\n"
+            + "You're receiving this email because you requested a password reset for your user account at TheFlash.\n"
+            + "\n"
+            + "Please go to the following page and choose a new password.\n"
+            + "\n"
+            + "%2$s\n"
+            + "\n"
+            + "The link will be expired in 20 minutes.\n"
+            + "\n"
+            + "If the above link does not work, copy and paste the link manually into your browser.\n"
+            + "\n"
+            + "Thanks for using our site!\n"
+            + "\n"
+            + "Thanks,\n"
+            + "TheFlash Team\n";
 
     String token20m = generator.generate(user, 20 * 60);
-    String resetUrl = String.format("%1$s/reset-password?key=%2$s", AnkiFlashProps.WEB_SERVER_URL, token20m);
+    String resetUrl =
+        String.format("%1$s/reset-password?key=%2$s", AnkiFlashProps.WEB_SERVER_URL, token20m);
     emailContent = String.format(emailContent, user.getUsername(), resetUrl);
     sendSimpleMessage(user.getEmail(), emailTitle, emailContent);
 

@@ -27,8 +27,7 @@ class AdminController {
 
   private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
   @PreAuthorize("hasAuthority('ADMIN')")
   @PostMapping("/create-user")

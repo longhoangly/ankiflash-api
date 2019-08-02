@@ -10,8 +10,7 @@ public class Meaning {
 
   private List<String> examples;
 
-  public Meaning() {
-  }
+  public Meaning() {}
 
   public Meaning(String meaning, List<String> examples) {
     this.meaning = meaning;

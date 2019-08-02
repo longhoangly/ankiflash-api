@@ -23,18 +23,18 @@ public class Generator {
   public String generate(User jwtUser) {
     Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
     return Jwts.builder()
-               .setClaims(claims)
-               .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds * 1000))
-               .signWith(SignatureAlgorithm.HS512, secret)
-               .compact();
+        .setClaims(claims)
+        .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds * 1000))
+        .signWith(SignatureAlgorithm.HS512, secret)
+        .compact();
   }
 
   public String generate(User jwtUser, int expirationInSeconds) {
     Claims claims = Jwts.claims().setSubject(jwtUser.getUsername());
     return Jwts.builder()
-               .setClaims(claims)
-               .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds * 1000))
-               .signWith(SignatureAlgorithm.HS512, secret)
-               .compact();
+        .setClaims(claims)
+        .setExpiration(new Date(System.currentTimeMillis() + expirationInSeconds * 1000))
+        .signWith(SignatureAlgorithm.HS512, secret)
+        .compact();
   }
 }

@@ -23,8 +23,7 @@ public class Card {
 
   private String copyright;
 
-  @JsonIgnore
-  private String content;
+  @JsonIgnore private String content;
 
   private Status Status;
 

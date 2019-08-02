@@ -59,8 +59,7 @@ public class User {
   @Column(name = "token")
   private String token;
 
-  public User() {
-  }
+  public User() {}
 
   public User(String username) {
     this.username = username;
@@ -76,11 +75,11 @@ public class User {
     }
 
     User user = (User) o;
-    return id == user.id &&
-        role.equals(user.role) &&
-        Objects.equals(username, user.username) &&
-        Objects.equals(password, user.password) &&
-        Objects.equals(email, user.email);
+    return id == user.id
+        && role.equals(user.role)
+        && Objects.equals(username, user.username)
+        && Objects.equals(password, user.password)
+        && Objects.equals(email, user.email);
   }
 
   @Override

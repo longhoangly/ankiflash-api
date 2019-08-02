@@ -27,7 +27,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     DictionaryService cambridgeDict = new CambridgeDictionaryServiceImpl();
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
 
-    //English to English
+    // English to English
     if (translation.equals(Translation.EN_EN)) {
 
       if (oxfordDict.isConnectionFailed(word, translation)) {
@@ -45,14 +45,14 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
       card.setMeaning(oxfordDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, oxfordDict.getDictionaryName()));
 
-      //English to Chinese/French/Japanese
+      // English to Chinese/French/Japanese
     } else if (translation.equals(Translation.EN_CN_TD)
         || translation.equals(Translation.EN_CN_SP)
         || translation.equals(Translation.EN_JP)
         || translation.equals(Translation.EN_FR)) {
 
-      if (oxfordDict.isConnectionFailed(word, translation) ||
-          cambridgeDict.isConnectionFailed(word, translation)) {
+      if (oxfordDict.isConnectionFailed(word, translation)
+          || cambridgeDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
@@ -65,14 +65,17 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
       card.setWordType(oxfordDict.getWordType());
       card.setPhonetic(oxfordDict.getPhonetic());
       card.setMeaning(cambridgeDict.getMeaning());
-      card.setCopyright(String.format(Constants.COPYRIGHT,
-          String.join(", and ", oxfordDict.getDictionaryName(), cambridgeDict.getDictionaryName())));
+      card.setCopyright(
+          String.format(
+              Constants.COPYRIGHT,
+              String.join(
+                  ", and ", oxfordDict.getDictionaryName(), cambridgeDict.getDictionaryName())));
 
-      //English to Vietnamese
+      // English to Vietnamese
     } else if (translation.equals(Translation.EN_VN)) {
 
-      if (oxfordDict.isConnectionFailed(word, translation) ||
-          lacVietDict.isConnectionFailed(word, translation)) {
+      if (oxfordDict.isConnectionFailed(word, translation)
+          || lacVietDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
@@ -85,13 +88,19 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
       card.setWordType(oxfordDict.getWordType());
       card.setPhonetic(oxfordDict.getPhonetic());
       card.setMeaning(lacVietDict.getMeaning());
-      card.setCopyright(String.format(Constants.COPYRIGHT,
-          String.join(", and ", oxfordDict.getDictionaryName(), lacVietDict.getDictionaryName())));
+      card.setCopyright(
+          String.format(
+              Constants.COPYRIGHT,
+              String.join(
+                  ", and ", oxfordDict.getDictionaryName(), lacVietDict.getDictionaryName())));
 
     } else {
       card.setStatus(Status.Not_Supported_Translation);
-      card.setComment(String.format(Constants.NOT_SUPPORTED_TRANSLATION,
-          translation.getSource(), translation.getTarget()));
+      card.setComment(
+          String.format(
+              Constants.NOT_SUPPORTED_TRANSLATION,
+              translation.getSource(),
+              translation.getTarget()));
       return card;
     }
 
@@ -105,10 +114,25 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     card.setStatus(Status.Success);
     card.setComment(Constants.SUCCESS);
 
-    String cardContent = card.getWord() + Constants.TAB + card.getWordType() + Constants.TAB
-        + card.getPhonetic() + Constants.TAB + card.getExample() + Constants.TAB + card.getPron() + Constants.TAB
-        + card.getImage() + Constants.TAB + card.getMeaning() + Constants.TAB + card.getCopyright()
-        + Constants.TAB + card.getTag() + "\n";
+    String cardContent =
+        card.getWord()
+            + Constants.TAB
+            + card.getWordType()
+            + Constants.TAB
+            + card.getPhonetic()
+            + Constants.TAB
+            + card.getExample()
+            + Constants.TAB
+            + card.getPron()
+            + Constants.TAB
+            + card.getImage()
+            + Constants.TAB
+            + card.getMeaning()
+            + Constants.TAB
+            + card.getCopyright()
+            + Constants.TAB
+            + card.getTag()
+            + "\n";
     card.setContent(cardContent);
 
     return card;

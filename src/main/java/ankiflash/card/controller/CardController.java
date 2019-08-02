@@ -46,8 +46,7 @@ class CardController {
 
   private static final Logger logger = LoggerFactory.getLogger(CardController.class);
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
   private CardService cardService;
 
@@ -122,12 +121,14 @@ class CardController {
       if (card.getStatus().compareTo(Status.Success) == 0) {
         IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, card.getContent());
       } else {
-        IOUtility.write(ankiDir + "/" + Constants.ANKI_FAILURE,
+        IOUtility.write(
+            ankiDir + "/" + Constants.ANKI_FAILURE,
             card.getWord() + " => " + card.getStatus() + "\n");
       }
     }
 
-    IOUtility.write(ankiDir + "/" + Constants.ANKI_LANGUAGE,
+    IOUtility.write(
+        ankiDir + "/" + Constants.ANKI_LANGUAGE,
         translation.getSource() + "-" + translation.getTarget() + "\n");
     return ResponseEntity.ok().body(cards);
   }
@@ -161,10 +162,10 @@ class CardController {
     ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
     return ResponseEntity.ok()
-                         .headers(headers)
-                         .contentLength(file.length())
-                         .contentType(MediaType.parseMediaType("application/octet-stream"))
-                         .body(resource);
+        .headers(headers)
+        .contentLength(file.length())
+        .contentType(MediaType.parseMediaType("application/octet-stream"))
+        .body(resource);
   }
 
   private CardService getCardService(String sourceLanguage) {
@@ -184,7 +185,8 @@ class CardController {
     } else if (sourceLanguage.equalsIgnoreCase(Constants.SPANISH)) {
       cardService = new SpanishCardServiceImpl();
     } else {
-      throw new BadRequestException(String.format("The language [%s] is not supported!", sourceLanguage));
+      throw new BadRequestException(
+          String.format("The language [%s] is not supported!", sourceLanguage));
     }
 
     return cardService;

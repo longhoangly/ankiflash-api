@@ -73,7 +73,6 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     return HtmlHelper.buildExample(examples);
-
   }
 
   @Override
@@ -88,7 +87,8 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getImage(String username, String selector) {
 
-    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
+        + word
         + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
   }
 

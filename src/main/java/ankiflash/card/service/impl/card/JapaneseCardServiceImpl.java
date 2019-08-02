@@ -78,18 +78,36 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
 
     } else {
       card.setStatus(Status.Not_Supported_Translation);
-      card.setComment(String.format(Constants.NOT_SUPPORTED_TRANSLATION,
-          translation.getSource(), translation.getTarget()));
+      card.setComment(
+          String.format(
+              Constants.NOT_SUPPORTED_TRANSLATION,
+              translation.getSource(),
+              translation.getTarget()));
       return card;
     }
 
     card.setStatus(Status.Success);
     card.setComment(Constants.SUCCESS);
 
-    String cardContent = card.getWord() + Constants.TAB + card.getWordType() + Constants.TAB
-        + card.getPhonetic() + Constants.TAB + card.getExample() + Constants.TAB + card.getPron() + Constants.TAB
-        + card.getImage() + Constants.TAB + card.getMeaning() + Constants.TAB + card.getCopyright()
-        + Constants.TAB + card.getTag() + "\n";
+    String cardContent =
+        card.getWord()
+            + Constants.TAB
+            + card.getWordType()
+            + Constants.TAB
+            + card.getPhonetic()
+            + Constants.TAB
+            + card.getExample()
+            + Constants.TAB
+            + card.getPron()
+            + Constants.TAB
+            + card.getImage()
+            + Constants.TAB
+            + card.getMeaning()
+            + Constants.TAB
+            + card.getCopyright()
+            + Constants.TAB
+            + card.getTag()
+            + "\n";
     card.setContent(cardContent);
 
     return card;

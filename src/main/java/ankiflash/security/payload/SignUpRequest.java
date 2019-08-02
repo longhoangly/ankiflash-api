@@ -5,20 +5,13 @@ import javax.validation.constraints.NotNull;
 
 public class SignUpRequest {
 
-  @NotNull
-  @NotEmpty
-  private String username;
+  @NotNull @NotEmpty private String username;
 
-  @NotNull
-  @NotEmpty
-  private String password;
+  @NotNull @NotEmpty private String password;
 
-  @NotNull
-  @NotEmpty
-  private String email;
+  @NotNull @NotEmpty private String email;
 
-  public SignUpRequest() {
-  }
+  public SignUpRequest() {}
 
   public void setUsername(String userName) {
     this.username = userName;

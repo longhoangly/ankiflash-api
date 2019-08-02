@@ -41,12 +41,18 @@ public class JsonUtility {
 
     Proxy proxy = null;
     if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
-      proxy = new Proxy(Type.HTTP, new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
+      proxy =
+          new Proxy(
+              Type.HTTP,
+              new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
     }
 
     JsonObject json = new JsonObject();
     try {
-      InputStream is = proxy == null ? new URL(url).openStream() : new URL(url).openConnection(proxy).getInputStream();
+      InputStream is =
+          proxy == null
+              ? new URL(url).openStream()
+              : new URL(url).openConnection(proxy).getInputStream();
       BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
       String jsonText = readAll(br);
       json = new JsonParser().parse(jsonText).getAsJsonObject();
@@ -62,15 +68,19 @@ public class JsonUtility {
 
     Proxy proxy = null;
     if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
-      proxy = new Proxy(Type.HTTP, new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
+      proxy =
+          new Proxy(
+              Type.HTTP,
+              new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
     }
 
     JsonObject json = new JsonObject();
     try {
       URL ur = new URL(url);
-      HttpURLConnection con = proxy == null ?
-          (HttpURLConnection) ur.openConnection() :
-          (HttpURLConnection) ur.openConnection(proxy);
+      HttpURLConnection con =
+          proxy == null
+              ? (HttpURLConnection) ur.openConnection()
+              : (HttpURLConnection) ur.openConnection(proxy);
       con.setRequestMethod("POST");
       con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
       con.setRequestProperty("Accept", "application/json");

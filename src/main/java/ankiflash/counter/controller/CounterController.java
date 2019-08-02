@@ -17,8 +17,7 @@ class CounterController {
 
   private static final Logger logger = LoggerFactory.getLogger(CounterController.class);
 
-  @Autowired
-  private CounterService counterService;
+  @Autowired private CounterService counterService;
 
   @GetMapping("/get-counter")
   public ResponseEntity getCounter() {
@@ -26,8 +25,9 @@ class CounterController {
     logger.info("/get-counter");
 
     Counter counter = counterService.get();
-    CounterResponse counterResponse = new CounterResponse(counter.getCustomer(), counter.getVisit(), counter.getCard(),
-        counter.getCounter4());
+    CounterResponse counterResponse =
+        new CounterResponse(
+            counter.getCustomer(), counter.getVisit(), counter.getCard(), counter.getCounter4());
     return ResponseEntity.ok().body(counterResponse);
   }
 

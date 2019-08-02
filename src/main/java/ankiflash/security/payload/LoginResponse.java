@@ -5,27 +5,18 @@ import javax.validation.constraints.NotNull;
 
 public class LoginResponse {
 
-  @NotNull
-  @NotEmpty
-  private String username;
+  @NotNull @NotEmpty private String username;
 
-  @NotNull
-  @NotEmpty
-  private String role;
+  @NotNull @NotEmpty private String role;
 
-  @NotNull
-  @NotEmpty
-  private boolean active;
+  @NotNull @NotEmpty private boolean active;
 
-  @NotNull
-  @NotEmpty
-  private boolean verified;
+  @NotNull @NotEmpty private boolean verified;
 
-  @NotNull
-  @NotEmpty
-  private String token;
+  @NotNull @NotEmpty private String token;
 
-  public LoginResponse(String username, String role, boolean active, boolean verified, String token) {
+  public LoginResponse(
+      String username, String role, boolean active, boolean verified, String token) {
     this.username = username;
     this.role = role;
     this.active = active;

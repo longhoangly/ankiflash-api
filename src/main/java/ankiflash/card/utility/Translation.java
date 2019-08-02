@@ -4,8 +4,10 @@ public class Translation {
 
   public static final Translation EN_EN = new Translation(Constants.ENGLISH, Constants.ENGLISH);
   public static final Translation EN_VN = new Translation(Constants.ENGLISH, Constants.VIETNAMESE);
-  public static final Translation EN_CN_TD = new Translation(Constants.ENGLISH, Constants.CHINESE_TD);
-  public static final Translation EN_CN_SP = new Translation(Constants.ENGLISH, Constants.CHINESE_SP);
+  public static final Translation EN_CN_TD =
+      new Translation(Constants.ENGLISH, Constants.CHINESE_TD);
+  public static final Translation EN_CN_SP =
+      new Translation(Constants.ENGLISH, Constants.CHINESE_SP);
   public static final Translation EN_FR = new Translation(Constants.ENGLISH, Constants.FRENCH);
   public static final Translation EN_JP = new Translation(Constants.ENGLISH, Constants.JAPANESE);
 
@@ -50,7 +52,7 @@ public class Translation {
   }
 
   public boolean equals(Translation translation) {
-    return this.source.equalsIgnoreCase(translation.getSource()) && this.target
-        .equalsIgnoreCase(translation.getTarget());
+    return this.source.equalsIgnoreCase(translation.getSource())
+        && this.target.equalsIgnoreCase(translation.getTarget());
   }
 }

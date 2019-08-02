@@ -12,7 +12,9 @@ class AuthFailureHandler implements AuthenticationFailureHandler {
   private static final Logger logger = LoggerFactory.getLogger(AuthFailureHandler.class);
 
   @Override
-  public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+  public void onAuthenticationFailure(
+      HttpServletRequest request,
+      HttpServletResponse response,
       AuthenticationException authentication) {
     logger.error("Authentication was failed...");
   }

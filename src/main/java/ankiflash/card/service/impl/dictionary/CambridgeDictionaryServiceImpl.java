@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory;
 
 public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
 
-  private static final Logger logger = LoggerFactory.getLogger(CambridgeDictionaryServiceImpl.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(CambridgeDictionaryServiceImpl.class);
 
   @Override
   public boolean isConnectionFailed(String word, Translation translation) {

@@ -59,7 +59,8 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
     if (type == null) {
       Element element = HtmlHelper.getElement(doc, "div.m5t.p10lr", 0);
-      type = element != null ? element.text().replace("|Tất cả", "").replace("|Từ liên quan", "") : "";
+      type =
+          element != null ? element.text().replace("|Tất cả", "").replace("|Từ liên quan", "") : "";
 
       if (type.isEmpty()) {
         List<String> elements = HtmlHelper.getTexts(doc, "div.m5t.p10lr");
@@ -103,7 +104,8 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getImage(String username, String selector) {
 
-    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
+    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
+        + word
         + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
   }
 
@@ -167,8 +169,10 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
           meaning.setMeaning(meanElem.text());
           firstMeaning = false;
-        } else if (meanElem.hasClass("e") || meanElem.hasClass("em") ||
-            meanElem.hasClass("im") || meanElem.hasClass("id")) {
+        } else if (meanElem.hasClass("e")
+            || meanElem.hasClass("em")
+            || meanElem.hasClass("im")
+            || meanElem.hasClass("id")) {
           examples.add(meanElem.text());
         }
       }

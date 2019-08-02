@@ -8,7 +8,8 @@ import org.slf4j.LoggerFactory;
 
 public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
 
-  private static final Logger logger = LoggerFactory.getLogger(WordReferenceDictionaryServiceImpl.class);
+  private static final Logger logger =
+      LoggerFactory.getLogger(WordReferenceDictionaryServiceImpl.class);
 
   @Override
   public boolean isConnectionFailed(String word, Translation translation) {

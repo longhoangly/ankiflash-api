@@ -17,18 +17,19 @@ import org.springframework.stereotype.Component;
 @Component
 class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
 
-  @Autowired
-  private Validation validator;
+  @Autowired private Validation validator;
 
   @Override
-  protected void additionalAuthenticationChecks(UserDetails userDetails,
-      UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+  protected void additionalAuthenticationChecks(
+      UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
+      throws AuthenticationException {
     // TODO Auto-generated method stub
   }
 
   @Override
-  protected UserDetails retrieveUser(String username,
-      UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+  protected UserDetails retrieveUser(
+      String username, UsernamePasswordAuthenticationToken authentication)
+      throws AuthenticationException {
 
     JwtAuthToken jwtAuthenticationToken = (JwtAuthToken) authentication;
     String token = jwtAuthenticationToken.getToken();
@@ -38,8 +39,8 @@ class AuthProvider extends AbstractUserDetailsAuthenticationProvider {
       throw new AuthenticationServiceException("JWT Token is incorrect");
     }
 
-    List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-        .commaSeparatedStringToAuthorityList(jwtUser.getRole());
+    List<GrantedAuthority> grantedAuthorities =
+        AuthorityUtils.commaSeparatedStringToAuthorityList(jwtUser.getRole());
     return new UserDetail(jwtUser.getUsername(), jwtUser.getPassword(), grantedAuthorities);
   }
 

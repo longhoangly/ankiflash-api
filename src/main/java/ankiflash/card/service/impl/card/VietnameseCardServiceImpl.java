@@ -33,8 +33,7 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     DictionaryService jDict = new JDictDictionaryServiceImpl();
 
     // Vietnamese to English/French
-    if (translation.equals(Translation.VN_EN)
-        || translation.equals(Translation.VN_FR)) {
+    if (translation.equals(Translation.VN_EN) || translation.equals(Translation.VN_FR)) {
 
       if (lacVietDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
@@ -79,18 +78,36 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
 
     } else {
       card.setStatus(Status.Not_Supported_Translation);
-      card.setComment(String.format(Constants.NOT_SUPPORTED_TRANSLATION,
-          translation.getSource(), translation.getTarget()));
+      card.setComment(
+          String.format(
+              Constants.NOT_SUPPORTED_TRANSLATION,
+              translation.getSource(),
+              translation.getTarget()));
       return card;
     }
 
     card.setStatus(Status.Success);
     card.setComment(Constants.SUCCESS);
 
-    String cardContent = card.getWord() + Constants.TAB + card.getWordType() + Constants.TAB
-        + card.getPhonetic() + Constants.TAB + card.getExample() + Constants.TAB + card.getPron() + Constants.TAB
-        + card.getImage() + Constants.TAB + card.getMeaning() + Constants.TAB + card.getCopyright()
-        + Constants.TAB + card.getTag() + "\n";
+    String cardContent =
+        card.getWord()
+            + Constants.TAB
+            + card.getWordType()
+            + Constants.TAB
+            + card.getPhonetic()
+            + Constants.TAB
+            + card.getExample()
+            + Constants.TAB
+            + card.getPron()
+            + Constants.TAB
+            + card.getImage()
+            + Constants.TAB
+            + card.getMeaning()
+            + Constants.TAB
+            + card.getCopyright()
+            + Constants.TAB
+            + card.getTag()
+            + "\n";
     card.setContent(cardContent);
 
     return card;

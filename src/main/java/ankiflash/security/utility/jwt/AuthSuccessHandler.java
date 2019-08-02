@@ -12,8 +12,10 @@ class AuthSuccessHandler implements AuthenticationSuccessHandler {
   private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
 
   @Override
-  public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
-      HttpServletResponse httpServletResponse, Authentication authentication) {
+  public void onAuthenticationSuccess(
+      HttpServletRequest httpServletRequest,
+      HttpServletResponse httpServletResponse,
+      Authentication authentication) {
     logger.info("Authentication was successful...");
   }
 }

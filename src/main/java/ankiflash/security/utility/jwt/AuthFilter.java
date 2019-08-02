@@ -23,16 +23,15 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
   @Value("${jwt.token.prefix}")
   private String prefix;
 
-  @Autowired
-  private Validation validator;
+  @Autowired private Validation validator;
 
   public AuthFilter(RequestMatcher matcher) {
     super(matcher);
   }
 
   @Override
-  public Authentication attemptAuthentication(HttpServletRequest request,
-      HttpServletResponse response) throws AuthenticationException {
+  public Authentication attemptAuthentication(
+      HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
     String header = request.getHeader("Authorization");
 
@@ -42,23 +41,27 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
     String authenticationToken = header.replaceFirst(prefix, "").trim();
     User jwtUser = validator.validate(authenticationToken);
-    Collection<GrantedAuthority> grantedAuthorities = AuthorityUtils
-        .commaSeparatedStringToAuthorityList(jwtUser.getRole());
+    Collection<GrantedAuthority> grantedAuthorities =
+        AuthorityUtils.commaSeparatedStringToAuthorityList(jwtUser.getRole());
 
     JwtAuthToken token = new JwtAuthToken(authenticationToken, grantedAuthorities);
     return getAuthenticationManager().authenticate(token);
   }
 
   @Override
-  protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-      FilterChain chain, Authentication authResult) throws IOException, ServletException {
+  protected void successfulAuthentication(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      FilterChain chain,
+      Authentication authResult)
+      throws IOException, ServletException {
     super.successfulAuthentication(request, response, chain, authResult);
     chain.doFilter(request, response);
   }
 
   @Override
-  protected void unsuccessfulAuthentication(HttpServletRequest request,
-      HttpServletResponse response, AuthenticationException failed)
+  protected void unsuccessfulAuthentication(
+      HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
       throws IOException, ServletException {
     super.unsuccessfulAuthentication(request, response, failed);
     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");

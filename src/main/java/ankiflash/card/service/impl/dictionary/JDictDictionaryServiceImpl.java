@@ -91,7 +91,8 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     List<String> examples = getJDictExamples(exampleElms);
     String lowerWord = this.originalWord.toLowerCase();
     for (int i = 0; i < examples.size(); i++) {
-      examples.set(i, examples.get(i).toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}"));
+      examples.set(
+          i, examples.get(i).toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}"));
     }
 
     return HtmlHelper.buildExample(examples, true);
@@ -109,8 +110,10 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getImage(String username, String selector) {
 
-    String google_image = "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q=" + word
-        + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
+    String google_image =
+        "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
+            + word
+            + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
 
     String img_link = HtmlHelper.getAttribute(doc, "a.fancybox.img", 0, "href");
     if (img_link.isEmpty() || img_link.contains("no-image")) {
@@ -162,7 +165,8 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     Meaning meaning = new Meaning();
 
     Element meanGroup = HtmlHelper.getElement(doc, "#word-detail-info", 0);
-    Element wordType = HtmlHelper.getElement(Objects.requireNonNull(meanGroup), "label[class*=word-type]", 0);
+    Element wordType =
+        HtmlHelper.getElement(Objects.requireNonNull(meanGroup), "label[class*=word-type]", 0);
     if (wordType != null) {
       meaning.setWordType(wordType.text());
     }
@@ -190,7 +194,8 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       meaning.setMeaning(kanji.replaceAll("\n", ""));
     }
 
-    Elements exampleElms = meanGroup.select("#word-detail-info>ul.ul-disc>li>u,#word-detail-info>ul.ul-disc>li>p");
+    Elements exampleElms =
+        meanGroup.select("#word-detail-info>ul.ul-disc>li>u,#word-detail-info>ul.ul-disc>li>p");
     List<String> examples = getJDictExamples(exampleElms);
     if (!examples.isEmpty()) {
       meaning.setExamples(examples);

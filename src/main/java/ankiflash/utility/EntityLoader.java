@@ -14,11 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 class EntityLoader {
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
-  @Autowired
-  private CounterService counterService;
+  @Autowired private CounterService counterService;
 
   @PostConstruct
   public void initUserData() {
