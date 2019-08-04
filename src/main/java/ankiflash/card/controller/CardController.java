@@ -50,6 +50,8 @@ class CardController {
 
   private CardService cardService;
 
+  private String delimiter = ";";
+
   @PostMapping("/generate-card")
   public ResponseEntity generateCard(@RequestBody @Valid CardRequest reqCard) {
 
@@ -98,7 +100,7 @@ class CardController {
     IOUtility.createDirs(ankiDir);
 
     // Get request info
-    List<String> words = Arrays.asList(reqCard.getWords().split(";"));
+    List<String> words = Arrays.asList(reqCard.getWords().split(delimiter));
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     // Special pre-process for Japanese

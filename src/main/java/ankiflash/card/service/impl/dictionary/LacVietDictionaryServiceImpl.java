@@ -143,6 +143,9 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     for (Element meanGroup : meanGroups) {
       Elements meanElements = meanGroup.getElementsByTag("div");
       int meanCount = meanGroup.getElementsByClass("m").size();
+      if (meanGroup.attr("id").equalsIgnoreCase("partofspeech_100")) {
+        meanElements.addAll(meanGroup.getElementsByTag("a"));
+      }
 
       Meaning meaning = new Meaning();
       List<String> examples = new ArrayList<>();
@@ -172,7 +175,8 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
         } else if (meanElem.hasClass("e")
             || meanElem.hasClass("em")
             || meanElem.hasClass("im")
-            || meanElem.hasClass("id")) {
+            || meanElem.hasClass("id")
+            || meanElem.hasAttr("href")) {
           examples.add(meanElem.text());
         }
       }

@@ -30,8 +30,10 @@ public class IOUtility {
 
     File dir = new File(dirPath);
     try {
-      FileUtils.deleteDirectory(dir);
-      logger.info(String.format("Deleted directory, %1$s", dirPath));
+      if (dir.exists()) {
+        FileUtils.deleteDirectory(dir);
+        logger.info(String.format("Deleted directory, %1$s", dirPath));
+      }
     } catch (IOException e) {
       logger.error("Exception Occurred: ", e);
     }
@@ -68,17 +70,17 @@ public class IOUtility {
     Path dest = Paths.get(desPath);
     try {
       Files.walk(src)
-          .forEach(
-              source -> {
-                Path destination = dest.resolve(src.relativize(source));
-                if (Files.isDirectory(source)) {
-                  if (!Files.exists(destination)) {
-                    createDirs(destination.toString());
-                  }
-                  return;
-                }
-                copyFile(source.toString(), destination.toString());
-              });
+           .forEach(
+               source -> {
+                 Path destination = dest.resolve(src.relativize(source));
+                 if (Files.isDirectory(source)) {
+                   if (!Files.exists(destination)) {
+                     createDirs(destination.toString());
+                   }
+                   return;
+                 }
+                 copyFile(source.toString(), destination.toString());
+               });
     } catch (IOException e) {
       logger.error("Exception Occurred: ", e);
     }
