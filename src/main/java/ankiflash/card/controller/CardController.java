@@ -155,19 +155,15 @@ class CardController {
     String filePath = cardService.compressResources(userService.getCurrentUsername());
 
     File file = new File(filePath);
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-    headers.add("Pragma", "no-cache");
-    headers.add("Expires", "0");
-
     Path path = Paths.get(file.getAbsolutePath());
     ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
     return ResponseEntity.ok()
-        .headers(headers)
-        .contentLength(file.length())
-        .contentType(MediaType.parseMediaType("application/octet-stream"))
-        .body(resource);
+                         .contentLength(file.length())
+                         .contentType(MediaType.parseMediaType("application/octet-stream"))
+                         .header(HttpHeaders.CONTENT_DISPOSITION,
+                             "attachment; filename=\"" + resource.getFilename() + "\"")
+                         .body(resource);
   }
 
   private CardService getCardService(String sourceLanguage) {
