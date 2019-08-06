@@ -76,6 +76,11 @@ class CardController {
       word = HtmlHelper.getJishoWord(word);
     }
 
+    // Special pre-process for Japanese
+    if (word.isEmpty()) {
+      throw new BadRequestException("Word not found. Please check your word.");
+    }
+
     // Generate card
     Card card = cardService.generateCard(word, translation, username);
     return ResponseEntity.ok().body(card);
@@ -115,6 +120,11 @@ class CardController {
         jdWords.addAll(HtmlHelper.getJishoWords(word, false));
       }
       words = jdWords;
+    }
+
+    // Special pre-process for Japanese
+    if (words.isEmpty()) {
+      throw new BadRequestException("Words not found. Please check your words.");
     }
 
     // Generate cards
@@ -159,11 +169,12 @@ class CardController {
     ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
     return ResponseEntity.ok()
-                         .contentLength(file.length())
-                         .contentType(MediaType.parseMediaType("application/octet-stream"))
-                         .header(HttpHeaders.CONTENT_DISPOSITION,
-                             "attachment; filename=\"" + resource.getFilename() + "\"")
-                         .body(resource);
+        .contentLength(file.length())
+        .contentType(MediaType.parseMediaType("application/octet-stream"))
+        .header(
+            HttpHeaders.CONTENT_DISPOSITION,
+            "attachment; filename=\"" + resource.getFilename() + "\"")
+        .body(resource);
   }
 
   private CardService getCardService(String sourceLanguage) {
