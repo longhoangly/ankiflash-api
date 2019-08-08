@@ -20,13 +20,18 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
 
   private static final Logger logger = LoggerFactory.getLogger(JishoDictionaryServiceImpl.class);
 
+  private String originalWord;
+
   @Override
   public boolean isConnectionFailed(String word, Translation translation) {
 
-    this.word = word;
+    String[] wordParts = word.split(":");
+    this.word = wordParts[0];
+    String wordId = wordParts[1];
+    this.originalWord = wordParts[2];
 
     boolean isConnectionFailed = true;
-    String url = HtmlHelper.lookupUrl(Constants.JISHO_WORD_URL_JP_EN, word);
+    String url = HtmlHelper.lookupUrl(Constants.JISHO_WORD_URL_JP_EN, wordId);
     doc = HtmlHelper.getDocument(url);
     if (doc != null) {
       isConnectionFailed = false;
@@ -75,8 +80,8 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
       } else if (example.isEmpty()) {
         break;
       } else {
-        word = word.toLowerCase();
-        example = example.toLowerCase().replaceAll(word, "{{c1::" + word + "}}");
+        String lowerWord = this.originalWord.toLowerCase();
+        example = example.toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}");
         examples.add(example.replaceAll("\n", ""));
       }
     }

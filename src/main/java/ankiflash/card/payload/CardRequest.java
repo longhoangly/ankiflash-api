@@ -11,6 +11,8 @@ public class CardRequest {
 
   @NotNull @NotEmpty private String target;
 
+  @NotNull @NotEmpty private String sessionId;
+
   public CardRequest(String source, String target) {
     this.source = source;
     this.target = target;
@@ -38,5 +40,13 @@ public class CardRequest {
 
   public void setTarget(String target) {
     this.target = target;
+  }
+
+  public String getSessionId() {
+    return sessionId;
+  }
+
+  public void setSessionId(String sessionId) {
+    this.sessionId = sessionId;
   }
 }

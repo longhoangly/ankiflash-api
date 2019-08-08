@@ -52,7 +52,7 @@ public class HtmlHelper {
         document = Jsoup.connect(url).get();
       }
     } catch (IOException e) {
-      logger.error("Exception: ", e);
+      logger.error("Exception Occurred: ", e);
     }
     return document;
   }
@@ -243,7 +243,9 @@ public class HtmlHelper {
           && !detailLink.text().isEmpty()) {
 
         String[] detailLinkEls = detailLink.attr("href").split("/");
-        jDictWords.add(decodeValue(detailLinkEls[detailLinkEls.length - 1]));
+        jDictWords.add(
+            decodeValue(
+                foundWordElm.text() + ":" + detailLinkEls[detailLinkEls.length - 1] + ":" + word));
       }
 
       if (firstOnly) {

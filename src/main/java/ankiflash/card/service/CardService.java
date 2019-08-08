@@ -10,7 +10,7 @@ public interface CardService {
 
   List<Card> generateCards(List<String> wordList, Translation translation, String username);
 
-  String compressResources(String username);
+  String compressResources(String username, String sessionId);
 
   List<Translation> getSupportedLanguages();
 }

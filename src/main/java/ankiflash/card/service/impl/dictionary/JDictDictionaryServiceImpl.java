@@ -24,19 +24,13 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
 
   private String originalWord;
 
-  private String wordId;
-
   @Override
   public boolean isConnectionFailed(String word, Translation translation) {
 
     String[] wordParts = word.split(":");
-    if (word.contains(":") && wordParts.length == 3) {
-      this.word = wordParts[0];
-      this.wordId = wordParts[1];
-      this.originalWord = wordParts[2];
-    } else {
-      this.word = word;
-    }
+    this.word = wordParts[0];
+    String wordId = wordParts[1];
+    this.originalWord = wordParts[2];
 
     String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", wordId);
     doc = HtmlHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
@@ -120,7 +114,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       return google_image;
     }
 
-    img_link = img_link.replaceFirst("\\?w=.*$", "");
+    img_link = "https://j-dict.com" + img_link.replaceFirst("\\?w=.*$", "");
     String[] img_link_els = img_link.split("/");
     String img_name = img_link_els[img_link_els.length - 1];
 

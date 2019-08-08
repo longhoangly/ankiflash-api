@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +37,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -51,6 +51,43 @@ class CardController {
   private CardService cardService;
 
   private String delimiter = ";";
+
+  @PostMapping("/get-japanese-words")
+  public ResponseEntity getJapaneseWords(@RequestBody @Valid CardRequest reqCard) {
+
+    logger.info("/api/v1/anki-flash-card/get-japanese-words");
+
+    String username = userService.getCurrentUsername();
+    if (username.isEmpty()) {
+      throw new BadRequestException("Cannot find your user info!!!");
+    }
+
+    // Initialize CardService
+    cardService = getCardService(reqCard.getSource());
+
+    // Get request info
+    List<String> words = Arrays.asList(reqCard.getWords().split(delimiter));
+    Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
+
+    // Get Japanese words
+    List<String> jdWords = new ArrayList<>();
+    if (translation.equals(Translation.JP_VN) || translation.equals(Translation.VN_JP)) {
+      for (String word : words) {
+        jdWords.addAll(HtmlHelper.getJDictWords(word, false));
+      }
+    } else if (translation.equals(Translation.JP_EN)) {
+      for (String word : words) {
+        jdWords.addAll(HtmlHelper.getJishoWords(word, false));
+      }
+    }
+
+    // Special pre-process for Japanese
+    if (jdWords.isEmpty()) {
+      throw new BadRequestException("Words not found. Please check your input!");
+    }
+
+    return ResponseEntity.ok().body(jdWords);
+  }
 
   @PostMapping("/generate-card")
   public ResponseEntity generateCard(@RequestBody @Valid CardRequest reqCard) {
@@ -68,18 +105,6 @@ class CardController {
     // Get request info
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
     String word = reqCard.getWords();
-
-    // Special pre-process for Japanese
-    if (translation.equals(Translation.JP_VN) || translation.equals(Translation.VN_JP)) {
-      word = HtmlHelper.getJDictWord(word);
-    } else if (translation.equals(Translation.JP_EN)) {
-      word = HtmlHelper.getJishoWord(word);
-    }
-
-    // Special pre-process for Japanese
-    if (word.isEmpty()) {
-      throw new BadRequestException("Word not found. Please check your word.");
-    }
 
     // Generate card
     Card card = cardService.generateCard(word, translation, username);
@@ -100,32 +125,13 @@ class CardController {
     cardService = getCardService(reqCard.getSource());
 
     // Create AnkiFlashcards per User
-    String ankiDir = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
-    IOUtility.clean(ankiDir);
+    String ankiDir =
+        Paths.get(username, reqCard.getSessionId(), AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
     IOUtility.createDirs(ankiDir);
 
     // Get request info
     List<String> words = Arrays.asList(reqCard.getWords().split(delimiter));
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
-
-    // Special pre-process for Japanese
-    List<String> jdWords = new ArrayList<>();
-    if (translation.equals(Translation.JP_VN) || translation.equals(Translation.VN_JP)) {
-      for (String word : words) {
-        jdWords.addAll(HtmlHelper.getJDictWords(word, false));
-      }
-      words = jdWords;
-    } else if (translation.equals(Translation.JP_EN)) {
-      for (String word : words) {
-        jdWords.addAll(HtmlHelper.getJishoWords(word, false));
-      }
-      words = jdWords;
-    }
-
-    // Special pre-process for Japanese
-    if (words.isEmpty()) {
-      throw new BadRequestException("Words not found. Please check your words.");
-    }
 
     // Generate cards
     List<Card> cards = cardService.generateCards(words, translation, username);
@@ -157,24 +163,41 @@ class CardController {
   }
 
   @GetMapping(path = "/download")
-  public ResponseEntity<Resource> download() throws IOException {
+  public ResponseEntity download(@RequestParam(value = "sessionId") String sessionId)
+      throws IOException {
 
     logger.info("/api/v1/anki-flash-card/download");
 
     cardService = new EnglishCardServiceImpl();
-    String filePath = cardService.compressResources(userService.getCurrentUsername());
+    String username = userService.getCurrentUsername();
+    String filePath = cardService.compressResources(username, sessionId);
 
     File file = new File(filePath);
     Path path = Paths.get(file.getAbsolutePath());
     ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
+    String ankiDir = Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
+    IOUtility.clean(ankiDir);
+
     return ResponseEntity.ok()
-        .contentLength(file.length())
-        .contentType(MediaType.parseMediaType("application/octet-stream"))
-        .header(
-            HttpHeaders.CONTENT_DISPOSITION,
-            "attachment; filename=\"" + resource.getFilename() + "\"")
-        .body(resource);
+                         .contentLength(file.length())
+                         .contentType(MediaType.parseMediaType("application/octet-stream"))
+                         .header(
+                             HttpHeaders.CONTENT_DISPOSITION,
+                             "attachment; filename=\"" + resource.getFilename() + "\"")
+                         .body(resource);
+  }
+
+  @GetMapping(path = "/clean-up")
+  public ResponseEntity cleanUp() {
+
+    logger.info("/api/v1/anki-flash-card/clean-up");
+
+    String username = userService.getCurrentUsername();
+    String ankiDir = Paths.get(username).toString();
+    IOUtility.clean(ankiDir);
+
+    return ResponseEntity.ok().body("Clean up successfully");
   }
 
   private CardService getCardService(String sourceLanguage) {

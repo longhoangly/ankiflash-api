@@ -24,12 +24,12 @@ public abstract class CardServiceImpl implements CardService {
     return cardCollection;
   }
 
-  public String compressResources(String username) {
+  public String compressResources(String username, String sessionId) {
 
     ClassLoader classLoader = getClass().getClassLoader();
     String attachmentPath = Objects.requireNonNull(classLoader.getResource("attachment")).getPath();
 
-    String ankiDir = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
+    String ankiDir = Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
     IOUtility.copyFolder(attachmentPath, ankiDir);
 
     IOUtility.zipFolder(ankiDir, ankiDir + ".zip");
