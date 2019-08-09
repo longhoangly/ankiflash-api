@@ -22,4 +22,4 @@ git fetch
 git checkout release --force
 git pull
 mvn clean package
-sudo java -jar target/theflash-0.0.1.war &
+sudo java -jar target/ankiflash-0.0.1.war &
