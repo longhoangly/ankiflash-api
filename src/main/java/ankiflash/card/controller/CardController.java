@@ -180,12 +180,12 @@ class CardController {
     IOUtility.clean(ankiDir);
 
     return ResponseEntity.ok()
-                         .contentLength(file.length())
-                         .contentType(MediaType.parseMediaType("application/octet-stream"))
-                         .header(
-                             HttpHeaders.CONTENT_DISPOSITION,
-                             "attachment; filename=\"" + resource.getFilename() + "\"")
-                         .body(resource);
+        .contentLength(file.length())
+        .contentType(MediaType.parseMediaType("application/octet-stream"))
+        .header(
+            HttpHeaders.CONTENT_DISPOSITION,
+            "attachment; filename=\"" + resource.getFilename() + "\"")
+        .body(resource);
   }
 
   @GetMapping(path = "/clean-up")

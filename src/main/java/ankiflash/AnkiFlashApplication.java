@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableAsync
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @PropertySource("classpath:ankiflash.properties")
-class AnkiFlashApplication {
+public class AnkiFlashApplication {
 
   private static final Logger logger = LoggerFactory.getLogger(AnkiFlashApplication.class);
 
