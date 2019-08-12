@@ -76,11 +76,11 @@ public class EmailServiceImpl implements EmailService {
   @Async
   public void sendVerificationEmail(User user) {
 
-    String emailTitle = "TheFlash Verify Email Address!";
+    String emailTitle = "AnkiFlash Verify Email Address!";
     String emailContent =
         "Hi %1$s,\n"
             + "\n"
-            + "Welcome to TheFlash!\n"
+            + "Welcome to AnkiFlash!\n"
             + "\n"
             + "Please click on the link below for email verification.\n"
             + "\n"
@@ -93,7 +93,7 @@ public class EmailServiceImpl implements EmailService {
             + "Thanks for using our site!\n"
             + "\n"
             + "Thanks,\n"
-            + "TheFlash Team\n";
+            + "AnkiFlash Team\n";
 
     String token24h = generator.generate(user, 24 * 60 * 60);
     String verificationUrl =
@@ -110,11 +110,11 @@ public class EmailServiceImpl implements EmailService {
   @Async
   public void sendResetPasswordEmail(User user) {
 
-    String emailTitle = "TheFlash Password Reset!";
+    String emailTitle = "AnkiFlash Password Reset!";
     String emailContent =
         "Hi %1$s,\n"
             + "\n"
-            + "You're receiving this email because you requested a password reset for your user account at TheFlash.\n"
+            + "You're receiving this email because you requested a password reset for your user account at AnkiFlash.\n"
             + "\n"
             + "Please go to the following page and choose a new password.\n"
             + "\n"
@@ -127,7 +127,7 @@ public class EmailServiceImpl implements EmailService {
             + "Thanks for using our site!\n"
             + "\n"
             + "Thanks,\n"
-            + "TheFlash Team\n";
+            + "AnkiFlash Team\n";
 
     String token20m = generator.generate(user, 20 * 60);
     String resetUrl =
