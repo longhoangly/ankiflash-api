@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 public abstract class CardServiceImpl implements CardService {
 
-  public abstract Card generateCard(String word, Translation translation, String username);
+  public abstract Card generateCard(
+      String word, Translation translation, String username, String sessionId);
 
-  public List<Card> generateCards(List<String> words, Translation translation, String username) {
+  public List<Card> generateCards(
+      List<String> words, Translation translation, String username, String sessionId) {
     List<Card> cardCollection = new ArrayList<>();
     for (String word : words) {
-      cardCollection.add(generateCard(word, translation, username));
+      cardCollection.add(generateCard(word, translation, username, sessionId));
     }
     return cardCollection;
   }

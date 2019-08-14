@@ -26,9 +26,9 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   public abstract String getPhonetic();
 
-  public abstract String getImage(String username, String selector);
+  public abstract String getImage(String username, String sessionId, String selector);
 
-  public abstract String getPron(String username, String selector);
+  public abstract String getPron(String username, String sessionId, String selector);
 
   public abstract String getMeaning();
 

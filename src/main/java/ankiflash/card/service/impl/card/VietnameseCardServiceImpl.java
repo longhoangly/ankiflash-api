@@ -15,7 +15,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(VietnameseCardServiceImpl.class);
 
   @Override
-  public Card generateCard(String word, Translation translation, String username) {
+  public Card generateCard(
+      String word, Translation translation, String username, String sessionId) {
 
     Card card;
     String[] wordParts = word.split(":");
@@ -48,8 +49,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setWordType(lacVietDict.getWordType());
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
-      card.setPron(lacVietDict.getPron(username, "embed"));
-      card.setImage(lacVietDict.getImage(username, ""));
+      card.setPron(lacVietDict.getPron(username, sessionId, "embed"));
+      card.setImage(lacVietDict.getImage(username, sessionId, ""));
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, lacVietDict.getDictionaryName()));
@@ -70,8 +71,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setWordType(jDict.getWordType());
       card.setPhonetic(jDict.getPhonetic());
       card.setExample(jDict.getExample());
-      card.setPron(jDict.getPron(username, ""));
-      card.setImage(jDict.getImage(username, ""));
+      card.setPron(jDict.getPron(username, sessionId, ""));
+      card.setImage(jDict.getImage(username, sessionId, ""));
       card.setTag(jDict.getTag());
       card.setMeaning(jDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, jDict.getDictionaryName()));

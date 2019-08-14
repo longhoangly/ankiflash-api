@@ -6,9 +6,10 @@ import java.util.List;
 
 public interface CardService {
 
-  Card generateCard(String word, Translation translation, String username);
+  Card generateCard(String word, Translation translation, String username, String sessionId);
 
-  List<Card> generateCards(List<String> wordList, Translation translation, String username);
+  List<Card> generateCards(
+      List<String> wordList, Translation translation, String username, String sessionId);
 
   String compressResources(String username, String sessionId);
 

@@ -77,12 +77,12 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public String getImage(String username, String selector) {
+  public String getImage(String username, String sessionId, String selector) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public String getPron(String username, String selector) {
+  public String getPron(String username, String sessionId, String selector) {
     throw new UnsupportedOperationException();
   }
 

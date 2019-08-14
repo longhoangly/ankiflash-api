@@ -102,7 +102,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public String getImage(String username, String selector) {
+  public String getImage(String username, String sessionId, String selector) {
 
     String google_image =
         "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
@@ -119,17 +119,21 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     String img_name = img_link_els[img_link_els.length - 1];
 
     boolean isSuccess = false;
-    File dir = new File(Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString());
+    File dir =
+        new File(Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
-      String output = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS, img_name).toString();
+      String output =
+          Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS, img_name).toString();
       isSuccess = IOUtility.download(img_link, output);
+    } else {
+      logger.error("AnkiFlashcards folder not found!");
     }
 
     return isSuccess ? "<img src=\"" + img_name + "\"/>" : google_image;
   }
 
   @Override
-  public String getPron(String username, String selector) {
+  public String getPron(String username, String sessionId, String selector) {
 
     String pro_link = HtmlHelper.getAttribute(doc, "a.sound", 0, "data-fn");
     if (pro_link.isEmpty()) {
@@ -140,10 +144,14 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     String pro_name = pro_link_els[pro_link_els.length - 1];
 
     boolean isSuccess = false;
-    File dir = new File(Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString());
+    File dir =
+        new File(Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
-      String output = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS, pro_name).toString();
+      String output =
+          Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS, pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
+    } else {
+      logger.error("AnkiFlashcards folder not found!");
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";

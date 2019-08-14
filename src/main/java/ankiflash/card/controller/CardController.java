@@ -107,7 +107,7 @@ class CardController {
     String word = reqCard.getWords();
 
     // Generate card
-    Card card = cardService.generateCard(word, translation, username);
+    Card card = cardService.generateCard(word, translation, username, reqCard.getSessionId());
     return ResponseEntity.ok().body(card);
   }
 
@@ -134,7 +134,8 @@ class CardController {
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     // Generate cards
-    List<Card> cards = cardService.generateCards(words, translation, username);
+    List<Card> cards =
+        cardService.generateCards(words, translation, username, reqCard.getSessionId());
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.Success) == 0) {
         IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, card.getContent());
@@ -145,9 +146,6 @@ class CardController {
       }
     }
 
-    IOUtility.write(
-        ankiDir + "/" + Constants.ANKI_LANGUAGE,
-        translation.getSource() + "-" + translation.getTarget() + "\n");
     return ResponseEntity.ok().body(cards);
   }
 

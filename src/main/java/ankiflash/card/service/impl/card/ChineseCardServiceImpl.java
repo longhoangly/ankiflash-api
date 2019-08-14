@@ -10,7 +10,8 @@ public class ChineseCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(ChineseCardServiceImpl.class);
 
   @Override
-  public Card generateCard(String word, Translation translation, String username) {
+  public Card generateCard(
+      String word, Translation translation, String username, String sessionId) {
 
     logger.info("Word = " + word);
     logger.info("Source = " + translation.getSource());

@@ -85,7 +85,7 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public String getImage(String username, String selector) {
+  public String getImage(String username, String sessionId, String selector) {
 
     return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
         + word
@@ -93,7 +93,7 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public String getPron(String username, String selector) {
+  public String getPron(String username, String sessionId, String selector) {
 
     String pro_link = HtmlHelper.getAttribute(doc, selector, 0, "data-src-mp3");
     if (pro_link.isEmpty()) {
@@ -104,10 +104,14 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     String pro_name = pro_link_els[pro_link_els.length - 1];
 
     boolean isSuccess = false;
-    File dir = new File(Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString());
+    File dir =
+        new File(Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString());
     if (dir.exists()) {
-      String output = Paths.get(username, AnkiFlashProps.ANKI_DIR_FLASHCARDS, pro_name).toString();
+      String output =
+          Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS, pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
+    } else {
+      logger.error("AnkiFlashcards folder not found!");
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";

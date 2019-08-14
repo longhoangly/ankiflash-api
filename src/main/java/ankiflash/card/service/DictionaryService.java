@@ -14,9 +14,9 @@ public interface DictionaryService {
 
   String getPhonetic();
 
-  String getImage(String username, String selector);
+  String getImage(String username, String sessionId, String selector);
 
-  String getPron(String username, String selector);
+  String getPron(String username, String sessionId, String selector);
 
   String getMeaning();
 

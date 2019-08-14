@@ -3,9 +3,8 @@ package ankiflash.card.utility;
 public class Constants {
 
   // ANKI
-  public static final String ANKI_DECK = "ankiDeck.csv";
-  public static final String ANKI_FAILURE = "failures.csv";
-  public static final String ANKI_LANGUAGE = "Language.csv";
+  public static final String ANKI_DECK = "AnkiDeck.csv";
+  public static final String ANKI_FAILURE = "Failures.csv";
   public static final String ANKI_FLASH_SINGLE_FORM_TEMPLATE = "AnkiFlashFormTemplate.apkg";
 
   // LANGUAGES
