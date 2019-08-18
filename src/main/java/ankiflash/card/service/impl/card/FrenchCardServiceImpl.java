@@ -15,8 +15,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(FrenchCardServiceImpl.class);
 
   @Override
-  public Card generateCard(
-      String word, Translation translation, String username, String sessionId) {
+  public Card generateCard(String word, Translation translation, String ankiDir) {
 
     logger.info("Word = " + word);
     logger.info("Source = " + translation.getSource());
@@ -42,8 +41,8 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setWordType(lacVietDict.getWordType());
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
-      card.setPron(lacVietDict.getPron(username, sessionId, "embed"));
-      card.setImage(lacVietDict.getImage(username, sessionId, ""));
+      card.setPron(lacVietDict.getPron(ankiDir, "embed"));
+      card.setImage(lacVietDict.getImage(ankiDir, ""));
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, lacVietDict.getDictionaryName()));
@@ -65,9 +64,8 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(collinsDict.getPhonetic());
       card.setExample(collinsDict.getExample());
       card.setPron(
-          collinsDict.getPron(
-              username, sessionId, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr"));
-      card.setImage(collinsDict.getImage(username, sessionId, ""));
+          collinsDict.getPron(ankiDir, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr"));
+      card.setImage(collinsDict.getImage(ankiDir, ""));
       card.setTag(collinsDict.getTag());
       card.setMeaning(collinsDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, lacVietDict.getDictionaryName()));

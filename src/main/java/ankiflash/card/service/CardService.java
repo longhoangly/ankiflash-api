@@ -6,12 +6,11 @@ import java.util.List;
 
 public interface CardService {
 
-  Card generateCard(String word, Translation translation, String username, String sessionId);
+  Card generateCard(String word, Translation translation, String ankiDir);
 
-  List<Card> generateCards(
-      List<String> wordList, Translation translation, String username, String sessionId);
+  List<Card> generateCards(List<String> wordList, Translation translation, String ankiDir);
 
-  String compressResources(String username, String sessionId);
+  String compressResources(String ankiDir);
 
   List<Translation> getSupportedLanguages();
 }

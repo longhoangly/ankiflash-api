@@ -107,7 +107,7 @@ class CardController {
     String word = reqCard.getWords();
 
     // Generate card
-    Card card = cardService.generateCard(word, translation, username, reqCard.getSessionId());
+    Card card = cardService.generateCard(word, translation, "");
     return ResponseEntity.ok().body(card);
   }
 
@@ -126,7 +126,12 @@ class CardController {
 
     // Create AnkiFlashcards per User
     String ankiDir =
-        Paths.get(username, reqCard.getSessionId(), AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
+        Paths.get(
+                AnkiFlashProps.PARENT_ANKI_FLASH_DIR,
+                username,
+                reqCard.getSessionId(),
+                AnkiFlashProps.SUB_ANKI_FLASH_DIR)
+            .toString();
     IOUtility.createDirs(ankiDir);
 
     // Get request info
@@ -134,8 +139,7 @@ class CardController {
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     // Generate cards
-    List<Card> cards =
-        cardService.generateCards(words, translation, username, reqCard.getSessionId());
+    List<Card> cards = cardService.generateCards(words, translation, ankiDir);
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.Success) == 0) {
         IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, card.getContent());
@@ -168,17 +172,21 @@ class CardController {
 
     cardService = new EnglishCardServiceImpl();
     String username = userService.getCurrentUsername();
-    String filePath = cardService.compressResources(username, sessionId);
+    String ankiDir =
+        Paths.get(
+                AnkiFlashProps.PARENT_ANKI_FLASH_DIR,
+                username,
+                sessionId,
+                AnkiFlashProps.SUB_ANKI_FLASH_DIR)
+            .toString();
+    String zipFilePath = cardService.compressResources(ankiDir);
 
-    File file = new File(filePath);
-    Path path = Paths.get(file.getAbsolutePath());
+    File zipFile = new File(zipFilePath);
+    Path path = Paths.get(zipFile.getAbsolutePath());
     ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
 
-    String ankiDir = Paths.get(username, sessionId, AnkiFlashProps.ANKI_DIR_FLASHCARDS).toString();
-    IOUtility.clean(ankiDir);
-
     return ResponseEntity.ok()
-        .contentLength(file.length())
+        .contentLength(zipFile.length())
         .contentType(MediaType.parseMediaType("application/octet-stream"))
         .header(
             HttpHeaders.CONTENT_DISPOSITION,
@@ -192,7 +200,7 @@ class CardController {
     logger.info("/api/v1/anki-flash-card/clean-up");
 
     String username = userService.getCurrentUsername();
-    String ankiDir = Paths.get(username).toString();
+    String ankiDir = Paths.get(AnkiFlashProps.PARENT_ANKI_FLASH_DIR, username).toString();
     IOUtility.clean(ankiDir);
 
     return ResponseEntity.ok().body("Clean up successfully");

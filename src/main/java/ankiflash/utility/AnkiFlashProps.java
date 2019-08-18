@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AnkiFlashProps {
 
-  public static String ANKI_DIR_FLASHCARDS;
+  public static String PARENT_ANKI_FLASH_DIR;
+  public static String SUB_ANKI_FLASH_DIR;
   public static String API_SERVER_URL;
   public static String WEB_SERVER_URL;
 
@@ -26,9 +27,14 @@ public class AnkiFlashProps {
   public static boolean MAIL_SSL;
   public static boolean MAIL_DEBUG;
 
-  @Value("${ankiflash.anki.root}")
-  public void setAnkiDirFlashcards(String ankiDirFlashcards) {
-    ANKI_DIR_FLASHCARDS = ankiDirFlashcards;
+  @Value("${ankiflash.anki.parent}")
+  public void setAnkiFlashParent(String ankiDir) {
+    PARENT_ANKI_FLASH_DIR = ankiDir;
+  }
+
+  @Value("${ankiflash.anki.sub}")
+  public void setAnkiFlashDir(String ankiDir) {
+    SUB_ANKI_FLASH_DIR = ankiDir;
   }
 
   @Value("${server.api.url}")

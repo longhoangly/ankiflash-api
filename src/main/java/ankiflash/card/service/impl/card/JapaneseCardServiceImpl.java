@@ -15,8 +15,7 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(JapaneseCardServiceImpl.class);
 
   @Override
-  public Card generateCard(
-      String word, Translation translation, String username, String sessionId) {
+  public Card generateCard(String word, Translation translation, String ankiDir) {
 
     Card card;
     String[] wordParts = word.split(":");
@@ -49,8 +48,8 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setWordType(jDict.getWordType());
       card.setPhonetic(jDict.getPhonetic());
       card.setExample(jDict.getExample());
-      card.setPron(jDict.getPron(username, sessionId, ""));
-      card.setImage(jDict.getImage(username, sessionId, ""));
+      card.setPron(jDict.getPron(ankiDir, ""));
+      card.setImage(jDict.getImage(ankiDir, ""));
       card.setTag(jDict.getTag());
       card.setMeaning(jDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, jDict.getDictionaryName()));
@@ -71,8 +70,8 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setWordType(jishoDict.getWordType());
       card.setPhonetic(jishoDict.getPhonetic());
       card.setExample(jishoDict.getExample());
-      card.setPron(jishoDict.getPron(username, sessionId, ""));
-      card.setImage(jishoDict.getImage(username, sessionId, ""));
+      card.setPron(jishoDict.getPron(ankiDir, ""));
+      card.setImage(jishoDict.getImage(ankiDir, ""));
       card.setTag(jishoDict.getTag());
       card.setMeaning(jishoDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, jishoDict.getDictionaryName()));

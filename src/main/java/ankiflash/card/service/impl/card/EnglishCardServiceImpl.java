@@ -16,8 +16,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(EnglishCardServiceImpl.class);
 
   @Override
-  public Card generateCard(
-      String word, Translation translation, String username, String sessionId) {
+  public Card generateCard(String word, Translation translation, String ankiDir) {
 
     logger.info("Word = " + word);
     logger.info("Source = " + translation.getSource());
@@ -106,10 +105,12 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     }
 
     card.setExample(oxfordDict.getExample());
-    String ukPron = oxfordDict.getPron(username, sessionId, "div.pron-uk");
-    String usPron = oxfordDict.getPron(username, sessionId, "div.pron-us");
-    card.setPron("BrE " + ukPron + " NAmE " + usPron);
-    card.setImage(oxfordDict.getImage(username, sessionId, "a.topic"));
+    String ukPron = oxfordDict.getPron(ankiDir, "div.pron-uk");
+    String usPron = oxfordDict.getPron(ankiDir, "div.pron-us");
+    if (!ukPron.isEmpty() && !usPron.isEmpty()) {
+      card.setPron("BrE " + ukPron + " NAmE " + usPron);
+    }
+    card.setImage(oxfordDict.getImage(ankiDir, "a.topic"));
     card.setTag(oxfordDict.getTag());
 
     card.setStatus(Status.Success);

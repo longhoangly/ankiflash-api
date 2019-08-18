@@ -89,7 +89,11 @@ public class IOUtility {
   private static void copyFile(String srcPath, String desPath) {
 
     try {
-      Files.copy(Paths.get(srcPath), Paths.get(desPath), StandardCopyOption.COPY_ATTRIBUTES);
+      Files.copy(
+          Paths.get(srcPath),
+          Paths.get(desPath),
+          StandardCopyOption.COPY_ATTRIBUTES,
+          StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
       logger.error("Exception Occurred: ", e);
     }
