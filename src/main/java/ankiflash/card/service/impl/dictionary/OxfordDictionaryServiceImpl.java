@@ -2,6 +2,7 @@ package ankiflash.card.service.impl.dictionary;
 
 import ankiflash.card.dto.Meaning;
 import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
@@ -21,15 +22,20 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isConnectionFailed(String word, Translation translation) {
 
-    this.word = word;
-
-    boolean isConnectionFailed = true;
-    String url = HtmlHelper.lookupUrl(Constants.OXFORD_URL_EN_EN, word);
-    doc = HtmlHelper.getDocument(url);
-    if (doc != null) {
-      isConnectionFailed = false;
+    String[] wordParts = word.split(":");
+    if (wordParts.length == 3) {
+      this.word = wordParts[0];
+      this.wordId = wordParts[1];
+      this.originalWord = wordParts[2];
+    } else {
+      this.word = word;
+      this.wordId = word;
+      this.originalWord = word;
     }
-    return isConnectionFailed;
+
+    String url = HtmlHelper.lookupUrl(Constants.OXFORD_URL_EN_EN, this.wordId);
+    doc = HtmlHelper.getDocument(url);
+    return doc == null;
   }
 
   @Override
@@ -100,8 +106,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
       return google_image;
     }
 
-    String[] img_link_els = img_link.split("/");
-    String img_name = img_link_els[img_link_els.length - 1];
+    String img_name = DictHelper.getLastElement(img_link);
 
     boolean isSuccess = false;
     File dir = new File(ankiDir);
@@ -109,7 +114,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
       String output = Paths.get(dir.getAbsolutePath(), img_name).toString();
       isSuccess = IOUtility.download(img_link, output);
     } else {
-      logger.error("AnkiFlashcards folder not found!");
+      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
     }
 
     return isSuccess ? "<img src=\"" + img_name + "\"/>" : google_image;
@@ -123,8 +128,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
       return "";
     }
 
-    String[] pro_link_els = pro_link.split("/");
-    String pro_name = pro_link_els[pro_link_els.length - 1];
+    String pro_name = DictHelper.getLastElement(pro_link);
 
     boolean isSuccess = false;
     File dir = new File(ankiDir);
@@ -132,7 +136,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
       String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
     } else {
-      logger.error("AnkiFlashcards folder not found!");
+      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";

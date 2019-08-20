@@ -6,14 +6,54 @@ import ankiflash.card.service.impl.dictionary.CambridgeDictionaryServiceImpl;
 import ankiflash.card.service.impl.dictionary.LacVietDictionaryServiceImpl;
 import ankiflash.card.service.impl.dictionary.OxfordDictionaryServiceImpl;
 import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.DictHelper;
+import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EnglishCardServiceImpl extends CardServiceImpl {
 
   private static final Logger logger = LoggerFactory.getLogger(EnglishCardServiceImpl.class);
+
+  @Override
+  public List<String> getWords(String word, Translation translation) {
+
+    List<String> engWords = new ArrayList<>();
+    if (translation.equals(Translation.EN_EN)) {
+      String url = HtmlHelper.lookupUrl(Constants.OXFORD_SEARCH_URL_EN_EN, word);
+      Document doc = HtmlHelper.getDocument(url);
+
+      if (doc != null) {
+        String firstLink = HtmlHelper.getAttribute(doc, "link", 0, "href");
+        String firstWordId = firstLink.isEmpty() ? "" : DictHelper.getLastElement(firstLink);
+        engWords.add(word + ":" + firstWordId + ":" + word);
+
+        Elements allMatchesBlocks = doc.select("dl.accordion.ui-grad");
+        for (Element allMatches : allMatchesBlocks) {
+          Elements lis = allMatches.select("li");
+          for (Element li : lis) {
+            li.getElementsByTag("pos").remove();
+            String matchedWord = li.getElementsByTag("span").text();
+            String wordId = DictHelper.getLastElement(li.getElementsByTag("a").attr("href"));
+            engWords.add(matchedWord + ":" + wordId + ":" + word);
+          }
+        }
+      } else {
+        logger.info("Words not found!");
+      }
+    } else {
+      engWords.add(word);
+    }
+
+    return engWords;
+  }
 
   @Override
   public Card generateCard(String word, Translation translation, String ankiDir) {

@@ -20,9 +20,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
-
     String url = "";
-    boolean isConnectionFailed = true;
     if (translation.equals(Translation.EN_CN_TD)) {
       url = HtmlHelper.lookupUrl(Constants.CAMBRIDGE_URL_EN_CN_TD, word);
     } else if (translation.equals(Translation.EN_CN_SP)) {
@@ -33,10 +31,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
       url = HtmlHelper.lookupUrl(Constants.CAMBRIDGE_URL_EN_JP, word);
     }
     doc = HtmlHelper.getDocument(url);
-    if (doc != null) {
-      isConnectionFailed = false;
-    }
-    return isConnectionFailed;
+    return doc == null;
   }
 
   @Override

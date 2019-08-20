@@ -10,7 +10,6 @@ import ankiflash.card.service.impl.card.JapaneseCardServiceImpl;
 import ankiflash.card.service.impl.card.SpanishCardServiceImpl;
 import ankiflash.card.service.impl.card.VietnameseCardServiceImpl;
 import ankiflash.card.utility.Constants;
-import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
 import ankiflash.security.service.UserService;
@@ -52,7 +51,7 @@ class CardController {
 
   private String delimiter = ";";
 
-  @PostMapping("/get-japanese-words")
+  @PostMapping("/get-words")
   public ResponseEntity getJapaneseWords(@RequestBody @Valid CardRequest reqCard) {
 
     logger.info("/api/v1/anki-flash-card/get-japanese-words");
@@ -66,19 +65,13 @@ class CardController {
     cardService = getCardService(reqCard.getSource());
 
     // Get request info
-    List<String> words = Arrays.asList(reqCard.getWords().split(delimiter));
+    String[] words = reqCard.getWords().split(delimiter);
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
-    // Get Japanese words
+    // Get all matched words
     List<String> jdWords = new ArrayList<>();
-    if (translation.equals(Translation.JP_VN) || translation.equals(Translation.VN_JP)) {
-      for (String word : words) {
-        jdWords.addAll(HtmlHelper.getJDictWords(word, false));
-      }
-    } else if (translation.equals(Translation.JP_EN)) {
-      for (String word : words) {
-        jdWords.addAll(HtmlHelper.getJishoWords(word, false));
-      }
+    for (String word : words) {
+      jdWords.addAll(cardService.getWords(word, translation));
     }
 
     // Special pre-process for Japanese
@@ -107,7 +100,7 @@ class CardController {
     String word = reqCard.getWords();
 
     // Generate card
-    Card card = cardService.generateCard(word, translation, "");
+    Card card = cardService.generateCard(word, translation, "dummy_request");
     return ResponseEntity.ok().body(card);
   }
 

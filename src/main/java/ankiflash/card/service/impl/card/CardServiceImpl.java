@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public abstract class CardServiceImpl implements CardService {
 
+  public abstract List<String> getWords(String word, Translation translation);
+
   public abstract Card generateCard(String word, Translation translation, String ankiDir);
 
   public List<Card> generateCards(List<String> words, Translation translation, String ankiDir) {

@@ -15,14 +15,9 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
-
-    boolean isConnectionFailed = true;
     String url = HtmlHelper.lookupUrl(Constants.WORD_REFERENCE_URL_EN_SP, word);
     doc = HtmlHelper.getDocument(url);
-    if (doc != null) {
-      isConnectionFailed = false;
-    }
-    return isConnectionFailed;
+    return doc == null;
   }
 
   @Override

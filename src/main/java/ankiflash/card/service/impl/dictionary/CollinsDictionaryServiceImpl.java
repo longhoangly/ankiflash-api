@@ -22,14 +22,9 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
-
-    boolean isConnectionFailed = true;
     String url = HtmlHelper.lookupUrl(Constants.COLLINS_URL_FR_EN, word);
     doc = HtmlHelper.getDocument(url);
-    if (doc != null) {
-      isConnectionFailed = false;
-    }
-    return isConnectionFailed;
+    return doc == null;
   }
 
   @Override
@@ -108,7 +103,7 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
       String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
     } else {
-      logger.error("AnkiFlashcards folder not found!");
+      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";

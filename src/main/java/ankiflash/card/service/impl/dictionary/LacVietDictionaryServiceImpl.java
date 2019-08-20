@@ -2,6 +2,7 @@ package ankiflash.card.service.impl.dictionary;
 
 import ankiflash.card.dto.Meaning;
 import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
@@ -22,9 +23,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   public boolean isConnectionFailed(String word, Translation translation) {
 
     this.word = word;
-
     String url = "";
-    boolean isConnectionFailed = true;
     if (translation.equals(Translation.VN_EN)) {
       url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_VN_EN, word);
     } else if (translation.equals(Translation.VN_FR)) {
@@ -35,10 +34,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
       url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_FR_VN, word);
     }
     doc = HtmlHelper.getDocument(url);
-    if (doc != null) {
-      isConnectionFailed = false;
-    }
-    return isConnectionFailed;
+    return doc == null;
   }
 
   @Override
@@ -117,8 +113,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     pro_link = pro_link.replace("file=", "").replace("&autostart=false", "");
-    String[] pro_link_els = pro_link.split("/");
-    String pro_name = pro_link_els[pro_link_els.length - 1];
+    String pro_name = DictHelper.getLastElement(pro_link);
 
     boolean isSuccess = false;
     File dir = new File(ankiDir);
@@ -126,7 +121,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
       String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
     } else {
-      logger.error("AnkiFlashcards folder not found!");
+      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";

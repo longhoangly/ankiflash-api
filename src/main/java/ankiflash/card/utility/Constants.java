@@ -21,6 +21,8 @@ public class Constants {
   public static final String OXFORD_WORD_NOT_FOUND =
       "Oxford Learner's Dictionaries | Find the meanings";
   public static final String OXFORD_URL_EN_EN =
+      "https://www.oxfordlearnersdictionaries.com/definition/english/%1$s";
+  public static final String OXFORD_SEARCH_URL_EN_EN =
       "https://www.oxfordlearnersdictionaries.com/search/english/direct/?q=%1$s";
 
   // LACVIET

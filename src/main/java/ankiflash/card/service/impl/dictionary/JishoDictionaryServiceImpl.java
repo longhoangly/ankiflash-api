@@ -2,6 +2,7 @@ package ankiflash.card.service.impl.dictionary;
 
 import ankiflash.card.dto.Meaning;
 import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
@@ -19,23 +20,22 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
 
   private static final Logger logger = LoggerFactory.getLogger(JishoDictionaryServiceImpl.class);
 
-  private String originalWord;
-
   @Override
   public boolean isConnectionFailed(String word, Translation translation) {
 
     String[] wordParts = word.split(":");
-    this.word = wordParts[0];
-    String wordId = wordParts[1];
-    this.originalWord = wordParts[2];
-
-    boolean isConnectionFailed = true;
-    String url = HtmlHelper.lookupUrl(Constants.JISHO_WORD_URL_JP_EN, wordId);
-    doc = HtmlHelper.getDocument(url);
-    if (doc != null) {
-      isConnectionFailed = false;
+    try {
+      this.word = wordParts[0];
+      this.wordId = wordParts[1];
+      this.originalWord = wordParts[2];
+    } catch (Exception e) {
+      logger.error("Exception Occurred: ", e);
+      return false;
     }
-    return isConnectionFailed;
+
+    String url = HtmlHelper.lookupUrl(Constants.JISHO_WORD_URL_JP_EN, this.wordId);
+    doc = HtmlHelper.getDocument(url);
+    return doc == null;
   }
 
   @Override
@@ -111,8 +111,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     pro_link = "https:" + pro_link;
-    String[] pro_link_els = pro_link.split("/");
-    String pro_name = pro_link_els[pro_link_els.length - 1];
+    String pro_name = DictHelper.getLastElement(pro_link);
 
     boolean isSuccess = false;
     File dir = new File(ankiDir);
@@ -120,7 +119,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
       String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
     } else {
-      logger.error("AnkiFlashcards folder not found!");
+      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";
@@ -182,7 +181,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     return "Jisho Dictionary";
   }
 
-  private static List<String> getJishoJapaneseSentences(String word) {
+  private List<String> getJishoJapaneseSentences(String word) {
 
     String url = HtmlHelper.lookupUrl(Constants.JISHO_SEARCH_URL_JP_EN, word + "%20%23sentences");
     Document document = HtmlHelper.getDocument(url);

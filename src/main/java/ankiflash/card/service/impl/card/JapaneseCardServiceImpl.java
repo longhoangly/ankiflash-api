@@ -4,15 +4,30 @@ import ankiflash.card.dto.Card;
 import ankiflash.card.service.DictionaryService;
 import ankiflash.card.service.impl.dictionary.JDictDictionaryServiceImpl;
 import ankiflash.card.service.impl.dictionary.JishoDictionaryServiceImpl;
+import ankiflash.card.utility.CardHelper;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JapaneseCardServiceImpl extends CardServiceImpl {
 
   private static final Logger logger = LoggerFactory.getLogger(JapaneseCardServiceImpl.class);
+
+  @Override
+  public List<String> getWords(String word, Translation translation) {
+
+    if (translation.equals(Translation.JP_EN)) {
+      return CardHelper.getJishoWords(word);
+    } else if (translation.equals(Translation.JP_VN)) {
+      return CardHelper.getJDictWords(word);
+    }
+
+    return new ArrayList<>();
+  }
 
   @Override
   public Card generateCard(String word, Translation translation, String ankiDir) {

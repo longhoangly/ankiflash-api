@@ -12,6 +12,10 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   String word;
 
+  String wordId;
+
+  String originalWord;
+
   String type;
 
   String phonetic;

@@ -1,7 +1,9 @@
 package ankiflash.card.service.impl.dictionary;
 
 import ankiflash.card.dto.Meaning;
+import ankiflash.card.utility.CardHelper;
 import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
@@ -21,24 +23,22 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
 
   private static final Logger logger = LoggerFactory.getLogger(JDictDictionaryServiceImpl.class);
 
-  private String originalWord;
-
   @Override
   public boolean isConnectionFailed(String word, Translation translation) {
 
     String[] wordParts = word.split(":");
-    this.word = wordParts[0];
-    String wordId = wordParts[1];
-    this.originalWord = wordParts[2];
-
-    String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", wordId);
-    doc = HtmlHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
-
-    boolean isConnectionFailed = true;
-    if (doc != null) {
-      isConnectionFailed = false;
+    try {
+      this.word = wordParts[0];
+      this.wordId = wordParts[1];
+      this.originalWord = wordParts[2];
+    } catch (Exception e) {
+      logger.error("Exception Occurred: ", e);
+      return false;
     }
-    return isConnectionFailed;
+
+    String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", this.wordId);
+    doc = CardHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
+    return doc == null;
   }
 
   @Override
@@ -114,8 +114,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     img_link = "https://j-dict.com" + img_link.replaceFirst("\\?w=.*$", "");
-    String[] img_link_els = img_link.split("/");
-    String img_name = img_link_els[img_link_els.length - 1];
+    String img_name = DictHelper.getLastElement(img_link);
 
     boolean isSuccess = false;
     File dir = new File(ankiDir);
@@ -123,7 +122,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       String output = Paths.get(dir.getAbsolutePath(), img_name).toString();
       isSuccess = IOUtility.download(img_link, output);
     } else {
-      logger.error("AnkiFlashcards folder not found!");
+      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
     }
 
     return isSuccess ? "<img src=\"" + img_name + "\"/>" : google_image;
@@ -137,8 +136,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       return "";
     }
 
-    String[] pro_link_els = pro_link.split("/");
-    String pro_name = pro_link_els[pro_link_els.length - 1];
+    String pro_name = DictHelper.getLastElement(pro_link);
 
     boolean isSuccess = false;
     File dir = new File(ankiDir);
@@ -146,7 +144,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
     } else {
-      logger.error("AnkiFlashcards folder not found!");
+      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";
@@ -207,7 +205,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     return "J-Dict Dictionary";
   }
 
-  private static List<String> getJDictExamples(Elements exampleElms) {
+  private List<String> getJDictExamples(Elements exampleElms) {
 
     List<String> examples = new ArrayList<>();
     if (!exampleElms.isEmpty()) {
@@ -223,7 +221,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
 
       String sentencesChain = String.join("=>=>=>=>=>", jpExamples);
       String urlParams = String.format("m=dictionary&fn=furigana&keyword=%1$s", sentencesChain);
-      Document doc = HtmlHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParams);
+      Document doc = CardHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParams);
       sentencesChain = doc != null ? doc.body().html().replaceAll("\n", "") : sentencesChain;
       jpExamples = Arrays.asList(sentencesChain.split("=&gt;=&gt;=&gt;=&gt;=&gt;"));
 

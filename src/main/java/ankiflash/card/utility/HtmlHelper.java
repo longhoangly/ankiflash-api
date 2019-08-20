@@ -2,8 +2,6 @@ package ankiflash.card.utility;
 
 import ankiflash.card.dto.Meaning;
 import ankiflash.utility.AnkiFlashProps;
-import ankiflash.utility.JsonUtility;
-import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
@@ -29,7 +27,7 @@ public class HtmlHelper {
     return String.format(dictUrl, word);
   }
 
-  private static String decodeValue(String value) {
+  public static String decodeValue(String value) {
     try {
       return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
     } catch (UnsupportedEncodingException e) {
@@ -179,85 +177,5 @@ public class HtmlHelper {
     htmlBuilder.append("</div>");
 
     return htmlBuilder.toString();
-  }
-
-  /* === Jdict Specific Methods === */
-
-  /**
-   * To get Jdict HTML source, we need to send a post request to Jdict
-   *
-   * @param url post url
-   * @param body json input for post request
-   * @return Jsoup doucument
-   */
-  public static Document getJDictDoc(String url, String body) {
-
-    logger.info("body={}", body);
-    JsonObject json = JsonUtility.postRequest(url, body);
-    return Jsoup.parse(json.get("Content").getAsString());
-  }
-
-  public static List<String> getJDictWords(String word, boolean firstOnly) {
-
-    String urlParameters =
-        String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
-    Document document = HtmlHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
-    Elements wordElms = document.select("ul>li");
-
-    List<String> jDictWords = new ArrayList<>();
-    for (Element wordElem : wordElms) {
-      if (wordElem.attr("title").toLowerCase().contains(word.toLowerCase())
-          && !wordElem.attr("data-id").isEmpty()) {
-        jDictWords.add(wordElem.attr("title") + ":" + wordElem.attr("data-id") + ":" + word);
-      }
-
-      if (firstOnly) {
-        break;
-      }
-    }
-    return jDictWords;
-  }
-
-  public static String getJDictWord(String word) {
-    List<String> words = getJDictWords(word, true);
-    return words.isEmpty() ? "" : words.get(0);
-  }
-
-  /* === Jisho Specific Methods === */
-
-  public static List<String> getJishoWords(String word, boolean firstOnly) {
-
-    String url = HtmlHelper.lookupUrl(Constants.JISHO_SEARCH_URL_JP_EN, word);
-    Document document = HtmlHelper.getDocument(url);
-
-    Elements wordElms = document.select(".concept_light.clearfix");
-    List<String> jDictWords = new ArrayList<>();
-    for (Element wordElem : wordElms) {
-
-      Element foundWordElm = HtmlHelper.getElement(wordElem, ".concept_light-representation", 0);
-      Element detailLink = HtmlHelper.getElement(wordElem, ".light-details_link", 0);
-
-      if (foundWordElm != null
-          && foundWordElm.text().toLowerCase().contains(word.toLowerCase())
-          && detailLink != null
-          && !detailLink.text().isEmpty()) {
-
-        String[] detailLinkEls = detailLink.attr("href").split("/");
-        jDictWords.add(
-            decodeValue(
-                foundWordElm.text() + ":" + detailLinkEls[detailLinkEls.length - 1] + ":" + word));
-      }
-
-      if (firstOnly) {
-        break;
-      }
-    }
-
-    return jDictWords;
-  }
-
-  public static String getJishoWord(String word) {
-    List<String> words = getJishoWords(word, true);
-    return words.isEmpty() ? "" : words.get(0);
   }
 }
