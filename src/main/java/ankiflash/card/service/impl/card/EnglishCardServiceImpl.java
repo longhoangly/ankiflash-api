@@ -41,8 +41,10 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
           for (Element li : lis) {
             li.getElementsByTag("pos").remove();
             String matchedWord = li.getElementsByTag("span").text();
-            String wordId = DictHelper.getLastElement(li.getElementsByTag("a").attr("href"));
-            engWords.add(matchedWord + ":" + wordId + ":" + word);
+            if (matchedWord.equalsIgnoreCase(word)) {
+              String wordId = DictHelper.getLastElement(li.getElementsByTag("a").attr("href"));
+              engWords.add(matchedWord + ":" + wordId + ":" + word);
+            }
           }
         }
       } else {
@@ -58,18 +60,24 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
   @Override
   public Card generateCard(String word, Translation translation, String ankiDir) {
 
-    logger.info("Word = " + word);
+    Card card;
+    String[] wordParts = word.split(":");
+    if (word.contains(":") && wordParts.length == 3) {
+      card = new Card(wordParts[0]);
+    } else {
+      card = new Card(word);
+    }
+
+    logger.info("Word = " + card.getWord());
     logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
-    Card card = new Card(word);
     DictionaryService oxfordDict = new OxfordDictionaryServiceImpl();
     DictionaryService cambridgeDict = new CambridgeDictionaryServiceImpl();
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
 
     // English to English
     if (translation.equals(Translation.EN_EN)) {
-
       if (oxfordDict.isConnectionFailed(word, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);

@@ -54,7 +54,7 @@ class CardController {
   @PostMapping("/get-words")
   public ResponseEntity getJapaneseWords(@RequestBody @Valid CardRequest reqCard) {
 
-    logger.info("/api/v1/anki-flash-card/get-japanese-words");
+    logger.info("/api/v1/anki-flash-card/get-words");
 
     String username = userService.getCurrentUsername();
     if (username.isEmpty()) {

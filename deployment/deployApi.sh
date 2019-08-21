@@ -21,5 +21,5 @@ cd theflashapi
 git fetch
 git checkout release --force
 git pull
-mvn clean package
+mvn -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2 clean package
 sudo java -jar target/ankiflash-0.0.1.war &

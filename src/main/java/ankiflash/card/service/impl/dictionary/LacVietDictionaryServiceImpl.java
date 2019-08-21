@@ -154,7 +154,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
             meaning.setWordType(meanElem.text());
           } else {
             // only type => get inner html
-            meaning.setWordType(meanElem.html());
+            meaning.setWordType(meanElem.html().replaceAll("\n", ""));
           }
         } else if (meanElem.hasClass("m")) {
           // from the second meaning tag
