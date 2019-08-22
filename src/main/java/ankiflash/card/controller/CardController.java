@@ -3,6 +3,7 @@ package ankiflash.card.controller;
 import ankiflash.card.dto.Card;
 import ankiflash.card.payload.CardRequest;
 import ankiflash.card.payload.WordResponse;
+import ankiflash.card.service.CardDbService;
 import ankiflash.card.service.CardService;
 import ankiflash.card.service.impl.card.ChineseCardServiceImpl;
 import ankiflash.card.service.impl.card.EnglishCardServiceImpl;
@@ -47,6 +48,8 @@ class CardController {
   private static final Logger logger = LoggerFactory.getLogger(CardController.class);
 
   @Autowired private UserService userService;
+
+  @Autowired private CardDbService cardDbService;
 
   private CardService cardService;
 
@@ -146,6 +149,7 @@ class CardController {
     List<Card> cards = cardService.generateCards(words, translation, ankiDir);
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.Success) == 0) {
+        cardDbService.save(card);
         IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, card.getContent());
       } else {
         IOUtility.write(
@@ -158,7 +162,7 @@ class CardController {
   }
 
   @GetMapping(path = "/get-supported-language")
-  public ResponseEntity getSupportedLanguagues() {
+  public ResponseEntity getSupportedLanguage() {
 
     logger.info("/api/v1/anki-flash-card/get-supported-language");
 

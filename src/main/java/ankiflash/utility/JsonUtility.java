@@ -33,7 +33,7 @@ public class JsonUtility {
       }
       reader.close();
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
     return sb.toString();
   }
@@ -59,7 +59,7 @@ public class JsonUtility {
       json = new JsonParser().parse(jsonText).getAsJsonObject();
       is.close();
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
 
     return json;
@@ -99,7 +99,7 @@ public class JsonUtility {
       json = new JsonParser().parse(jsonText).getAsJsonObject();
       is.close();
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
 
     return json;

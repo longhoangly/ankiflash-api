@@ -32,7 +32,7 @@ public class HtmlHelper {
     try {
       return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
     } catch (UnsupportedEncodingException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
     return "";
   }
@@ -51,7 +51,7 @@ public class HtmlHelper {
         document = Jsoup.connect(url).get();
       }
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
     return document;
   }

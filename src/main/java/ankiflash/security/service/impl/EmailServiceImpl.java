@@ -56,8 +56,8 @@ public class EmailServiceImpl implements EmailService {
       props.put("mail.smtp.auth", AnkiFlashProps.MAIL_AUTH);
       props.put("mail.smtp.starttls.enable", AnkiFlashProps.MAIL_SSL);
       props.put("mail.debug", AnkiFlashProps.MAIL_DEBUG);
-    } catch (Exception e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+    } catch (java.lang.Exception e) {
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
 
     return mailSender;
@@ -144,7 +144,7 @@ public class EmailServiceImpl implements EmailService {
   @Async
   public void sendExceptionEmail(Throwable ex) {
 
-    String emailTitle = "URGENT!!! AnkiFlash Exception Occurred!!!";
+    String emailTitle = "URGENT!!! AnkiFlash ErrorHandler Occurred!!!";
     String emailContent =
         "Hi Admin,\n"
             + "\n"
@@ -152,7 +152,7 @@ public class EmailServiceImpl implements EmailService {
             + "\n"
             + "Please check the log of the system to see if anything went wrong?\n"
             + "\n"
-            + "The following exception occurred!\n"
+            + "The following ErrorHandler occurred!\n"
             + "\n"
             + "%s\n"
             + "\n"

@@ -2,35 +2,103 @@ package ankiflash.card.dto;
 
 import ankiflash.card.utility.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.api.client.util.Base64;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
+@Entity
+@Table(name = "card")
 public class Card {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", unique = true)
+  private int id;
+
+  @NotNull
+  @NotEmpty
+  @Column(name = "hash")
+  private String hash;
+
+  @NotNull
+  @NotEmpty
+  @Column(name = "word")
   private final String word;
 
+  @NotNull
+  @NotEmpty
+  @Column(name = "wordType")
   private String wordType;
 
+  @NotNull
+  @NotEmpty
+  @Column(name = "phonetic")
   private String phonetic;
 
+  @NotNull
+  @NotEmpty
+  @Column(name = "example", columnDefinition = "LONGTEXT")
   private String example;
 
+  @NotNull
+  @NotEmpty
+  @Column(name = "pron")
   private String pron;
 
+  @NotNull
+  @NotEmpty
+  @Column(name = "meaning", columnDefinition = "LONGTEXT")
   private String meaning;
 
+  @NotNull
+  @NotEmpty
+  @Column(name = "image")
   private String image;
 
+  @NotNull
+  @Column(name = "tag")
   private char tag;
 
+  @NotNull
+  @NotEmpty
+  @Column(name = "copyright")
   private String copyright;
 
-  @JsonIgnore private String content;
+  @NotNull
+  @Column(name = "status")
+  private Status status;
 
-  private Status Status;
-
+  @NotNull
+  @NotEmpty
+  @Column(name = "comment")
   private String comment;
+
+  @JsonIgnore
+  @Column(name = "content", columnDefinition = "LONGTEXT")
+  private String content;
 
   public Card(String word) {
     this.word = word;
+    this.hash = new String(Base64.encodeBase64(word.getBytes()));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Card card = (Card) o;
+    return hash == card.hash && word.equals(card.word);
   }
 
   public String getWord() {
@@ -110,11 +178,11 @@ public class Card {
   }
 
   public Status getStatus() {
-    return Status;
+    return status;
   }
 
   public void setStatus(Status status) {
-    Status = status;
+    this.status = status;
   }
 
   public String getComment() {

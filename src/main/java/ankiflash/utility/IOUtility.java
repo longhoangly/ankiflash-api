@@ -36,7 +36,7 @@ public class IOUtility {
         logger.info(String.format("Deleted directory, %1$s", dirPath));
       }
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
   }
 
@@ -49,7 +49,7 @@ public class IOUtility {
       }
       Files.write(Paths.get(filePath), content.getBytes(), StandardOpenOption.APPEND);
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
   }
 
@@ -83,7 +83,7 @@ public class IOUtility {
                 copyFile(source.toString(), destination.toString());
               });
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
   }
 
@@ -96,7 +96,7 @@ public class IOUtility {
           StandardCopyOption.COPY_ATTRIBUTES,
           StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
   }
 
@@ -112,7 +112,7 @@ public class IOUtility {
       zipOut.close();
       fos.close();
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
   }
 
@@ -148,7 +148,7 @@ public class IOUtility {
       }
       fis.close();
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
     }
   }
 
@@ -172,7 +172,7 @@ public class IOUtility {
       InputStream in = connection.getInputStream();
       Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
-      ErrorHandler.error("Exception Occurred: ", e);
+      ErrorHandler.log("ErrorHandler Occurred: ", e);
       return false;
     }
 

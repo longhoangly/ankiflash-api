@@ -11,7 +11,7 @@ public class ErrorHandler {
 
   private static final EmailService emailService = new EmailServiceImpl();
 
-  public static void error(String msg, Throwable err) {
+  public static void log(String msg, Throwable err) {
     emailService.sendExceptionEmail(err);
     logger.error(msg, err);
   }

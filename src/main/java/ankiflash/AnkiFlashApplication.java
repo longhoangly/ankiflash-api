@@ -49,7 +49,7 @@ public class AnkiFlashApplication {
       try {
         logger.info(field.getName() + "=" + field.get(applicationContext).toString());
       } catch (IllegalAccessException e) {
-        ErrorHandler.error("Exception Occurred: ", e);
+        ErrorHandler.log("ErrorHandler Occurred: ", e);
       }
     }
   }
