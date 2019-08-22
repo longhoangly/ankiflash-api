@@ -16,6 +16,7 @@ import ankiflash.security.utility.jwt.Generator;
 import ankiflash.security.utility.jwt.Validation;
 import ankiflash.utility.AnkiFlashProps;
 import ankiflash.utility.exception.BadRequestException;
+import ankiflash.utility.exception.ErrorHandler;
 import java.util.Calendar;
 import java.util.Date;
 import javax.validation.Valid;
@@ -164,7 +165,7 @@ class SecurityController {
     try {
       user = validator.validate(token);
     } catch (Exception e) {
-      logger.error("Exception: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
       throw new BadRequestException(
           "Oops! Something's wrong, please select 'Forgot Password' on 'Login' page to try again!");
     }
@@ -210,7 +211,7 @@ class SecurityController {
     try {
       user = validator.validate(token);
     } catch (Exception e) {
-      logger.error("Exception: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
       throw new BadRequestException(
           "Oops! Something's wrong, please select 'Forgot Password' on 'Login' page to try again!");
     }

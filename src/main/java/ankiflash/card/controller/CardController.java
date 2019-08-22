@@ -2,6 +2,7 @@ package ankiflash.card.controller;
 
 import ankiflash.card.dto.Card;
 import ankiflash.card.payload.CardRequest;
+import ankiflash.card.payload.WordResponse;
 import ankiflash.card.service.CardService;
 import ankiflash.card.service.impl.card.ChineseCardServiceImpl;
 import ankiflash.card.service.impl.card.EnglishCardServiceImpl;
@@ -69,17 +70,27 @@ class CardController {
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     // Get all matched words
-    List<String> jdWords = new ArrayList<>();
+    List<String> success = new ArrayList<>();
+    List<String> failure = new ArrayList<>();
     for (String word : words) {
-      jdWords.addAll(cardService.getWords(word, translation));
+      List<String> matchedWords = cardService.getWords(word, translation);
+      if (matchedWords.isEmpty()) {
+        failure.add(word);
+      } else {
+        success.addAll(matchedWords);
+      }
     }
 
+    WordResponse resWords = new WordResponse();
+    resWords.setSuccess(success);
+    resWords.setFailure(failure);
+
     // Special pre-process for Japanese
-    if (jdWords.isEmpty()) {
+    if (success.isEmpty()) {
       throw new BadRequestException("Words not found. Please check your input!");
     }
 
-    return ResponseEntity.ok().body(jdWords);
+    return ResponseEntity.ok().body(resWords);
   }
 
   @PostMapping("/generate-card")

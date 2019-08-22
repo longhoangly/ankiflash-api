@@ -2,6 +2,7 @@ package ankiflash.card.utility;
 
 import ankiflash.card.dto.Meaning;
 import ankiflash.utility.AnkiFlashProps;
+import ankiflash.utility.exception.ErrorHandler;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
@@ -31,7 +32,7 @@ public class HtmlHelper {
     try {
       return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
     } catch (UnsupportedEncodingException e) {
-      logger.error("Exception Occurred: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
     }
     return "";
   }
@@ -50,7 +51,7 @@ public class HtmlHelper {
         document = Jsoup.connect(url).get();
       }
     } catch (IOException e) {
-      logger.error("Exception Occurred: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
     }
     return document;
   }

@@ -32,8 +32,9 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
 
       if (doc != null) {
         String firstLink = HtmlHelper.getAttribute(doc, "link", 0, "href");
-        String firstWordId = firstLink.isEmpty() ? "" : DictHelper.getLastElement(firstLink);
-        engWords.add(word + ":" + firstWordId + ":" + word);
+        if (firstLink.contains("definition/english")) {
+          engWords.add(word + ":" + DictHelper.getLastElement(firstLink) + ":" + word);
+        }
 
         Elements allMatchesBlocks = doc.select("dl.accordion.ui-grad");
         for (Element allMatches : allMatchesBlocks) {

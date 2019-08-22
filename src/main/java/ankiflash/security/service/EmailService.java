@@ -11,4 +11,6 @@ public interface EmailService {
   void sendVerificationEmail(User user);
 
   void sendResetPasswordEmail(User user);
+
+  void sendExceptionEmail(Throwable ex);
 }

@@ -6,6 +6,7 @@ import ankiflash.security.service.SocialAuthService;
 import ankiflash.security.service.UserService;
 import ankiflash.security.utility.Roles;
 import ankiflash.utility.JsonUtility;
+import ankiflash.utility.exception.ErrorHandler;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -80,10 +81,10 @@ public class SocialAuthServiceImpl implements SocialAuthService {
           return userByEmail;
         }
       } else {
-        logger.error("Invalid ID token.");
+        logger.warn("Invalid ID token.");
       }
     } catch (GeneralSecurityException | IOException e) {
-      logger.error("Exception Occurred: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
     }
     return null;
   }
@@ -130,7 +131,7 @@ public class SocialAuthServiceImpl implements SocialAuthService {
         return userById != null ? userById : userByEmail;
       }
     } else {
-      logger.error("Invalid access token.");
+      logger.warn("Invalid access token.");
     }
     return null;
   }

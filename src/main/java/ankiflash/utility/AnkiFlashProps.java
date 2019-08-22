@@ -10,6 +10,7 @@ public class AnkiFlashProps {
   public static String SUB_ANKI_FLASH_DIR;
   public static String API_SERVER_URL;
   public static String WEB_SERVER_URL;
+  public static String ADMIN_EMAIL;
 
   public static String PROXY_ADDRESS;
   public static int PROXY_PORT;
@@ -45,6 +46,11 @@ public class AnkiFlashProps {
   @Value("${server.web.url}")
   public void setWebServerUrl(String webServerUrl) {
     WEB_SERVER_URL = webServerUrl;
+  }
+
+  @Value("${server.admin.email}")
+  public void setAdminEmail(String adminEmail) {
+    ADMIN_EMAIL = adminEmail;
   }
 
   @Value("${ankiflash.proxy.address}")

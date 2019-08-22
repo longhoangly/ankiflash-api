@@ -1,5 +1,6 @@
 package ankiflash.utility;
 
+import ankiflash.utility.exception.ErrorHandler;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedReader;
@@ -32,7 +33,7 @@ public class JsonUtility {
       }
       reader.close();
     } catch (IOException e) {
-      logger.error("Exception Occurred: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
     }
     return sb.toString();
   }
@@ -58,7 +59,7 @@ public class JsonUtility {
       json = new JsonParser().parse(jsonText).getAsJsonObject();
       is.close();
     } catch (IOException e) {
-      logger.error("Exception Occurred: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
     }
 
     return json;
@@ -98,7 +99,7 @@ public class JsonUtility {
       json = new JsonParser().parse(jsonText).getAsJsonObject();
       is.close();
     } catch (IOException e) {
-      logger.error("Exception Occurred: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
     }
 
     return json;

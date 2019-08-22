@@ -1,5 +1,6 @@
 package ankiflash;
 
+import ankiflash.utility.exception.ErrorHandler;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class AnkiFlashApplication {
       try {
         logger.info(field.getName() + "=" + field.get(applicationContext).toString());
       } catch (IllegalAccessException e) {
-        logger.error("Exception Occurred: ", e);
+        ErrorHandler.error("Exception Occurred: ", e);
       }
     }
   }

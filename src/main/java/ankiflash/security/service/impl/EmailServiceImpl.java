@@ -5,6 +5,7 @@ import ankiflash.security.service.EmailService;
 import ankiflash.security.service.UserService;
 import ankiflash.security.utility.jwt.Generator;
 import ankiflash.utility.AnkiFlashProps;
+import ankiflash.utility.exception.ErrorHandler;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class EmailServiceImpl implements EmailService {
 
   private final JavaMailSender mailSender;
 
-  private EmailServiceImpl() {
+  public EmailServiceImpl() {
     mailSender = getMailSender();
   }
 
@@ -56,7 +57,7 @@ public class EmailServiceImpl implements EmailService {
       props.put("mail.smtp.starttls.enable", AnkiFlashProps.MAIL_SSL);
       props.put("mail.debug", AnkiFlashProps.MAIL_DEBUG);
     } catch (Exception e) {
-      logger.error("Exception Occurred: ", e);
+      ErrorHandler.error("Exception Occurred: ", e);
     }
 
     return mailSender;
@@ -137,5 +138,30 @@ public class EmailServiceImpl implements EmailService {
 
     user.setToken(token20m);
     userService.update(user);
+  }
+
+  @Override
+  @Async
+  public void sendExceptionEmail(Throwable ex) {
+
+    String emailTitle = "URGENT!!! AnkiFlash Exception Occurred!!!";
+    String emailContent =
+        "Hi Admin,\n"
+            + "\n"
+            + "You received this email because of your admin role for AnkiFlash.\n"
+            + "\n"
+            + "Please check the log of the system to see if anything went wrong?\n"
+            + "\n"
+            + "The following exception occurred!\n"
+            + "\n"
+            + "%s\n"
+            + "\n"
+            + "Thanks for taking care of our site!\n"
+            + "\n"
+            + "Thanks,\n"
+            + "AnkiFlash Team\n";
+
+    emailContent = String.format(emailContent, ex);
+    sendSimpleMessage(AnkiFlashProps.ADMIN_EMAIL, emailTitle, emailContent);
   }
 }
