@@ -2,6 +2,7 @@ package ankiflash.card.service.impl.dictionary;
 
 import ankiflash.card.dto.Meaning;
 import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
@@ -91,8 +92,7 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   public String getImage(String ankiDir, String selector) {
 
     return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
-        + word
-        + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
+        + word + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
   }
 
   @Override
@@ -103,16 +103,14 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
       return "";
     }
 
-    String[] pro_link_els = pro_link.split("/");
-    String pro_name = pro_link_els[pro_link_els.length - 1];
-
+    String pro_name = DictHelper.getLastElement(pro_link);
     boolean isSuccess = false;
     File dir = new File(ankiDir);
     if (dir.exists()) {
       String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
     } else {
-      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
+      logger.warn("AnkiFlash folder not found! " + ankiDir);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";

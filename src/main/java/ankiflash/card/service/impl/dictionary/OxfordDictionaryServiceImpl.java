@@ -95,28 +95,11 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public String getImage(String ankiDir, String selector) {
 
-    String google_image =
-        "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
-            + word
-            + "\" style=\"font-size: 15px; color: blue\">Search images by the word.</a>";
+    String google_image = "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
+        + word + "\" style=\"font-size: 15px; color: blue\">Search images by the word</a>";
 
     String img_link = HtmlHelper.getAttribute(doc, selector, 0, "href");
-    if (img_link.isEmpty()) {
-      return google_image;
-    }
-
-    String img_name = DictHelper.getLastElement(img_link);
-
-    boolean isSuccess = false;
-    File dir = new File(ankiDir);
-    if (dir.exists()) {
-      String output = Paths.get(dir.getAbsolutePath(), img_name).toString();
-      isSuccess = IOUtility.download(img_link, output);
-    } else {
-      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
-    }
-
-    return isSuccess ? "<img src=\"" + img_name + "\"/>" : google_image;
+    return !img_link.isEmpty() ? "<img src=\"" + img_link + "\"/>" : google_image;
   }
 
   @Override
@@ -128,7 +111,6 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     String pro_name = DictHelper.getLastElement(pro_link);
-
     boolean isSuccess = false;
     File dir = new File(ankiDir);
     if (dir.exists()) {

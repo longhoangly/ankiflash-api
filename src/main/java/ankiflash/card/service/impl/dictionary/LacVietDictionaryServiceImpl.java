@@ -130,7 +130,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
       String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
       isSuccess = IOUtility.download(pro_link, output);
     } else {
-      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
+      logger.warn("AnkiFlash folder not found! " + ankiDir);
     }
 
     return isSuccess ? "[sound:" + pro_name + "]" : "";
