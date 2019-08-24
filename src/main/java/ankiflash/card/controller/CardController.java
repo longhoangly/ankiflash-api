@@ -141,7 +141,14 @@ class CardController {
     List<Card> cards = cardService.generateCards(words, translation, ankiDir);
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.Success) == 0) {
-        String combineWord = card.getWord() + ":" + card.getWordId() + ":" + card.getOriginalWord();
+        String combineWord =
+            card.getWord()
+                + ":"
+                + card.getWordId()
+                + ":"
+                + card.getOriginalWord()
+                + ":"
+                + translation.toString();
         Card dbCard = cardDbService.findByHash(combineWord);
         logger.info("finding-hash={}", card.getHash());
         if (dbCard == null) {

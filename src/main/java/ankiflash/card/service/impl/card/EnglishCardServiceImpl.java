@@ -40,7 +40,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     Card card;
     String[] wordParts = combinedWord.split(":");
     if (combinedWord.contains(":") && wordParts.length == 3) {
-      card = new Card(wordParts[0], wordParts[1], wordParts[2]);
+      card = new Card(wordParts[0], wordParts[1], wordParts[2], translation.toString());
     } else {
       throw new BadRequestException("Incorrect word format: " + combinedWord);
     }
@@ -52,7 +52,14 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
-    String combineWord = card.getWord() + ":" + card.getWordId() + ":" + card.getOriginalWord();
+    String combineWord =
+        card.getWord()
+            + ":"
+            + card.getWordId()
+            + ":"
+            + card.getOriginalWord()
+            + ":"
+            + translation.toString();
     Card dbCard = cardDbService.findByHash(combineWord);
     logger.info("finding-hash={}", card.getWord());
     if (dbCard != null) {

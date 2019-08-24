@@ -55,4 +55,8 @@ public class Translation {
     return this.source.equalsIgnoreCase(translation.getSource())
         && this.target.equalsIgnoreCase(translation.getTarget());
   }
+
+  public String toString() {
+    return this.source + "-" + this.target;
+  }
 }
