@@ -1,25 +1,30 @@
 package ankiflash.card.service.impl.card;
 
 import ankiflash.card.dto.Card;
+import ankiflash.card.service.CardDbService;
 import ankiflash.card.service.CardService;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public abstract class CardServiceImpl implements CardService {
 
+  @Autowired protected CardDbService cardDbService;
+
   public abstract List<String> getWords(String word, Translation translation);
 
-  public abstract Card generateCard(String word, Translation translation, String ankiDir);
+  public abstract Card generateCard(String combinedWord, Translation translation, String ankiDir);
 
-  public List<Card> generateCards(List<String> words, Translation translation, String ankiDir) {
+  public List<Card> generateCards(
+      List<String> combinedWords, Translation translation, String ankiDir) {
     List<Card> cardCollection = new ArrayList<>();
-    for (String word : words) {
-      cardCollection.add(generateCard(word, translation, ankiDir));
+    for (String combinedWord : combinedWords) {
+      cardCollection.add(generateCard(combinedWord, translation, ankiDir));
     }
     return cardCollection;
   }

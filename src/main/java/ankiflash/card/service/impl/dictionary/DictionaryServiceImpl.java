@@ -20,7 +20,7 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   String phonetic;
 
-  public abstract boolean isConnectionFailed(String word, Translation translation);
+  public abstract boolean isConnectionFailed(String combinedWord, Translation translation);
 
   public abstract boolean isWordNotFound();
 

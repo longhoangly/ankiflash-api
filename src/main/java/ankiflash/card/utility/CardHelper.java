@@ -65,4 +65,36 @@ public class CardHelper {
 
     return jDictWords;
   }
+
+  public static List<String> getOxfordWords(String word) {
+
+    List<String> foundWords = new ArrayList<>();
+    String url = HtmlHelper.lookupUrl(Constants.OXFORD_SEARCH_URL_EN_EN, word);
+    Document doc = HtmlHelper.getDocument(url);
+
+    if (doc != null) {
+      String firstLink = HtmlHelper.getAttribute(doc, "link", 0, "href");
+      if (firstLink.contains("definition/english")) {
+        String matchedWord = HtmlHelper.getText(doc, "h2", 0);
+        foundWords.add(matchedWord + ":" + DictHelper.getLastElement(firstLink) + ":" + word);
+      }
+
+      Elements allMatchesBlocks = doc.select("dl.accordion.ui-grad");
+      for (Element allMatches : allMatchesBlocks) {
+        Elements lis = allMatches.select("li");
+        for (Element li : lis) {
+          li.getElementsByTag("pos").remove();
+          String matchedWord = li.getElementsByTag("span").text();
+          if (matchedWord.equalsIgnoreCase(word)) {
+            String wordId = DictHelper.getLastElement(li.getElementsByTag("a").attr("href"));
+            foundWords.add(matchedWord + ":" + wordId + ":" + word);
+          }
+        }
+      }
+    } else {
+      logger.info("Words not found: {}", word);
+    }
+
+    return foundWords;
+  }
 }

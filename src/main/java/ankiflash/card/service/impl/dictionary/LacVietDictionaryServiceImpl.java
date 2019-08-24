@@ -6,6 +6,7 @@ import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
+import ankiflash.utility.exception.BadRequestException;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,18 +21,26 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(LacVietDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String word, Translation translation) {
+  public boolean isConnectionFailed(String combinedWord, Translation translation) {
 
-    this.word = word;
+    String[] wordParts = combinedWord.split(":");
+    if (combinedWord.contains(":") && wordParts.length == 3) {
+      this.word = wordParts[0];
+      this.wordId = wordParts[1];
+      this.originalWord = wordParts[2];
+    } else {
+      throw new BadRequestException("Incorrect word format: " + combinedWord);
+    }
+
     String url = "";
     if (translation.equals(Translation.VN_EN)) {
-      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_VN_EN, word);
+      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_VN_EN, this.wordId);
     } else if (translation.equals(Translation.VN_FR)) {
-      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_VN_FR, word);
+      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_VN_FR, this.wordId);
     } else if (translation.equals(Translation.EN_VN)) {
-      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_EN_VN, word);
+      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_EN_VN, this.wordId);
     } else if (translation.equals(Translation.FR_VN)) {
-      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_FR_VN, word);
+      url = HtmlHelper.lookupUrl(Constants.LACVIET_URL_FR_VN, this.wordId);
     }
     doc = HtmlHelper.getDocument(url);
     return doc == null;

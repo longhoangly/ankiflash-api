@@ -5,6 +5,7 @@ import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
+import ankiflash.utility.exception.BadRequestException;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,10 +20,18 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(CollinsDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String word, Translation translation) {
+  public boolean isConnectionFailed(String combinedWord, Translation translation) {
 
-    this.word = word;
-    String url = HtmlHelper.lookupUrl(Constants.COLLINS_URL_FR_EN, word);
+    String[] wordParts = combinedWord.split(":");
+    if (combinedWord.contains(":") && wordParts.length == 3) {
+      this.word = wordParts[0];
+      this.wordId = wordParts[1];
+      this.originalWord = wordParts[2];
+    } else {
+      throw new BadRequestException("Incorrect word format: " + combinedWord);
+    }
+
+    String url = HtmlHelper.lookupUrl(Constants.COLLINS_URL_FR_EN, this.wordId);
     doc = HtmlHelper.getDocument(url);
     return doc == null;
   }

@@ -7,38 +7,55 @@ import ankiflash.card.service.impl.dictionary.LacVietDictionaryServiceImpl;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
-import java.util.ArrayList;
+import ankiflash.utility.exception.BadRequestException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FrenchCardServiceImpl extends CardServiceImpl {
 
   private static final Logger logger = LoggerFactory.getLogger(FrenchCardServiceImpl.class);
 
   @Override
   public List<String> getWords(String word, Translation translation) {
-
-    List<String> engWords = new ArrayList<>();
-    engWords.add(word);
-    return engWords;
+    throw new UnsupportedOperationException();
   }
 
   @Override
-  public Card generateCard(String word, Translation translation, String ankiDir) {
+  public Card generateCard(String combinedWord, Translation translation, String ankiDir) {
 
-    logger.info("Word = " + word);
+    Card card;
+    String[] wordParts = combinedWord.split(":");
+    if (combinedWord.contains(":") && wordParts.length == 3) {
+      card = new Card(wordParts[0], wordParts[1], wordParts[2]);
+    } else {
+      throw new BadRequestException("Incorrect word format: " + combinedWord);
+    }
+
+    logger.info("Word = " + card.getWord());
+    logger.info("WordId = " + card.getWordId());
+    logger.info("OriginalWord = " + card.getOriginalWord());
+
     logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
-    Card card = new Card(word);
+    String combineWord = card.getWord() + ":" + card.getWordId() + ":" + card.getOriginalWord();
+    Card dbCard = cardDbService.findByHash(combineWord);
+    logger.info("finding-hash={}", card.getWord());
+    if (dbCard != null) {
+      logger.info("card-found-from-our-DB..." + card.getWord());
+      return dbCard;
+    }
+
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
     DictionaryService collinsDict = new CollinsDictionaryServiceImpl();
 
     // French to Vietnamese
     if (translation.equals(Translation.FR_VN)) {
 
-      if (lacVietDict.isConnectionFailed(word, translation)) {
+      if (lacVietDict.isConnectionFailed(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
@@ -60,7 +77,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       // French to English
     } else if (translation.equals(Translation.FR_EN)) {
 
-      if (collinsDict.isConnectionFailed(word, translation)) {
+      if (collinsDict.isConnectionFailed(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;

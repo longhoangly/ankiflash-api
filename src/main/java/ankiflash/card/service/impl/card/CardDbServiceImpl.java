@@ -3,7 +3,9 @@ package ankiflash.card.service.impl.card;
 import ankiflash.card.dto.Card;
 import ankiflash.card.repository.CardRepository;
 import ankiflash.card.service.CardDbService;
+import com.google.api.client.util.Base64;
 import java.util.Collection;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,13 @@ public class CardDbServiceImpl implements CardDbService {
   }
 
   @Override
-  public Card findByHash(String hash) {
+  public List<Card> findByWord(String word) {
+    return cardRepository.findByWord(word);
+  }
+
+  @Override
+  public Card findByHash(String combinedWord) {
+    String hash = new String(Base64.encodeBase64(combinedWord.getBytes()));
     return cardRepository.findByHash(hash);
   }
 

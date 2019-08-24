@@ -3,6 +3,7 @@ package ankiflash.card.service.impl.dictionary;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
+import ankiflash.utility.exception.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,10 +13,18 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
       LoggerFactory.getLogger(WordReferenceDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String word, Translation translation) {
+  public boolean isConnectionFailed(String combinedWord, Translation translation) {
 
-    this.word = word;
-    String url = HtmlHelper.lookupUrl(Constants.WORD_REFERENCE_URL_EN_SP, word);
+    String[] wordParts = combinedWord.split(":");
+    if (combinedWord.contains(":") && wordParts.length == 3) {
+      this.word = wordParts[0];
+      this.wordId = wordParts[1];
+      this.originalWord = wordParts[2];
+    } else {
+      throw new BadRequestException("Incorrect word format: " + combinedWord);
+    }
+
+    String url = HtmlHelper.lookupUrl(Constants.WORD_REFERENCE_URL_EN_SP, this.wordId);
     doc = HtmlHelper.getDocument(url);
     return doc == null;
   }

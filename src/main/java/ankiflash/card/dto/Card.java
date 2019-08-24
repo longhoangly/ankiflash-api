@@ -3,6 +3,7 @@ package ankiflash.card.dto;
 import ankiflash.card.utility.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.api.client.util.Base64;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,13 +24,23 @@ public class Card {
 
   @NotNull
   @NotEmpty
-  @Column(name = "hash")
+  @Column(name = "hash", unique = true)
   private String hash;
 
   @NotNull
   @NotEmpty
   @Column(name = "word")
-  private final String word;
+  private String word;
+
+  @NotNull
+  @NotEmpty
+  @Column(name = "wordId")
+  private String wordId;
+
+  @NotNull
+  @NotEmpty
+  @Column(name = "originalWord")
+  private String originalWord;
 
   @NotNull
   @NotEmpty
@@ -83,9 +94,16 @@ public class Card {
   @Column(name = "content", columnDefinition = "LONGTEXT")
   private String content;
 
-  public Card(String word) {
+  public Card() {}
+
+  public Card(String word, String wordId, String originalWord) {
     this.word = word;
-    this.hash = new String(Base64.encodeBase64(word.getBytes()));
+    this.wordId = wordId;
+    this.originalWord = originalWord;
+    this.hash =
+        new String(
+            Base64.encodeBase64(
+                (this.word + ":" + this.wordId + ":" + this.originalWord).getBytes()));
   }
 
   @Override
@@ -101,8 +119,65 @@ public class Card {
     return hash == card.hash && word.equals(card.word);
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        id,
+        hash,
+        word,
+        wordId,
+        originalWord,
+        wordType,
+        phonetic,
+        example,
+        pron,
+        meaning,
+        image,
+        tag,
+        copyright,
+        status,
+        comment,
+        content);
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getHash() {
+    return hash;
+  }
+
+  public void setHash(String hash) {
+    this.hash = hash;
+  }
+
   public String getWord() {
     return word;
+  }
+
+  public void setWord(String word) {
+    this.word = word;
+  }
+
+  public String getWordId() {
+    return wordId;
+  }
+
+  public void setWordId(String wordId) {
+    this.wordId = wordId;
+  }
+
+  public String getOriginalWord() {
+    return originalWord;
+  }
+
+  public void setOriginalWord(String originalWord) {
+    this.originalWord = originalWord;
   }
 
   public String getWordType() {

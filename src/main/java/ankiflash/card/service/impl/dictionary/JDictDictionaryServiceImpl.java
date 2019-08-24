@@ -7,6 +7,7 @@ import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
+import ankiflash.utility.exception.BadRequestException;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -24,17 +25,15 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(JDictDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String word, Translation translation) {
+  public boolean isConnectionFailed(String combinedWord, Translation translation) {
 
-    String[] wordParts = word.split(":");
-    if (wordParts.length == 3) {
+    String[] wordParts = combinedWord.split(":");
+    if (combinedWord.contains(":") && wordParts.length == 3) {
       this.word = wordParts[0];
       this.wordId = wordParts[1];
       this.originalWord = wordParts[2];
     } else {
-      this.word = word;
-      this.wordId = word;
-      this.originalWord = word;
+      throw new BadRequestException("Incorrect word format: " + combinedWord);
     }
 
     String urlParameters = String.format("m=dictionary&fn=detail_word&id=%1$s", this.wordId);

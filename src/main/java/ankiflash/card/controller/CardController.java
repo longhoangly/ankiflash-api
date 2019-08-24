@@ -5,12 +5,6 @@ import ankiflash.card.payload.CardRequest;
 import ankiflash.card.payload.WordResponse;
 import ankiflash.card.service.CardDbService;
 import ankiflash.card.service.CardService;
-import ankiflash.card.service.impl.card.ChineseCardServiceImpl;
-import ankiflash.card.service.impl.card.EnglishCardServiceImpl;
-import ankiflash.card.service.impl.card.FrenchCardServiceImpl;
-import ankiflash.card.service.impl.card.JapaneseCardServiceImpl;
-import ankiflash.card.service.impl.card.SpanishCardServiceImpl;
-import ankiflash.card.service.impl.card.VietnameseCardServiceImpl;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
@@ -29,11 +23,14 @@ import java.util.List;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,28 +48,26 @@ class CardController {
 
   @Autowired private CardDbService cardDbService;
 
+  @Autowired private BeanFactory beans;
+
   private CardService cardService;
 
   private String delimiter = ";";
 
   @PostMapping("/get-words")
-  public ResponseEntity getJapaneseWords(@RequestBody @Valid CardRequest reqCard) {
+  public ResponseEntity getWords(@RequestBody @Valid CardRequest reqCard) {
 
     logger.info("/api/v1/anki-flash-card/get-words");
 
     String username = userService.getCurrentUsername();
     if (username.isEmpty()) {
-      throw new BadRequestException("Cannot find your user info!!!");
+      throw new AuthorizationServiceException("Unauthorized user!");
     }
 
-    // Initialize CardService
-    cardService = getCardService(reqCard.getSource());
-
-    // Get request info
+    initializeCardService(reqCard.getSource());
     String[] words = reqCard.getWords().split(delimiter);
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
-    // Get all matched words
     List<String> success = new ArrayList<>();
     List<String> failure = new ArrayList<>();
     for (String word : words) {
@@ -88,9 +83,8 @@ class CardController {
     resWords.setSuccess(success);
     resWords.setFailure(failure);
 
-    // Special pre-process for Japanese
     if (success.isEmpty()) {
-      throw new BadRequestException("Words not found. Please check your input!");
+      throw new BadRequestException("In correct words not found. Please check your input!");
     }
 
     return ResponseEntity.ok().body(resWords);
@@ -103,11 +97,10 @@ class CardController {
 
     String username = userService.getCurrentUsername();
     if (username.isEmpty()) {
-      throw new BadRequestException("Cannot find your user info!!!");
+      throw new AuthorizationServiceException("Unauthorized user!");
     }
 
-    // Initialize cardService
-    cardService = getCardService(reqCard.getSource());
+    initializeCardService(reqCard.getSource());
 
     // Get request info
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
@@ -125,11 +118,10 @@ class CardController {
 
     String username = userService.getCurrentUsername();
     if (username.isEmpty()) {
-      throw new BadRequestException("Cannot find your user info!!!");
+      throw new AuthorizationServiceException("Unauthorized user!");
     }
 
-    // Initialize CardService
-    cardService = getCardService(reqCard.getSource());
+    initializeCardService(reqCard.getSource());
 
     // Create AnkiFlashcards per User
     String ankiDir =
@@ -149,7 +141,13 @@ class CardController {
     List<Card> cards = cardService.generateCards(words, translation, ankiDir);
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.Success) == 0) {
-        cardDbService.save(card);
+        String combineWord = card.getWord() + ":" + card.getWordId() + ":" + card.getOriginalWord();
+        Card dbCard = cardDbService.findByHash(combineWord);
+        logger.info("finding-hash={}", card.getHash());
+        if (dbCard == null) {
+          logger.info("card-not-found-adding-new-word={}", card.getWord());
+          cardDbService.save(card);
+        }
         IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, card.getContent());
       } else {
         IOUtility.write(
@@ -166,7 +164,7 @@ class CardController {
 
     logger.info("/api/v1/anki-flash-card/get-supported-language");
 
-    cardService = new EnglishCardServiceImpl();
+    initializeCardService("English");
     List<Translation> languages = cardService.getSupportedLanguages();
 
     return ResponseEntity.ok().body(languages);
@@ -178,7 +176,7 @@ class CardController {
 
     logger.info("/api/v1/anki-flash-card/download");
 
-    cardService = new EnglishCardServiceImpl();
+    initializeCardService("English");
     String username = userService.getCurrentUsername();
     String ankiDir =
         Paths.get(
@@ -214,27 +212,14 @@ class CardController {
     return ResponseEntity.ok().body("Clean up successfully");
   }
 
-  private CardService getCardService(String sourceLanguage) {
+  private void initializeCardService(String sourceLanguage) {
 
-    CardService cardService;
-    if (sourceLanguage.equalsIgnoreCase(Constants.ENGLISH)) {
-      cardService = new EnglishCardServiceImpl();
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.VIETNAMESE)) {
-      cardService = new VietnameseCardServiceImpl();
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.FRENCH)) {
-      cardService = new FrenchCardServiceImpl();
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.CHINESE_TD)
-        || sourceLanguage.equalsIgnoreCase(Constants.CHINESE_SP)) {
-      cardService = new ChineseCardServiceImpl();
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.JAPANESE)) {
-      cardService = new JapaneseCardServiceImpl();
-    } else if (sourceLanguage.equalsIgnoreCase(Constants.SPANISH)) {
-      cardService = new SpanishCardServiceImpl();
-    } else {
+    String beanPrefix = sourceLanguage.toLowerCase().split(" ")[0];
+    try {
+      cardService = beans.getBean(beanPrefix + "CardServiceImpl", CardService.class);
+    } catch (BeansException e) {
       throw new BadRequestException(
           String.format("The language [%s] is not supported!", sourceLanguage));
     }
-
-    return cardService;
   }
 }
