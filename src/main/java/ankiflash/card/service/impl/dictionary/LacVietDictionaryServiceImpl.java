@@ -121,6 +121,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     soundLink = HtmlHelper.getAttribute(doc, selector, 0, "flashvars");
     if (soundLink.isEmpty()) {
       soundName = soundLink = soundOnline = soundOffline = "";
+      return;
     }
 
     soundLink = soundLink.replace("file=", "").replace("&autostart=false", "");

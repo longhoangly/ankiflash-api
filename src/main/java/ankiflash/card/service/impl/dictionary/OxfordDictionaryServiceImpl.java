@@ -102,6 +102,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     if (imageLink.isEmpty()) {
       imageLink = imageName = "";
       imageOnline = imageOffline = googleImage;
+      return;
     }
 
     imageName = DictHelper.getLastElement(imageLink);
@@ -116,6 +117,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     soundLink = HtmlHelper.getAttribute(doc, selector, 0, "data-src-mp3");
     if (soundLink.isEmpty()) {
       soundName = soundLink = soundOnline = soundOffline = "";
+      return;
     }
 
     soundName = DictHelper.getLastElement(soundLink);

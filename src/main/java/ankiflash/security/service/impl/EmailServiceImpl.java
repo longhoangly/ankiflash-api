@@ -142,7 +142,7 @@ public class EmailServiceImpl implements EmailService {
 
   @Override
   @Async
-  public void sendExceptionEmail(Throwable ex) {
+  public void sendExceptionEmail(String stackTrace) {
 
     String emailTitle = "URGENT!!! AnkiFlash ErrorHandler Occurred!!!";
     String emailContent =
@@ -161,7 +161,7 @@ public class EmailServiceImpl implements EmailService {
             + "Thanks,\n"
             + "AnkiFlash Team\n";
 
-    emailContent = String.format(emailContent, ex);
+    emailContent = String.format(emailContent, stackTrace);
     sendSimpleMessage(AnkiFlashProps.ADMIN_EMAIL, emailTitle, emailContent);
   }
 }

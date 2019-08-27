@@ -86,17 +86,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void downloadImage() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void preProceedSound(String ankiDir, String selector) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void downloadSound() {
     throw new UnsupportedOperationException();
   }
 

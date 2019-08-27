@@ -104,6 +104,7 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     soundLink = HtmlHelper.getAttribute(doc, selector, 0, "data-src-mp3");
     if (soundLink.isEmpty()) {
       soundLink = soundName = soundOnline = soundOffline = "";
+      return;
     }
 
     soundName = DictHelper.getLastElement(soundLink);

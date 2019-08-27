@@ -61,7 +61,7 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
   public void downloadImage() {
 
     File dir = new File(ankiDir);
-    if (dir.exists()) {
+    if (dir.exists() && !imageLink.isEmpty()) {
       String output = Paths.get(dir.getAbsolutePath(), imageName).toString();
       IOUtility.download(imageLink, output);
     } else {
@@ -73,7 +73,7 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
     String imageName = DictHelper.getLastElement(imageLink);
     File dir = new File(ankiDir);
-    if (dir.exists()) {
+    if (dir.exists() && !imageLink.isEmpty()) {
       String output = Paths.get(dir.getAbsolutePath(), imageName).toString();
       IOUtility.download(imageLink, output);
     } else {
@@ -102,7 +102,8 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
   public void downloadSound() {
 
     File dir = new File(ankiDir);
-    if (dir.exists()) {
+    System.out.println(soundLink);
+    if (dir.exists() && !soundLink.isEmpty()) {
       String output = Paths.get(dir.getAbsolutePath(), soundName).toString();
       IOUtility.download(soundLink, output);
     } else {
@@ -114,7 +115,7 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
     String soundName = DictHelper.getLastElement(soundLink);
     File dir = new File(ankiDir);
-    if (dir.exists()) {
+    if (dir.exists() && !soundLink.isEmpty()) {
       String output = Paths.get(dir.getAbsolutePath(), soundName).toString();
       IOUtility.download(soundLink, output);
     } else {

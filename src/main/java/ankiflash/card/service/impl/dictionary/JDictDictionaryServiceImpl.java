@@ -110,6 +110,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     if (imageLink.isEmpty() || imageLink.contains("no-image")) {
       imageLink = imageName = "";
       imageOnline = imageOffline = googleImage;
+      return;
     }
 
     imageLink = imageLink.replaceFirst("\\?w=.*$", "");
@@ -125,6 +126,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     soundLink = HtmlHelper.getAttribute(doc, selector, 0, "data-fn");
     if (soundLink.isEmpty()) {
       soundName = soundLink = soundOnline = soundOffline = "";
+      return;
     }
 
     soundName = DictHelper.getLastElement(soundLink);

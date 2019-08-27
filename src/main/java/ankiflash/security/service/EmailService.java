@@ -12,5 +12,5 @@ public interface EmailService {
 
   void sendResetPasswordEmail(User user);
 
-  void sendExceptionEmail(Throwable ex);
+  void sendExceptionEmail(String stackTrace);
 }

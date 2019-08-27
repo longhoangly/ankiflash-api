@@ -110,6 +110,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     soundLink = HtmlHelper.getAttribute(doc, selector, 0, "src");
     if (soundLink.isEmpty()) {
       soundName = soundLink = soundOnline = soundOffline = "";
+      return;
     }
 
     soundLink = "https:" + soundLink;
