@@ -15,4 +15,9 @@ public class ErrorHandler {
     emailService.sendExceptionEmail(err);
     logger.error(msg, err);
   }
+
+  public static void log(Throwable err) {
+    emailService.sendExceptionEmail(err);
+    logger.error("Exception Occurred", err);
+  }
 }

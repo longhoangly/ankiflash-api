@@ -34,7 +34,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
   }
 
   @Override
-  public Card generateCard(String combinedWord, Translation translation, String ankiDir) {
+  public Card generateCard(
+      String combinedWord, Translation translation, String ankiDir, boolean isOffline) {
 
     Card card;
     String[] wordParts = combinedWord.split(":");
@@ -51,23 +52,20 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
-    String combineWord =
-        card.getWord()
-            + ":"
-            + card.getWordId()
-            + ":"
-            + card.getOriginalWord()
-            + ":"
-            + translation.toString();
-    Card dbCard = cardDbService.findByHash(combineWord);
-    logger.info("finding-hash={}", card.getWord());
-    if (dbCard != null) {
-      logger.info("card-found-from-our-DB..." + card.getWord());
-      return dbCard;
-    }
-
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
     DictionaryService jDict = new JDictDictionaryServiceImpl();
+
+    String hashCombination = combinedWord + ":" + translation.toString();
+    logger.info("finding-hash-combination={}", hashCombination);
+    Card dbCard = cardDbService.findByHash(card.getHash());
+    if (dbCard != null) {
+      logger.info("card-found-from-our-DB..." + card.getWord());
+      if (isOffline) {
+        jDict.downloadImage(ankiDir, dbCard.getImageLink());
+        jDict.downloadSound(ankiDir, dbCard.getSoundLink());
+      }
+      return dbCard;
+    }
 
     // Vietnamese to English/French
     if (translation.equals(Translation.VN_EN) || translation.equals(Translation.VN_FR)) {
@@ -85,8 +83,22 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setWordType(lacVietDict.getWordType());
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
-      card.setPron(lacVietDict.getPron(ankiDir, "embed"));
-      card.setImage(lacVietDict.getImage(ankiDir, ""));
+
+      lacVietDict.preProceedSound(ankiDir, "embed");
+      if (isOffline) {
+        lacVietDict.downloadSound();
+      }
+      card.setSoundOnline(lacVietDict.getSoundOnline());
+      card.setSoundOffline(lacVietDict.getSoundOffline());
+      card.setSoundLink(lacVietDict.getSoundLink());
+      card.setSoundName(lacVietDict.getSoundName());
+
+      lacVietDict.preProceedImage(ankiDir, "");
+      card.setImageOffline(lacVietDict.getImageOffline());
+      card.setImageOnline(lacVietDict.getImageOnline());
+      card.setImageLink(lacVietDict.getImageLink());
+      card.setImageName(lacVietDict.getImageName());
+
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, lacVietDict.getDictionaryName()));
@@ -107,8 +119,25 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setWordType(jDict.getWordType());
       card.setPhonetic(jDict.getPhonetic());
       card.setExample(jDict.getExample());
-      card.setPron(jDict.getPron(ankiDir, ""));
-      card.setImage(jDict.getImage(ankiDir, ""));
+
+      jDict.preProceedSound(ankiDir, "a.sound");
+      if (isOffline) {
+        jDict.downloadSound();
+      }
+      card.setSoundOnline(jDict.getSoundOnline());
+      card.setSoundOffline(jDict.getSoundOffline());
+      card.setSoundLink(jDict.getSoundLink());
+      card.setSoundName(jDict.getSoundName());
+
+      jDict.preProceedImage(ankiDir, "a.fancybox.img");
+      if (isOffline) {
+        jDict.downloadImage();
+      }
+      card.setImageOffline(jDict.getImageOffline());
+      card.setImageOnline(jDict.getImageOnline());
+      card.setImageLink(jDict.getImageLink());
+      card.setImageName(jDict.getImageName());
+
       card.setTag(jDict.getTag());
       card.setMeaning(jDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, jDict.getDictionaryName()));
@@ -126,26 +155,12 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     card.setStatus(Status.Success);
     card.setComment(Constants.SUCCESS);
 
-    String cardContent =
-        card.getWord()
-            + Constants.TAB
-            + card.getWordType()
-            + Constants.TAB
-            + card.getPhonetic()
-            + Constants.TAB
-            + card.getExample()
-            + Constants.TAB
-            + card.getPron()
-            + Constants.TAB
-            + card.getImage()
-            + Constants.TAB
-            + card.getMeaning()
-            + Constants.TAB
-            + card.getCopyright()
-            + Constants.TAB
-            + card.getTag()
-            + "\n";
-    card.setContent(cardContent);
+    if (card.getStatus().compareTo(Status.Success) == 0
+        && cardDbService.findByHash(card.getHash()) == null
+        && !ankiDir.isEmpty()) {
+      logger.info("card-created-successfully-adding-to-DB: {}", card.getWord());
+      cardDbService.save(card);
+    }
 
     return card;
   }

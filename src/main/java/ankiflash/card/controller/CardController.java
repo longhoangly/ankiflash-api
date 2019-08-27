@@ -84,7 +84,7 @@ class CardController {
     resWords.setFailure(failure);
 
     if (success.isEmpty()) {
-      throw new BadRequestException("In correct words not found. Please check your input!");
+      throw new BadRequestException("Words not found. Please check your input!");
     }
 
     return ResponseEntity.ok().body(resWords);
@@ -107,7 +107,7 @@ class CardController {
     String word = reqCard.getWords();
 
     // Generate card
-    Card card = cardService.generateCard(word, translation, "dummy_request");
+    Card card = cardService.generateCard(word, translation, "", reqCard.getIsOffline());
     return ResponseEntity.ok().body(card);
   }
 
@@ -123,7 +123,11 @@ class CardController {
 
     initializeCardService(reqCard.getSource());
 
-    // Create AnkiFlashcards per User
+    // Get request info
+    List<String> words = Arrays.asList(reqCard.getWords().split(delimiter));
+    Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
+
+    // Create ankiDir folder
     String ankiDir =
         Paths.get(
                 AnkiFlashProps.PARENT_ANKI_FLASH_DIR,
@@ -133,33 +137,37 @@ class CardController {
             .toString();
     IOUtility.createDirs(ankiDir);
 
-    // Get request info
-    List<String> words = Arrays.asList(reqCard.getWords().split(delimiter));
-    Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
-
     // Generate cards
-    List<Card> cards = cardService.generateCards(words, translation, ankiDir);
+    List<Card> cards =
+        cardService.generateCards(words, translation, ankiDir, reqCard.getIsOffline());
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.Success) == 0) {
-        String combineWord =
+        String soundHtml = reqCard.getIsOffline() ? card.getSoundOffline() : card.getSoundOnline();
+        String imageHtml = reqCard.getIsOffline() ? card.getImageOffline() : card.getImageOnline();
+        String cardContent =
             card.getWord()
-                + ":"
-                + card.getWordId()
-                + ":"
-                + card.getOriginalWord()
-                + ":"
-                + translation.toString();
-        Card dbCard = cardDbService.findByHash(combineWord);
-        logger.info("finding-hash={}", card.getHash());
-        if (dbCard == null) {
-          logger.info("card-not-found-adding-new-word={}", card.getWord());
-          cardDbService.save(card);
-        }
-        IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, card.getContent());
+                + Constants.TAB
+                + card.getWordType()
+                + Constants.TAB
+                + card.getPhonetic()
+                + Constants.TAB
+                + card.getExample()
+                + Constants.TAB
+                + soundHtml
+                + Constants.TAB
+                + imageHtml
+                + Constants.TAB
+                + card.getMeaning()
+                + Constants.TAB
+                + card.getCopyright()
+                + Constants.TAB
+                + card.getTag()
+                + "\n";
+        IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, cardContent);
       } else {
         IOUtility.write(
             ankiDir + "/" + Constants.ANKI_FAILURE,
-            card.getWord() + " => " + card.getStatus() + "\n");
+            card.getWord() + " => " + card.getStatus() + ":" + card.getComment() + "\n");
       }
     }
 
@@ -216,7 +224,7 @@ class CardController {
     String ankiDir = Paths.get(AnkiFlashProps.PARENT_ANKI_FLASH_DIR, username).toString();
     IOUtility.clean(ankiDir);
 
-    return ResponseEntity.ok().body("Clean up successfully");
+    return ResponseEntity.ok().body("Success");
   }
 
   private void initializeCardService(String sourceLanguage) {

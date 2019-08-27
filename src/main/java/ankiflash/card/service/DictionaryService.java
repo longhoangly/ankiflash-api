@@ -14,13 +14,37 @@ public interface DictionaryService {
 
   String getPhonetic();
 
-  String getImage(String ankiDir, String selector);
+  void preProceedImage(String ankiDir, String selector);
 
-  String getPron(String ankiDir, String selector);
+  String getImageOnline();
+
+  String getImageOffline();
+
+  String getImageLink();
+
+  String getImageName();
+
+  void downloadImage();
+
+  void downloadImage(String ankiDir, String imageLink);
+
+  void preProceedSound(String ankiDir, String selector);
+
+  String getSoundOnline();
+
+  String getSoundOffline();
+
+  String getSoundLink();
+
+  String getSoundName();
+
+  void downloadSound();
+
+  void downloadSound(String ankiDir, String imageLink);
 
   String getMeaning();
 
-  char getTag();
+  String getTag();
 
   String getDictionaryName();
 }

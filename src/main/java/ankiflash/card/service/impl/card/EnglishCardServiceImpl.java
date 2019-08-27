@@ -35,7 +35,8 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
   }
 
   @Override
-  public Card generateCard(String combinedWord, Translation translation, String ankiDir) {
+  public Card generateCard(
+      String combinedWord, Translation translation, String ankiDir, boolean isOffline) {
 
     Card card;
     String[] wordParts = combinedWord.split(":");
@@ -52,24 +53,22 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
-    String combineWord =
-        card.getWord()
-            + ":"
-            + card.getWordId()
-            + ":"
-            + card.getOriginalWord()
-            + ":"
-            + translation.toString();
-    Card dbCard = cardDbService.findByHash(combineWord);
-    logger.info("finding-hash={}", card.getWord());
-    if (dbCard != null) {
-      logger.info("card-found-from-our-DB..." + card.getWord());
-      return dbCard;
-    }
-
     DictionaryService oxfordDict = new OxfordDictionaryServiceImpl();
     DictionaryService cambridgeDict = new CambridgeDictionaryServiceImpl();
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
+
+    String hashCombination = combinedWord + ":" + translation.toString();
+    logger.info("finding-hash-combination={}", hashCombination);
+    Card dbCard = cardDbService.findByHash(card.getHash());
+    if (dbCard != null) {
+      logger.info("card-found-from-our-DB..." + card.getWord());
+      logger.info("isOffline=" + isOffline);
+      if (isOffline) {
+        oxfordDict.downloadImage(ankiDir, dbCard.getImageLink());
+        oxfordDict.downloadSound(ankiDir, dbCard.getSoundLink());
+      }
+      return dbCard;
+    }
 
     // English to English
     if (translation.equals(Translation.EN_EN)) {
@@ -147,38 +146,39 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
       return card;
     }
 
-    card.setExample(oxfordDict.getExample());
-    String ukPron = oxfordDict.getPron(ankiDir, "div.pron-uk");
-    String usPron = oxfordDict.getPron(ankiDir, "div.pron-us");
-    if (!ukPron.isEmpty() && !usPron.isEmpty()) {
-      card.setPron("BrE " + ukPron + " NAmE " + usPron);
+    oxfordDict.preProceedSound(ankiDir, "div.pron-uk");
+    if (isOffline) {
+      oxfordDict.downloadSound();
     }
-    card.setImage(oxfordDict.getImage(ankiDir, "a.topic"));
-    card.setTag(oxfordDict.getTag());
+    oxfordDict.preProceedSound(ankiDir, "div.pron-us");
+    if (isOffline) {
+      oxfordDict.downloadSound();
+    }
+    card.setSoundOnline(oxfordDict.getSoundOnline());
+    card.setSoundOffline(oxfordDict.getSoundOffline());
+    card.setSoundLink(oxfordDict.getSoundLink());
+    card.setSoundName(oxfordDict.getSoundName());
 
+    oxfordDict.preProceedImage(ankiDir, "a.topic");
+    if (isOffline) {
+      oxfordDict.downloadImage();
+    }
+    card.setImageOffline(oxfordDict.getImageOffline());
+    card.setImageOnline(oxfordDict.getImageOnline());
+    card.setImageLink(oxfordDict.getImageLink());
+    card.setImageName(oxfordDict.getImageName());
+
+    card.setExample(oxfordDict.getExample());
+    card.setTag(oxfordDict.getTag());
     card.setStatus(Status.Success);
     card.setComment(Constants.SUCCESS);
 
-    String cardContent =
-        card.getWord()
-            + Constants.TAB
-            + card.getWordType()
-            + Constants.TAB
-            + card.getPhonetic()
-            + Constants.TAB
-            + card.getExample()
-            + Constants.TAB
-            + card.getPron()
-            + Constants.TAB
-            + card.getImage()
-            + Constants.TAB
-            + card.getMeaning()
-            + Constants.TAB
-            + card.getCopyright()
-            + Constants.TAB
-            + card.getTag()
-            + "\n";
-    card.setContent(cardContent);
+    if (card.getStatus().compareTo(Status.Success) == 0
+        && cardDbService.findByHash(card.getHash()) == null
+        && !ankiDir.isEmpty()) {
+      logger.info("card-created-successfully-adding-to-DB: {}", card.getWord());
+      cardDbService.save(card);
+    }
 
     return card;
   }

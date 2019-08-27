@@ -8,6 +8,7 @@ import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.exception.BadRequestException;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,15 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
 
   @Override
   public List<String> getWords(String word, Translation translation) {
-    throw new UnsupportedOperationException();
+
+    List<String> foundWords = new ArrayList<>();
+    foundWords.add(word + ":" + word + ":" + word);
+    return foundWords;
   }
 
   @Override
-  public Card generateCard(String combinedWord, Translation translation, String ankiDir) {
+  public Card generateCard(
+      String combinedWord, Translation translation, String ankiDir, boolean isOffline) {
 
     Card card;
     String[] wordParts = combinedWord.split(":");
@@ -41,23 +46,20 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
     logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
-    String combineWord =
-        card.getWord()
-            + ":"
-            + card.getWordId()
-            + ":"
-            + card.getOriginalWord()
-            + ":"
-            + translation.toString();
-    Card dbCard = cardDbService.findByHash(combineWord);
-    logger.info("finding-hash={}", card.getWord());
-    if (dbCard != null) {
-      logger.info("card-found-from-our-DB..." + card.getWord());
-      return dbCard;
-    }
-
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
     DictionaryService collinsDict = new CollinsDictionaryServiceImpl();
+
+    String hashCombination = combinedWord + ":" + translation.toString();
+    logger.info("finding-hash-combination={}", hashCombination);
+    Card dbCard = cardDbService.findByHash(card.getHash());
+    if (dbCard != null) {
+      logger.info("card-found-from-our-DB..." + card.getWord());
+      if (isOffline) {
+        collinsDict.downloadImage(ankiDir, dbCard.getImageLink());
+        collinsDict.downloadSound(ankiDir, dbCard.getSoundLink());
+      }
+      return dbCard;
+    }
 
     // French to Vietnamese
     if (translation.equals(Translation.FR_VN)) {
@@ -75,8 +77,22 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setWordType(lacVietDict.getWordType());
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
-      card.setPron(lacVietDict.getPron(ankiDir, "embed"));
-      card.setImage(lacVietDict.getImage(ankiDir, ""));
+
+      lacVietDict.preProceedSound(ankiDir, "embed");
+      if (isOffline) {
+        lacVietDict.downloadSound();
+      }
+      card.setSoundOnline(lacVietDict.getSoundOnline());
+      card.setSoundOffline(lacVietDict.getSoundOffline());
+      card.setSoundLink(lacVietDict.getSoundLink());
+      card.setSoundName(lacVietDict.getSoundName());
+
+      lacVietDict.preProceedImage(ankiDir, "");
+      card.setImageOffline(lacVietDict.getImageOffline());
+      card.setImageOnline(lacVietDict.getImageOnline());
+      card.setImageLink(lacVietDict.getImageLink());
+      card.setImageName(lacVietDict.getImageName());
+
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, lacVietDict.getDictionaryName()));
@@ -97,9 +113,23 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setWordType(collinsDict.getWordType());
       card.setPhonetic(collinsDict.getPhonetic());
       card.setExample(collinsDict.getExample());
-      card.setPron(
-          collinsDict.getPron(ankiDir, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr"));
-      card.setImage(collinsDict.getImage(ankiDir, ""));
+
+      collinsDict.preProceedSound(
+          ankiDir, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr");
+      if (isOffline) {
+        collinsDict.downloadSound();
+      }
+      card.setSoundOnline(collinsDict.getSoundOnline());
+      card.setSoundOffline(collinsDict.getSoundOffline());
+      card.setSoundLink(collinsDict.getSoundLink());
+      card.setSoundName(collinsDict.getSoundName());
+
+      collinsDict.preProceedImage(ankiDir, "");
+      card.setImageOffline(collinsDict.getImageOffline());
+      card.setImageOnline(collinsDict.getImageOnline());
+      card.setImageLink(collinsDict.getImageLink());
+      card.setImageName(collinsDict.getImageName());
+
       card.setTag(collinsDict.getTag());
       card.setMeaning(collinsDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, lacVietDict.getDictionaryName()));
@@ -119,26 +149,12 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
     card.setStatus(Status.Success);
     card.setComment(Constants.SUCCESS);
 
-    String cardContent =
-        card.getWord()
-            + Constants.TAB
-            + card.getWordType()
-            + Constants.TAB
-            + card.getPhonetic()
-            + Constants.TAB
-            + card.getExample()
-            + Constants.TAB
-            + card.getPron()
-            + Constants.TAB
-            + card.getImage()
-            + Constants.TAB
-            + card.getMeaning()
-            + Constants.TAB
-            + card.getCopyright()
-            + Constants.TAB
-            + card.getTag()
-            + "\n";
-    card.setContent(cardContent);
+    if (card.getStatus().compareTo(Status.Success) == 0
+        && cardDbService.findByHash(card.getHash()) == null
+        && !ankiDir.isEmpty()) {
+      logger.info("card-created-successfully-adding-to-DB: {}", card.getWord());
+      cardDbService.save(card);
+    }
 
     return card;
   }

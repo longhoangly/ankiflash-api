@@ -17,13 +17,15 @@ import javax.validation.constraints.NotNull;
 public class Card {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
   @Column(name = "id", unique = true)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
 
   @NotNull
   @NotEmpty
-  @Column(name = "hash", unique = true)
+  @JsonIgnore
+  @Column(name = "hash", unique = true, columnDefinition = "VARCHAR(500)")
   private String hash;
 
   @NotNull
@@ -33,33 +35,65 @@ public class Card {
 
   @NotNull
   @NotEmpty
+  @JsonIgnore
   @Column(name = "wordId")
   private String wordId;
 
   @NotNull
   @NotEmpty
+  @JsonIgnore
   @Column(name = "originalWord")
   private String originalWord;
 
   @NotNull
-  @NotEmpty
   @Column(name = "wordType")
   private String wordType;
 
   @NotNull
-  @NotEmpty
   @Column(name = "phonetic")
   private String phonetic;
 
   @NotNull
-  @NotEmpty
   @Column(name = "example", columnDefinition = "LONGTEXT")
   private String example;
 
   @NotNull
   @NotEmpty
-  @Column(name = "pron")
-  private String pron;
+  @Column(name = "imageOffline", columnDefinition = "LONGTEXT")
+  private String imageOffline;
+
+  @NotNull
+  @NotEmpty
+  @Column(name = "imageOnline", columnDefinition = "LONGTEXT")
+  private String imageOnline;
+
+  @NotNull
+  @JsonIgnore
+  @Column(name = "imageLink", columnDefinition = "LONGTEXT")
+  private String imageLink;
+
+  @NotNull
+  @JsonIgnore
+  @Column(name = "imageName", columnDefinition = "LONGTEXT")
+  private String imageName;
+
+  @NotNull
+  @Column(name = "soundOffline", columnDefinition = "LONGTEXT")
+  private String soundOffline;
+
+  @NotNull
+  @Column(name = "soundOnline", columnDefinition = "LONGTEXT")
+  private String soundOnline;
+
+  @NotNull
+  @JsonIgnore
+  @Column(name = "soundLink", columnDefinition = "LONGTEXT")
+  private String soundLink;
+
+  @NotNull
+  @JsonIgnore
+  @Column(name = "soundName", columnDefinition = "LONGTEXT")
+  private String soundName;
 
   @NotNull
   @NotEmpty
@@ -67,13 +101,8 @@ public class Card {
   private String meaning;
 
   @NotNull
-  @NotEmpty
-  @Column(name = "image")
-  private String image;
-
-  @NotNull
   @Column(name = "tag")
-  private char tag;
+  private String tag;
 
   @NotNull
   @NotEmpty
@@ -89,12 +118,9 @@ public class Card {
   @Column(name = "comment")
   private String comment;
 
-  @JsonIgnore
-  @Column(name = "content", columnDefinition = "LONGTEXT")
-  private String content;
-
   @NotNull
   @NotEmpty
+  @JsonIgnore
   @Column(name = "translation")
   private String translation;
 
@@ -122,7 +148,7 @@ public class Card {
     }
 
     Card card = (Card) o;
-    return hash == card.hash && word.equals(card.word);
+    return hash.equals(card.hash) && word.equals(card.word);
   }
 
   public int getId() {
@@ -189,12 +215,68 @@ public class Card {
     this.example = example;
   }
 
-  public String getPron() {
-    return pron;
+  public String getImageOffline() {
+    return imageOffline;
   }
 
-  public void setPron(String pron) {
-    this.pron = pron;
+  public void setImageOffline(String imageOffline) {
+    this.imageOffline = imageOffline;
+  }
+
+  public String getSoundOffline() {
+    return soundOffline;
+  }
+
+  public void setSoundOffline(String soundOffline) {
+    this.soundOffline = soundOffline;
+  }
+
+  public String getImageLink() {
+    return imageLink;
+  }
+
+  public void setImageLink(String imageLink) {
+    this.imageLink = imageLink;
+  }
+
+  public String getSoundLink() {
+    return soundLink;
+  }
+
+  public void setSoundLink(String soundLink) {
+    this.soundLink = soundLink;
+  }
+
+  public String getImageOnline() {
+    return imageOnline;
+  }
+
+  public void setImageOnline(String imageOnline) {
+    this.imageOnline = imageOnline;
+  }
+
+  public String getImageName() {
+    return imageName;
+  }
+
+  public void setImageName(String imageName) {
+    this.imageName = imageName;
+  }
+
+  public String getSoundOnline() {
+    return soundOnline;
+  }
+
+  public void setSoundOnline(String soundOnline) {
+    this.soundOnline = soundOnline;
+  }
+
+  public String getSoundName() {
+    return soundName;
+  }
+
+  public void setSoundName(String soundName) {
+    this.soundName = soundName;
   }
 
   public String getMeaning() {
@@ -205,19 +287,11 @@ public class Card {
     this.meaning = meaning;
   }
 
-  public String getImage() {
-    return image;
-  }
-
-  public void setImage(String image) {
-    this.image = image;
-  }
-
-  public char getTag() {
+  public String getTag() {
     return tag;
   }
 
-  public void setTag(char tag) {
+  public void setTag(String tag) {
     this.tag = tag;
   }
 
@@ -227,14 +301,6 @@ public class Card {
 
   public void setCopyright(String copyright) {
     this.copyright = copyright;
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
   }
 
   public Status getStatus() {

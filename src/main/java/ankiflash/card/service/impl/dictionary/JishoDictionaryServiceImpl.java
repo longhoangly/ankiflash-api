@@ -5,10 +5,7 @@ import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
-import ankiflash.utility.IOUtility;
 import ankiflash.utility.exception.BadRequestException;
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Document;
@@ -95,34 +92,32 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public String getImage(String ankiDir, String selector) {
+  public void preProceedImage(String ankiDir, String selector) {
 
-    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
-        + word
-        + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
+    this.ankiDir = ankiDir;
+    imageLink = imageName = "";
+    imageOffline =
+        imageOnline =
+            "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
+                + word
+                + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
   }
 
   @Override
-  public String getPron(String ankiDir, String selector) {
+  public void preProceedSound(String ankiDir, String selector) {
 
-    String pro_link = HtmlHelper.getAttribute(doc, "audio>source[type=audio/mpeg]", 0, "src");
-    if (pro_link.isEmpty()) {
-      return "";
+    this.ankiDir = ankiDir;
+    soundLink = HtmlHelper.getAttribute(doc, selector, 0, "src");
+    if (soundLink.isEmpty()) {
+      soundName = soundLink = soundOnline = soundOffline = "";
     }
 
-    pro_link = "https:" + pro_link;
-    String pro_name = DictHelper.getLastElement(pro_link);
-
-    boolean isSuccess = false;
-    File dir = new File(ankiDir);
-    if (dir.exists()) {
-      String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
-      isSuccess = IOUtility.download(pro_link, output);
-    } else {
-      logger.warn("AnkiFlashcards folder not found! " + ankiDir);
-    }
-
-    return isSuccess ? "[sound:" + pro_name + "]" : "";
+    soundLink = "https:" + soundLink;
+    soundName = DictHelper.getLastElement(soundLink);
+    soundOnline =
+        String.format("<source src=\"%1$s\">\nNative audio playback is not supported.", soundLink);
+    soundOffline =
+        String.format("<source src=\"%1$s\">\nNative audio playback is not supported.", soundName);
   }
 
   @Override

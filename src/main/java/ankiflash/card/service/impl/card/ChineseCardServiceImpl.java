@@ -18,7 +18,8 @@ public class ChineseCardServiceImpl extends CardServiceImpl {
   }
 
   @Override
-  public Card generateCard(String combinedWord, Translation translation, String ankiDir) {
+  public Card generateCard(
+      String combinedWord, Translation translation, String ankiDir, boolean isOffline) {
     throw new UnsupportedOperationException();
   }
 }

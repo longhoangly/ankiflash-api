@@ -36,7 +36,8 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
   }
 
   @Override
-  public Card generateCard(String combinedWord, Translation translation, String ankiDir) {
+  public Card generateCard(
+      String combinedWord, Translation translation, String ankiDir, boolean isOffline) {
 
     Card card;
     String[] wordParts = combinedWord.split(":");
@@ -53,23 +54,20 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
     logger.info("Source = " + translation.getSource());
     logger.info("Target = " + translation.getTarget());
 
-    String combineWord =
-        card.getWord()
-            + ":"
-            + card.getWordId()
-            + ":"
-            + card.getOriginalWord()
-            + ":"
-            + translation.toString();
-    Card dbCard = cardDbService.findByHash(combineWord);
-    logger.info("finding-hash={}", card.getWord());
-    if (dbCard != null) {
-      logger.info("card-found-from-our-DB..." + card.getWord());
-      return dbCard;
-    }
-
     DictionaryService jDict = new JDictDictionaryServiceImpl();
     DictionaryService jishoDict = new JishoDictionaryServiceImpl();
+
+    String hashCombination = combinedWord + ":" + translation.toString();
+    logger.info("finding-hash-combination={}", hashCombination);
+    Card dbCard = cardDbService.findByHash(card.getHash());
+    if (dbCard != null) {
+      logger.info("card-found-from-our-DB..." + card.getWord());
+      if (isOffline) {
+        jDict.downloadImage(ankiDir, dbCard.getImageLink());
+        jDict.downloadSound(ankiDir, dbCard.getSoundLink());
+      }
+      return dbCard;
+    }
 
     // Japanese to Vietnamese
     if (translation.equals(Translation.JP_VN)) {
@@ -87,8 +85,25 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setWordType(jDict.getWordType());
       card.setPhonetic(jDict.getPhonetic());
       card.setExample(jDict.getExample());
-      card.setPron(jDict.getPron(ankiDir, ""));
-      card.setImage(jDict.getImage(ankiDir, ""));
+
+      jDict.preProceedSound(ankiDir, "a.sound");
+      if (isOffline) {
+        jDict.downloadSound();
+      }
+      card.setSoundOnline(jDict.getSoundOnline());
+      card.setSoundOffline(jDict.getSoundOffline());
+      card.setSoundLink(jDict.getSoundLink());
+      card.setSoundName(jDict.getSoundName());
+
+      jDict.preProceedImage(ankiDir, "a.fancybox.img");
+      if (isOffline) {
+        jDict.downloadImage();
+      }
+      card.setImageOffline(jDict.getImageOffline());
+      card.setImageOnline(jDict.getImageOnline());
+      card.setImageLink(jDict.getImageLink());
+      card.setImageName(jDict.getImageName());
+
       card.setTag(jDict.getTag());
       card.setMeaning(jDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, jDict.getDictionaryName()));
@@ -109,8 +124,22 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setWordType(jishoDict.getWordType());
       card.setPhonetic(jishoDict.getPhonetic());
       card.setExample(jishoDict.getExample());
-      card.setPron(jishoDict.getPron(ankiDir, ""));
-      card.setImage(jishoDict.getImage(ankiDir, ""));
+
+      jishoDict.preProceedSound(ankiDir, "audio>source[type=audio/mpeg]");
+      if (isOffline) {
+        jishoDict.downloadSound();
+      }
+      card.setSoundOnline(jishoDict.getSoundOnline());
+      card.setSoundOffline(jishoDict.getSoundOffline());
+      card.setSoundLink(jishoDict.getSoundLink());
+      card.setSoundName(jishoDict.getSoundName());
+
+      jishoDict.preProceedImage(ankiDir, "");
+      card.setImageOffline(jishoDict.getImageOffline());
+      card.setImageOnline(jishoDict.getImageOnline());
+      card.setImageLink(jishoDict.getImageLink());
+      card.setImageName(jishoDict.getImageName());
+
       card.setTag(jishoDict.getTag());
       card.setMeaning(jishoDict.getMeaning());
       card.setCopyright(String.format(Constants.COPYRIGHT, jishoDict.getDictionaryName()));
@@ -128,26 +157,12 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
     card.setStatus(Status.Success);
     card.setComment(Constants.SUCCESS);
 
-    String cardContent =
-        card.getWord()
-            + Constants.TAB
-            + card.getWordType()
-            + Constants.TAB
-            + card.getPhonetic()
-            + Constants.TAB
-            + card.getExample()
-            + Constants.TAB
-            + card.getPron()
-            + Constants.TAB
-            + card.getImage()
-            + Constants.TAB
-            + card.getMeaning()
-            + Constants.TAB
-            + card.getCopyright()
-            + Constants.TAB
-            + card.getTag()
-            + "\n";
-    card.setContent(cardContent);
+    if (card.getStatus().compareTo(Status.Success) == 0
+        && cardDbService.findByHash(card.getHash()) == null
+        && !ankiDir.isEmpty()) {
+      logger.info("card-created-successfully-adding-to-DB: {}", card.getWord());
+      cardDbService.save(card);
+    }
 
     return card;
   }

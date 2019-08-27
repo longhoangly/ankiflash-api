@@ -3,7 +3,6 @@ package ankiflash.card.service.impl.card;
 import ankiflash.card.dto.Card;
 import ankiflash.card.repository.CardRepository;
 import ankiflash.card.service.CardDbService;
-import com.google.api.client.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -46,8 +45,7 @@ public class CardDbServiceImpl implements CardDbService {
   }
 
   @Override
-  public Card findByHash(String combinedWord) {
-    String hash = new String(Base64.encodeBase64(combinedWord.getBytes()));
+  public Card findByHash(String hash) {
     return cardRepository.findByHash(hash);
   }
 

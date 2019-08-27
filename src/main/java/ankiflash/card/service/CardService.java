@@ -8,9 +8,10 @@ public interface CardService {
 
   List<String> getWords(String word, Translation translation);
 
-  Card generateCard(String word, Translation translation, String ankiDir);
+  Card generateCard(String word, Translation translation, String ankiDir, boolean isOffline);
 
-  List<Card> generateCards(List<String> wordList, Translation translation, String ankiDir);
+  List<Card> generateCards(
+      List<String> wordList, Translation translation, String ankiDir, boolean isOffline);
 
   String compressResources(String ankiDir);
 

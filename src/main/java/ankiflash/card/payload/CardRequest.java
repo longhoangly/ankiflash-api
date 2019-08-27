@@ -13,6 +13,8 @@ public class CardRequest {
 
   @NotNull @NotEmpty private String sessionId;
 
+  @NotNull private boolean isOffline;
+
   public CardRequest(String source, String target) {
     this.source = source;
     this.target = target;
@@ -48,5 +50,13 @@ public class CardRequest {
 
   public void setSessionId(String sessionId) {
     this.sessionId = sessionId;
+  }
+
+  public boolean getIsOffline() {
+    return this.isOffline;
+  }
+
+  public void setIsOffline(boolean isOffline) {
+    this.isOffline = isOffline;
   }
 }

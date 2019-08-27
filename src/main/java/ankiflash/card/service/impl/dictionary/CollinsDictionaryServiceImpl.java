@@ -5,10 +5,7 @@ import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.HtmlHelper;
 import ankiflash.card.utility.Translation;
-import ankiflash.utility.IOUtility;
 import ankiflash.utility.exception.BadRequestException;
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.jsoup.nodes.Element;
@@ -89,32 +86,31 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public String getImage(String ankiDir, String selector) {
+  public void preProceedImage(String ankiDir, String selector) {
 
-    return "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
-        + word
-        + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
+    this.ankiDir = ankiDir;
+    imageLink = imageName = "";
+    imageOffline =
+        imageOnline =
+            "<a href=\"https://www.google.com/search?biw=1280&bih=661&tbm=isch&sa=1&q="
+                + word
+                + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
   }
 
   @Override
-  public String getPron(String ankiDir, String selector) {
+  public void preProceedSound(String ankiDir, String selector) {
 
-    String pro_link = HtmlHelper.getAttribute(doc, selector, 0, "data-src-mp3");
-    if (pro_link.isEmpty()) {
-      return "";
+    this.ankiDir = ankiDir;
+    soundLink = HtmlHelper.getAttribute(doc, selector, 0, "data-src-mp3");
+    if (soundLink.isEmpty()) {
+      soundLink = soundName = soundOnline = soundOffline = "";
     }
 
-    String pro_name = DictHelper.getLastElement(pro_link);
-    boolean isSuccess = false;
-    File dir = new File(ankiDir);
-    if (dir.exists()) {
-      String output = Paths.get(dir.getAbsolutePath(), pro_name).toString();
-      isSuccess = IOUtility.download(pro_link, output);
-    } else {
-      logger.warn("AnkiFlash folder not found! " + ankiDir);
-    }
-
-    return isSuccess ? "[sound:" + pro_name + "]" : "";
+    soundName = DictHelper.getLastElement(soundLink);
+    soundOnline =
+        String.format("<source src=\"%1$s\">Native audio playback is not supported.", soundLink);
+    soundOffline =
+        String.format("<source src=\"%1$s\">Native audio playback is not supported.", soundName);
   }
 
   @Override
@@ -124,26 +120,23 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    Elements meanElements = doc.select("div.hom>span.gramGrp,div.hom>div.sense");
+    Elements meanElements = doc.select("div.hom");
     for (Element meanElem : meanElements) {
       Meaning meaning = new Meaning();
-      List<String> examples = new ArrayList<>();
-      if (meanElem.hasClass("gramGrp")) {
-        // WordType
-        Element type = HtmlHelper.getElement(meanElem, ".pos", 0);
-        meaning.setWordType(type != null ? type.text() : "");
+      // WordType
+      Element type = HtmlHelper.getElement(meanElem, ".pos", 0);
+      meaning.setWordType(type != null ? type.text() : "");
+
+      // Meaning
+      Elements means = meanElem.select(">div.sense");
+      for (Element mean : means) {
+        Element re = mean.selectFirst("span[class*=sensenum]");
+        if (re != null) {
+          re.remove();
+        }
+        meaning.setMeaning(mean.outerHtml().replaceAll("\n", ""));
         meanings.add(meaning);
-      } else if (meanElem.hasClass("sense")) {
-        // Meaning
-        List<String> means = new ArrayList<>();
-        meanElem.select(">span").forEach(e -> means.add(e.text()));
-        String meaningText = String.join(" ", means);
-        meaning.setMeaning(meaningText);
-        // Examples
-        Elements examElements = meanElem.select("div.re.type-phr,div.cit.type-example");
-        examElements.forEach(e -> examples.add(e.text()));
-        meaning.setExamples(examples);
-        meanings.add(meaning);
+        meaning = new Meaning();
       }
     }
 
@@ -152,7 +145,7 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     Elements examElements = doc.select("div.example_box>blockquote");
     examElements.forEach(e -> examples.add(e.text()));
     meaning.setExamples(examples);
-    meaning.setWordType(HtmlHelper.getText(doc, "div.content-box-header>h2.h2_entry", 1));
+    meaning.setWordType("Extra Examples");
     meanings.add(meaning);
 
     return HtmlHelper.buildMeaning(word, type, phonetic, meanings);

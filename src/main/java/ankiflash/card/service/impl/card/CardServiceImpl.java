@@ -18,13 +18,14 @@ public abstract class CardServiceImpl implements CardService {
 
   public abstract List<String> getWords(String word, Translation translation);
 
-  public abstract Card generateCard(String combinedWord, Translation translation, String ankiDir);
+  public abstract Card generateCard(
+      String combinedWord, Translation translation, String ankiDir, boolean isOffline);
 
   public List<Card> generateCards(
-      List<String> combinedWords, Translation translation, String ankiDir) {
+      List<String> combinedWords, Translation translation, String ankiDir, boolean isOffline) {
     List<Card> cardCollection = new ArrayList<>();
     for (String combinedWord : combinedWords) {
-      cardCollection.add(generateCard(combinedWord, translation, ankiDir));
+      cardCollection.add(generateCard(combinedWord, translation, ankiDir, isOffline));
     }
     return cardCollection;
   }

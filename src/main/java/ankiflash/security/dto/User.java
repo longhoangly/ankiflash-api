@@ -1,5 +1,6 @@
 package ankiflash.security.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -16,8 +17,9 @@ import javax.validation.constraints.NotNull;
 public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonIgnore
   @Column(name = "id", unique = true)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
 
   @NotNull

@@ -84,7 +84,7 @@ public class SocialAuthServiceImpl implements SocialAuthService {
         logger.warn("Invalid ID token.");
       }
     } catch (GeneralSecurityException | IOException e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
     }
     return null;
   }

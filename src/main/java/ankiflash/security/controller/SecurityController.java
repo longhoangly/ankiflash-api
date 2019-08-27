@@ -165,7 +165,7 @@ class SecurityController {
     try {
       user = validator.validate(token);
     } catch (java.lang.Exception e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
       throw new BadRequestException(
           "Oops! Something's wrong, please select 'Forgot Password' on 'Login' page to try again!");
     }
@@ -211,7 +211,7 @@ class SecurityController {
     try {
       user = validator.validate(token);
     } catch (java.lang.Exception e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
       throw new BadRequestException(
           "Oops! Something's wrong, please select 'Forgot Password' on 'Login' page to try again!");
     }

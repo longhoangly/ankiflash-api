@@ -36,7 +36,7 @@ public class IOUtility {
         logger.info(String.format("Deleted directory, %1$s", dirPath));
       }
     } catch (IOException e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
     }
   }
 
@@ -49,7 +49,7 @@ public class IOUtility {
       }
       Files.write(Paths.get(filePath), content.getBytes(), StandardOpenOption.APPEND);
     } catch (IOException e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
     }
   }
 
@@ -62,6 +62,8 @@ public class IOUtility {
       } else {
         logger.error(String.format("Failed to create directory, %1$s", dirPath));
       }
+    } else {
+      logger.info(String.format("Directory already existed, %1$s", dirPath));
     }
   }
 
@@ -83,7 +85,7 @@ public class IOUtility {
                 copyFile(source.toString(), destination.toString());
               });
     } catch (IOException e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
     }
   }
 
@@ -96,7 +98,7 @@ public class IOUtility {
           StandardCopyOption.COPY_ATTRIBUTES,
           StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
     }
   }
 
@@ -112,7 +114,7 @@ public class IOUtility {
       zipOut.close();
       fos.close();
     } catch (IOException e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
     }
   }
 
@@ -148,32 +150,36 @@ public class IOUtility {
       }
       fis.close();
     } catch (IOException e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
     }
   }
 
   public static boolean download(String url, String target) {
-    try {
-      URL site = new URL(url);
-      URLConnection connection;
-      if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
-        Proxy proxy =
-            new Proxy(
-                Type.HTTP,
-                new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
-        connection = site.openConnection(proxy);
-      } else {
-        connection = site.openConnection();
-      }
-      connection.addRequestProperty("User-Agent", "Mozilla/5.0 Gecko/20100101 Firefox/47.0");
-      connection.setConnectTimeout(AnkiFlashProps.CONNECTION_TIMEOUT);
-      connection.setReadTimeout(AnkiFlashProps.READ_TIMEOUT);
+    if (!url.isEmpty()) {
+      try {
+        URL site = new URL(url);
+        URLConnection connection;
+        if (!AnkiFlashProps.PROXY_ADDRESS.isEmpty() && AnkiFlashProps.PROXY_PORT != 0) {
+          Proxy proxy =
+              new Proxy(
+                  Type.HTTP,
+                  new InetSocketAddress(AnkiFlashProps.PROXY_ADDRESS, AnkiFlashProps.PROXY_PORT));
+          connection = site.openConnection(proxy);
+        } else {
+          connection = site.openConnection();
+        }
+        connection.addRequestProperty("User-Agent", "Mozilla/5.0 Gecko/20100101 Firefox/47.0");
+        connection.setConnectTimeout(AnkiFlashProps.CONNECTION_TIMEOUT);
+        connection.setReadTimeout(AnkiFlashProps.READ_TIMEOUT);
 
-      InputStream in = connection.getInputStream();
-      Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
-    } catch (IOException e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
-      return false;
+        InputStream in = connection.getInputStream();
+        Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
+      } catch (IOException e) {
+        ErrorHandler.log(e);
+        return false;
+      }
+    } else {
+      logger.warn("the url is empty! target = {}", target);
     }
 
     return true;

@@ -57,12 +57,12 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public String getImage(String ankiDir, String selector) {
+  public void preProceedImage(String ankiDir, String selector) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public String getPron(String ankiDir, String selector) {
+  public void preProceedSound(String ankiDir, String selector) {
     throw new UnsupportedOperationException();
   }
 

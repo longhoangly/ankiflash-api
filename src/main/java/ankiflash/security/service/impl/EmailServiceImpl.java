@@ -57,7 +57,7 @@ public class EmailServiceImpl implements EmailService {
       props.put("mail.smtp.starttls.enable", AnkiFlashProps.MAIL_SSL);
       props.put("mail.debug", AnkiFlashProps.MAIL_DEBUG);
     } catch (java.lang.Exception e) {
-      ErrorHandler.log("ErrorHandler Occurred: ", e);
+      ErrorHandler.log(e);
     }
 
     return mailSender;
