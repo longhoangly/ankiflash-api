@@ -113,6 +113,9 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       return;
     }
 
+    if (!imageLink.contains("https")) {
+      imageLink = "https://j-dict.com" + imageLink;
+    }
     imageLink = imageLink.replaceFirst("\\?w=.*$", "");
     imageName = DictHelper.getLastElement(imageLink);
     imageOnline = "<img src=\"" + imageLink + "\"/>";

@@ -52,7 +52,7 @@ class CardController {
 
   private CardService cardService;
 
-  private String delimiter = ";";
+  private String delimiter = "%";
 
   @PostMapping("/get-words")
   public ResponseEntity getWords(@RequestBody @Valid CardRequest reqCard) {
