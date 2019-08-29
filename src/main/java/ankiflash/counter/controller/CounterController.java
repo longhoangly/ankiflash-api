@@ -1,6 +1,5 @@
 package ankiflash.counter.controller;
 
-import ankiflash.counter.dto.Counter;
 import ankiflash.counter.payload.CounterResponse;
 import ankiflash.counter.service.CounterService;
 import org.slf4j.Logger;
@@ -24,11 +23,8 @@ class CounterController {
 
     logger.info("/get-counter");
 
-    Counter counter = counterService.get();
-    CounterResponse counterResponse =
-        new CounterResponse(
-            counter.getCustomer(), counter.getVisit(), counter.getCard(), counter.getCounter4());
-    return ResponseEntity.ok().body(counterResponse);
+    CounterResponse counter = counterService.getCounter();
+    return ResponseEntity.ok().body(counter);
   }
 
   @GetMapping("/add-visit")

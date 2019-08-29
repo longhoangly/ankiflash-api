@@ -1,8 +1,11 @@
 package ankiflash.counter.service.impl;
 
+import ankiflash.card.service.CardDbService;
 import ankiflash.counter.dto.Counter;
+import ankiflash.counter.payload.CounterResponse;
 import ankiflash.counter.repository.CounterRepository;
 import ankiflash.counter.service.CounterService;
+import ankiflash.security.service.UserService;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,10 @@ import org.springframework.stereotype.Service;
 public class CounterServiceImpl implements CounterService {
 
   @Autowired private CounterRepository counterRepository;
+
+  @Autowired private CardDbService cardDbService;
+
+  @Autowired private UserService userService;
 
   @Override
   public Counter save(Counter counter) {
@@ -25,38 +32,31 @@ public class CounterServiceImpl implements CounterService {
   }
 
   @Override
-  public Counter get(int id) {
-    Optional<Counter> counter = counterRepository.findById(id);
-    return counter.orElse(null);
+  public CounterResponse getCounter() {
+    Optional<Counter> counterOptional = counterRepository.findById(1);
+    Counter counter = counterOptional.orElse(null);
+    return counter == null
+        ? null
+        : new CounterResponse(
+            userService.userCount(),
+            counter.getVisitCount(),
+            cardDbService.cardCount(),
+            counter.getLangCount());
   }
 
   @Override
-  public Counter get() {
-    Optional<Counter> counter = counterRepository.findById(1);
-    return counter.orElse(null);
-  }
-
-  @Override
-  public void addCustomer() {
-    // noinspection OptionalGetWithoutIsPresent
-    Counter counter = counterRepository.findById(1).get();
-    counter.setCustomer(counter.getCustomer() + 1);
-    counterRepository.save(counter);
+  public Counter getDbCounter() {
+    Optional<Counter> counterOptional = counterRepository.findById(1);
+    return counterOptional.orElse(null);
   }
 
   @Override
   public void addVisit() {
-    // noinspection OptionalGetWithoutIsPresent
-    Counter counter = counterRepository.findById(1).get();
-    counter.setVisit(counter.getVisit() + 1);
-    counterRepository.save(counter);
-  }
-
-  @Override
-  public void addCard() {
-    // noinspection OptionalGetWithoutIsPresent
-    Counter counter = counterRepository.findById(1).get();
-    counter.setCard(counter.getCard() + 1);
-    counterRepository.save(counter);
+    Optional<Counter> counterOptional = counterRepository.findById(1);
+    Counter counter = counterOptional.orElse(null);
+    if (counter != null) {
+      counter.setVisitCount(counter.getVisitCount() + 1);
+      counterRepository.save(counter);
+    }
   }
 }

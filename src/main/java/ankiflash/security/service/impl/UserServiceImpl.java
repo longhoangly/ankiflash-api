@@ -38,12 +38,6 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User findById(int id) {
-    // noinspection OptionalGetWithoutIsPresent
-    return userRepository.findById(id).get();
-  }
-
-  @Override
   public User findByUsername(String username) {
     return userRepository.findByUsername(username);
   }
@@ -76,7 +70,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public int countUser() {
+  public int userCount() {
     return Math.toIntExact(userRepository.count());
   }
 

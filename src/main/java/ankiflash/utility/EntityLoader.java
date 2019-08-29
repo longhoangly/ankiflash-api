@@ -26,7 +26,7 @@ class EntityLoader {
       user = new User();
       user.setUsername("hoanglongtc7");
       user.setEmail("hoanglongtc7@gmail.com");
-      user.setPassword(PassEncoding.getInstance().passwordEncoder.encode("longlee@123"));
+      user.setPassword(PassEncoding.getInstance().passwordEncoder.encode("longlee@10"));
       user.setVerified(true);
       user.setActive(true);
 
@@ -43,14 +43,12 @@ class EntityLoader {
   @PostConstruct
   public void initCounterData() {
 
-    Counter counter = counterService.get();
+    Counter counter = counterService.getDbCounter();
     if (counter == null) {
       counter = new Counter();
       counter.setId(1);
-      counter.setCustomer(userService.countUser());
-      counter.setVisit(100);
-      counter.setCard(1000);
-      counter.setCounter4(5);
+      counter.setVisitCount(100);
+      counter.setLangCount(5);
       counterService.save(counter);
     }
   }

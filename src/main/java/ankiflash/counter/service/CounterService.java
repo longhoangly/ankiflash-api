@@ -1,6 +1,7 @@
 package ankiflash.counter.service;
 
 import ankiflash.counter.dto.Counter;
+import ankiflash.counter.payload.CounterResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,13 +11,9 @@ public interface CounterService {
 
   Counter update(Counter counter);
 
-  Counter get(int id);
+  CounterResponse getCounter();
 
-  Counter get();
-
-  void addCustomer();
+  Counter getDbCounter();
 
   void addVisit();
-
-  void addCard();
 }

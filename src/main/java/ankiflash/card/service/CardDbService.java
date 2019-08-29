@@ -14,13 +14,11 @@ public interface CardDbService {
 
   Boolean delete(int id);
 
-  Card findById(int id);
-
   List<Card> findByWord(String word);
 
   Card findByHash(String hash);
 
   Collection<Card> findAll();
 
-  int countCard();
+  int cardCount();
 }

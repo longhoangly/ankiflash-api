@@ -135,7 +135,6 @@ class SecurityController {
     userService.save(user);
     emailService.sendVerificationEmail(user);
 
-    counterService.addCustomer();
     LoginResponse resUser =
         new LoginResponse(
             user.getUsername(), user.getRole(), user.isActive(), user.isVerified(), null);

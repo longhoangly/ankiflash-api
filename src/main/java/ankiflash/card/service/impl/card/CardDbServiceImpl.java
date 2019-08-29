@@ -35,11 +35,6 @@ public class CardDbServiceImpl implements CardDbService {
   }
 
   @Override
-  public Card findById(int id) {
-    return cardRepository.findById(id).get();
-  }
-
-  @Override
   public List<Card> findByWord(String word) {
     return cardRepository.findByWord(word);
   }
@@ -55,7 +50,7 @@ public class CardDbServiceImpl implements CardDbService {
   }
 
   @Override
-  public int countCard() {
+  public int cardCount() {
     return Math.toIntExact(cardRepository.count());
   }
 }

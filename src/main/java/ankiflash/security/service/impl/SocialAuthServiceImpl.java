@@ -75,7 +75,6 @@ public class SocialAuthServiceImpl implements SocialAuthService {
           user.setRole(Roles.ROLE_USER.getValue());
 
           userService.save(user);
-          counterService.addCustomer();
           return user;
         } else {
           return userByEmail;
@@ -125,7 +124,6 @@ public class SocialAuthServiceImpl implements SocialAuthService {
         user.setRole(Roles.ROLE_USER.getValue());
 
         userService.save(user);
-        counterService.addCustomer();
         return user;
       } else {
         return userById != null ? userById : userByEmail;

@@ -1,5 +1,6 @@
 package ankiflash.counter.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,24 +12,17 @@ import javax.validation.constraints.NotNull;
 public class Counter {
 
   @Id
+  @JsonIgnore
   @Column(name = "id", unique = true)
   private int id;
 
   @NotNull
-  @Column(name = "customer")
-  private int customer;
+  @Column(name = "visitCount")
+  private int visitCount;
 
   @NotNull
-  @Column(name = "visit")
-  private int visit;
-
-  @NotNull
-  @Column(name = "card")
-  private int card;
-
-  @NotNull
-  @Column(name = "counter4")
-  private int counter4;
+  @Column(name = "langCount")
+  private int langCount;
 
   public Counter() {}
 
@@ -40,35 +34,19 @@ public class Counter {
     this.id = id;
   }
 
-  public int getCustomer() {
-    return customer;
+  public int getVisitCount() {
+    return visitCount;
   }
 
-  public void setCustomer(int customer) {
-    this.customer = customer;
+  public void setVisitCount(int visitCount) {
+    this.visitCount = visitCount;
   }
 
-  public int getVisit() {
-    return visit;
+  public int getLangCount() {
+    return langCount;
   }
 
-  public void setVisit(int visit) {
-    this.visit = visit;
-  }
-
-  public int getCard() {
-    return card;
-  }
-
-  public void setCard(int card) {
-    this.card = card;
-  }
-
-  public int getCounter4() {
-    return counter4;
-  }
-
-  public void setCounter4(int counter4) {
-    this.counter4 = counter4;
+  public void setLangCount(int langCount) {
+    this.langCount = langCount;
   }
 }

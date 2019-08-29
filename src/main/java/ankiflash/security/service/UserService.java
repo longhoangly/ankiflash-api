@@ -13,8 +13,6 @@ public interface UserService {
 
   User update(User user);
 
-  User findById(int id);
-
   User findByUsername(String username);
 
   User findByEmail(String email);
@@ -23,7 +21,7 @@ public interface UserService {
 
   User validate(String username, String password);
 
-  int countUser();
+  int userCount();
 
   String getCurrentUsername();
 }

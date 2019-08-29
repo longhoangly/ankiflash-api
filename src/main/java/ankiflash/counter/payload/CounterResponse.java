@@ -1,62 +1,53 @@
 package ankiflash.counter.payload;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
 public class CounterResponse {
 
-  @NotNull
-  @Column(name = "customer")
-  private int customer;
+  @NotNull private int clientCount;
 
-  @NotNull
-  @Column(name = "visit")
-  private int visit;
+  @NotNull private int visitCount;
 
-  @NotNull
-  @Column(name = "card")
-  private int card;
+  @NotNull private int cardCount;
 
-  @NotNull
-  @Column(name = "counter4")
-  private int counter4;
+  @NotNull private int langCount;
 
-  public CounterResponse(int customer, int visit, int card, int counter4) {
-    this.customer = customer;
-    this.visit = visit;
-    this.card = card;
-    this.counter4 = counter4;
+  public CounterResponse(int clientCount, int visitCount, int cardCount, int langCount) {
+    this.clientCount = clientCount;
+    this.visitCount = visitCount;
+    this.cardCount = cardCount;
+    this.langCount = langCount;
   }
 
-  public int getCustomer() {
-    return customer;
+  public int getClientCount() {
+    return clientCount;
   }
 
-  public void setCustomer(int customer) {
-    this.customer = customer;
+  public void setClientCount(int clientCount) {
+    this.clientCount = clientCount;
   }
 
-  public int getVisit() {
-    return visit;
+  public int getVisitCount() {
+    return visitCount;
   }
 
-  public void setVisit(int visit) {
-    this.visit = visit;
+  public void setVisitCount(int visitCount) {
+    this.visitCount = visitCount;
   }
 
-  public int getCard() {
-    return card;
+  public int getCardCount() {
+    return cardCount;
   }
 
-  public void setCard(int card) {
-    this.card = card;
+  public void setCardCount(int cardCount) {
+    this.cardCount = cardCount;
   }
 
-  public int getCounter4() {
-    return counter4;
+  public int getLangCount() {
+    return langCount;
   }
 
-  public void setCounter4(int counter4) {
-    this.counter4 = counter4;
+  public void setLangCount(int langCount) {
+    this.langCount = langCount;
   }
 }
