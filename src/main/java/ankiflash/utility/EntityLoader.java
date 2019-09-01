@@ -8,6 +8,9 @@ import ankiflash.security.utility.PassEncoding;
 import java.util.Calendar;
 import java.util.Date;
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,38 @@ class EntityLoader {
   @Autowired private UserService userService;
 
   @Autowired private CounterService counterService;
+
+  @Autowired private EntityManagerFactory emf;
+
+  @PostConstruct
+  public void initUtf8mb4() {
+
+    EntityManager em = emf.createEntityManager();
+    EntityTransaction tx = em.getTransaction();
+
+    tx.begin();
+    em.createNativeQuery("SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'").executeUpdate();
+    tx.commit();
+    em.close();
+
+    em = emf.createEntityManager();
+    tx = em.getTransaction();
+    tx.begin();
+    em.createNativeQuery(
+            "ALTER DATABASE ankiflash CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        .executeUpdate();
+    tx.commit();
+    em.close();
+
+    em = emf.createEntityManager();
+    tx = em.getTransaction();
+    tx.begin();
+    em.createNativeQuery(
+            "ALTER TABLE ankiflash.card MODIFY COLUMN meaning LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        .executeUpdate();
+    tx.commit();
+    em.close();
+  }
 
   @PostConstruct
   public void initUserData() {

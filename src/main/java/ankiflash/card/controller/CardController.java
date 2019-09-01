@@ -83,10 +83,6 @@ class CardController {
     resWords.setSuccess(success);
     resWords.setFailure(failure);
 
-    if (success.isEmpty()) {
-      throw new BadRequestException("Words not found. Please check your input!");
-    }
-
     return ResponseEntity.ok().body(resWords);
   }
 

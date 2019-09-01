@@ -59,40 +59,40 @@ public class Card {
 
   @NotNull
   @NotEmpty
-  @Column(name = "imageOffline", columnDefinition = "LONGTEXT")
+  @Column(name = "imageOffline")
   private String imageOffline;
 
   @NotNull
   @NotEmpty
-  @Column(name = "imageOnline", columnDefinition = "LONGTEXT")
+  @Column(name = "imageOnline")
   private String imageOnline;
 
   @NotNull
   @JsonIgnore
-  @Column(name = "imageLink", columnDefinition = "LONGTEXT")
+  @Column(name = "imageLink")
   private String imageLink;
 
   @NotNull
   @JsonIgnore
-  @Column(name = "imageName", columnDefinition = "LONGTEXT")
+  @Column(name = "imageName")
   private String imageName;
 
   @NotNull
-  @Column(name = "soundOffline", columnDefinition = "LONGTEXT")
+  @Column(name = "soundOffline")
   private String soundOffline;
 
   @NotNull
-  @Column(name = "soundOnline", columnDefinition = "LONGTEXT")
+  @Column(name = "soundOnline")
   private String soundOnline;
 
   @NotNull
   @JsonIgnore
-  @Column(name = "soundLink", columnDefinition = "LONGTEXT")
+  @Column(name = "soundLink")
   private String soundLink;
 
   @NotNull
   @JsonIgnore
-  @Column(name = "soundName", columnDefinition = "LONGTEXT")
+  @Column(name = "soundName")
   private String soundName;
 
   @NotNull

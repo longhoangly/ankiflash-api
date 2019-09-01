@@ -102,7 +102,6 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
   public void downloadSound() {
 
     File dir = new File(ankiDir);
-    System.out.println(soundLink);
     if (dir.exists() && !soundLink.isEmpty()) {
       String output = Paths.get(dir.getAbsolutePath(), soundName).toString();
       IOUtility.download(soundLink, output);

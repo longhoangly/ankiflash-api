@@ -134,12 +134,12 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    Elements meanGroup = doc.select("li.sn-g");
+    Elements meanGroup = doc.select("li.sn-g,span.sn-g");
     for (Element meanElem : meanGroup) {
       Element defElem = meanElem.selectFirst("span.def");
-
       List<String> examples = new ArrayList<>();
-      Element siblingElem = defElem.nextElementSibling();
+      Element siblingElem =
+          defElem != null ? defElem.nextElementSibling() : meanElem.selectFirst("x-gs");
       if (siblingElem != null) {
         Elements exampleElements = siblingElem.select("span.x");
         for (Element exampleElem : exampleElements) {
@@ -147,7 +147,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
         }
       }
 
-      Meaning meaning = new Meaning(defElem.text(), examples);
+      Meaning meaning = new Meaning(defElem != null ? defElem.text() : "", examples);
       meanings.add(meaning);
     }
 
