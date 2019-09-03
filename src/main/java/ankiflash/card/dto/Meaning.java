@@ -12,6 +12,10 @@ public class Meaning {
 
   public Meaning() {}
 
+  public Meaning(String meaning) {
+    this.meaning = meaning;
+  }
+
   public Meaning(String meaning, List<String> examples) {
     this.meaning = meaning;
     this.examples = examples;

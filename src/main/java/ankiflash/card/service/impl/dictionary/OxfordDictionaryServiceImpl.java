@@ -134,23 +134,33 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    Elements meanGroup = doc.select("li.sn-g,span.sn-g");
+    Elements meanGroup = doc.select(".sn-g");
     for (Element meanElem : meanGroup) {
-      Element defElem = meanElem.selectFirst("span.def");
+      Element defElem = meanElem.selectFirst(".def");
+
       List<String> examples = new ArrayList<>();
-      Element siblingElem =
-          defElem != null ? defElem.nextElementSibling() : meanElem.selectFirst("x-gs");
+      Element subDefElem = meanElem.selectFirst(".xr-gs");
+      if (subDefElem != null) {
+        Element subDefPrefix = subDefElem.selectFirst(".prefix");
+        Element subDefLink = subDefElem.selectFirst(".Ref");
+        if (subDefPrefix != null && subDefLink != null) {
+          examples.add(
+              String.format(
+                  "<a href=\"%1$s\">%2$s %3$s</a>",
+                  subDefLink.attr("href"), subDefPrefix.text(), subDefLink.text()));
+        }
+      }
+
+      Element siblingElem = meanElem.selectFirst(".x-gs");
       if (siblingElem != null) {
-        Elements exampleElements = siblingElem.select("span.x");
+        Elements exampleElements = siblingElem.select(".x");
         for (Element exampleElem : exampleElements) {
           examples.add(exampleElem.text());
         }
       }
 
-      Meaning meaning = new Meaning(defElem != null ? defElem.text() : "", examples);
-      meanings.add(meaning);
+      meanings.add(new Meaning(defElem != null ? defElem.text() : "", examples));
     }
-
     return HtmlHelper.buildMeaning(word, type, phonetic, meanings);
   }
 
