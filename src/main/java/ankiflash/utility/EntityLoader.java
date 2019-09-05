@@ -49,16 +49,17 @@ class EntityLoader {
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery(
-        "set global character_set_server=utf8mb4")
-      .executeUpdate();
+    em.createNativeQuery("set global character_set_server=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery(
-        "set session character_set_database=utf8mb4")
-      .executeUpdate();
+    em.createNativeQuery("set session character_set_server=utf8mb4").executeUpdate();
+    tx.commit();
+
+    tx = em.getTransaction();
+    tx.begin();
+    em.createNativeQuery("set session character_set_database=utf8mb4").executeUpdate();
     tx.commit();
     em.close();
   }
