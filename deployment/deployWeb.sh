@@ -1,6 +1,5 @@
 #! /bin/bash
 
-
 pid=$(sudo lsof -t -i:80)
 if [[ $? == 0 ]] ; then
     sudo kill -9 ${pid}
