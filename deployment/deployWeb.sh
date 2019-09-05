@@ -30,5 +30,6 @@ cd theflashweb
 git fetch
 git checkout release --force
 git pull
+
 npm install --unsafe-perm
 sudo npm start &

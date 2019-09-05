@@ -21,5 +21,6 @@ cd theflashapi
 git fetch
 git checkout release --force
 git pull
-sudo mvn clean package
+
+mvn clean package
 sudo java -jar target/ankiflash-*.jar &

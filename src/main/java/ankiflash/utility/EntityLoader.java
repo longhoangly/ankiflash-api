@@ -30,81 +30,81 @@ class EntityLoader {
     EntityTransaction tx = em.getTransaction();
 
     tx.begin();
-    em.createNativeQuery("SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci;'").executeUpdate();
+    em.createNativeQuery("SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
     em.createNativeQuery(
-            "ALTER DATABASE ankiflash CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
+            "ALTER DATABASE ankiflash CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
         .executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
     em.createNativeQuery(
-            "ALTER TABLE ankiflash.card MODIFY COLUMN meaning LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
+            "ALTER TABLE ankiflash.card MODIFY COLUMN meaning LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
         .executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set global character_set_server=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set global character_set_server=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set session character_set_server=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set session character_set_server=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set global character_set_database=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set global character_set_database=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set session character_set_database=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set session character_set_database=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set global character_set_client=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set global character_set_client=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set session character_set_client=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set session character_set_client=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set global character_set_connection=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set global character_set_connection=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set session character_set_connection=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set session character_set_connection=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set global character_set_system=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set global character_set_system=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set session character_set_system=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set session character_set_system=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set global character_set_results=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set global character_set_results=utf8mb4").executeUpdate();
     tx.commit();
 
     tx = em.getTransaction();
     tx.begin();
-    em.createNativeQuery("set session character_set_results=utf8mb4;").executeUpdate();
+    em.createNativeQuery("set session character_set_results=utf8mb4").executeUpdate();
     tx.commit();
     em.close();
   }
