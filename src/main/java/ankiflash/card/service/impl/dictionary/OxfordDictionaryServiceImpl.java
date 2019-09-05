@@ -143,7 +143,9 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
       if (subDefElem != null) {
         Element subDefPrefix = subDefElem.selectFirst(".prefix");
         Element subDefLink = subDefElem.selectFirst(".Ref");
-        if (subDefPrefix != null && subDefLink != null) {
+        if (subDefPrefix != null
+            && subDefLink != null
+            && !subDefLink.attr("title").contains("full entry")) {
           examples.add(
               String.format(
                   "<a href=\"%1$s\">%2$s %3$s</a>",
@@ -151,16 +153,55 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
         }
       }
 
-      Element siblingElem = meanElem.selectFirst(".x-gs");
-      if (siblingElem != null) {
-        Elements exampleElements = siblingElem.select(".x");
-        for (Element exampleElem : exampleElements) {
-          examples.add(exampleElem.text());
-        }
+      Elements exampleElements = meanElem.select(".x");
+      for (Element exampleElem : exampleElements) {
+        examples.add(exampleElem.text());
       }
 
       meanings.add(new Meaning(defElem != null ? defElem.text() : "", examples));
     }
+
+    Element extraExamples = doc.selectFirst("span.collapse[title=\"Extra examples\"]");
+    if (extraExamples != null) {
+      Elements exampleElements = extraExamples.select(".x");
+
+      List<String> examples = new ArrayList<>();
+      for (Element exampleElem : exampleElements) {
+        examples.add(exampleElem.text());
+      }
+
+      Meaning meaning = new Meaning("", examples);
+      meaning.setWordType("Extra Examples");
+      meanings.add(meaning);
+    }
+
+    Element wordFormElem = doc.selectFirst("span.collapse[title=\"Verb Forms\"]");
+    if (wordFormElem != null) {
+      Elements wordFormElements = wordFormElem.select(".vp");
+
+      List<String> wordForms = new ArrayList<>();
+      for (Element wordForm : wordFormElements) {
+        wordForms.add(wordForm.text());
+      }
+
+      Meaning meaning = new Meaning("", wordForms);
+      meaning.setWordType("Verb Forms");
+      meanings.add(meaning);
+    }
+
+    Element wordOriginElem = doc.selectFirst("span.collapse[title=\"Word Origin\"]");
+    if (wordOriginElem != null) {
+      Element originElem = wordOriginElem.selectFirst(".p");
+      if (originElem != null) {
+        List<String> wordOrigins = new ArrayList<>();
+        wordOrigins.add(originElem.text());
+
+        Meaning meaning = new Meaning("", wordOrigins);
+        meaning.setWordType("Word Origin");
+        meanings.add(meaning);
+      }
+    }
+
     return HtmlHelper.buildMeaning(word, type, phonetic, meanings);
   }
 
