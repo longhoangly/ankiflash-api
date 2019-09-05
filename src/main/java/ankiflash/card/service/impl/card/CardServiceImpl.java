@@ -5,9 +5,14 @@ import ankiflash.card.service.CardDbService;
 import ankiflash.card.service.CardService;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
+import ankiflash.utility.exception.ErrorHandler;
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +38,19 @@ public abstract class CardServiceImpl implements CardService {
   public String compressResources(String ankiDir) {
 
     ClassLoader classLoader = getClass().getClassLoader();
-    String attachmentPath = Objects.requireNonNull(classLoader.getResource("attachment")).getPath();
-    IOUtility.copyFolder(attachmentPath, ankiDir);
+    List<String> files = Arrays.asList("AnkiFlashTemplate.apkg", "anki.ico", "anki.png");
+
+    for (String file : files) {
+      InputStream inputStream =
+          classLoader.getResourceAsStream(String.format("attachment/%s", file));
+      try {
+        FileUtils.copyInputStreamToFile(
+            Objects.requireNonNull(inputStream), new File(ankiDir + "/" + file));
+      } catch (Exception e) {
+        ErrorHandler.log(e);
+      }
+    }
+
     IOUtility.zipFolder(ankiDir, ankiDir + ".zip");
     return ankiDir + ".zip";
   }
