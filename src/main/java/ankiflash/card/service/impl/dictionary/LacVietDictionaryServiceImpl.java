@@ -126,10 +126,8 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
 
     soundLink = soundLink.replace("file=", "").replace("&autostart=false", "");
     soundName = DictHelper.getLastElement(soundLink);
-    soundOnline =
-        String.format("<source src=\"%1$s\">Native audio playback is not supported.", soundLink);
-    soundOffline =
-        String.format("<source src=\"%1$s\">Native audio playback is not supported.", soundName);
+    soundOnline = String.format("<source src=\"%1$s\">Online sound.", soundLink);
+    soundOffline = String.format("<source src=\"%1$s\">Offline sound.", soundName);
   }
 
   @Override

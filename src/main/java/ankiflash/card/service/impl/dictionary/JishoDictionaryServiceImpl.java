@@ -115,10 +115,8 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
 
     soundLink = "https:" + soundLink;
     soundName = DictHelper.getLastElement(soundLink);
-    soundOnline =
-        String.format("<source src=\"%1$s\">\nNative audio playback is not supported.", soundLink);
-    soundOffline =
-        String.format("<source src=\"%1$s\">\nNative audio playback is not supported.", soundName);
+    soundOnline = String.format("<source src=\"%1$s\">Online sound.", soundLink);
+    soundOffline = String.format("<source src=\"%1$s\">Offline sound.", soundName);
   }
 
   @Override
