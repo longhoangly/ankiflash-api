@@ -133,8 +133,8 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     soundName = DictHelper.getLastElement(soundLink);
-    soundOnline = String.format("<source src=\"%1$s\">Online sound.", soundLink);
-    soundOffline = String.format("<source src=\"%1$s\">Offline sound.", soundName);
+    soundOnline = String.format("<source src=\"%1$s\">Online sound. %2$s", soundLink, soundLink);
+    soundOffline = String.format("<source src=\"%1$s\">Offline sound. %2$s", soundName, soundName);
   }
 
   @Override
