@@ -27,7 +27,10 @@ public class CardHelper {
     String urlParameters =
         String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
     Document document = CardHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
-    Elements wordElms = document.select("ul>li");
+    Elements wordElms = new Elements();
+    if (document != null) {
+      wordElms = document.select("ul>li");
+    }
 
     List<String> jDictWords = new ArrayList<>();
     for (Element wordElem : wordElms) {
@@ -43,8 +46,11 @@ public class CardHelper {
 
     String url = HtmlHelper.lookupUrl(Constants.JISHO_SEARCH_URL_JP_EN, word);
     Document document = HtmlHelper.getDocument(url);
+    Elements wordElms = new Elements();
+    if (document != null) {
+      wordElms = document.select(".concept_light.clearfix");
+    }
 
-    Elements wordElms = document.select(".concept_light.clearfix");
     List<String> jDictWords = new ArrayList<>();
     for (Element wordElem : wordElms) {
 
