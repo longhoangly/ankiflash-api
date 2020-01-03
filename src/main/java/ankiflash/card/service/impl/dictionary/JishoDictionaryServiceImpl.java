@@ -181,7 +181,10 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     Document document = HtmlHelper.getDocument(url);
 
     List<String> sentences = new ArrayList<>();
-    Elements sentenceElms = document.select(".sentence_content");
+    Elements sentenceElms = new Elements();
+    if (document != null) {
+      sentenceElms = document.select(".sentence_content");
+    }
 
     int maxCount = 1;
     for (Element sentenceElm : sentenceElms) {
