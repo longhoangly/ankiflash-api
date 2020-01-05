@@ -154,7 +154,7 @@ public class IOUtility {
     }
   }
 
-  public static boolean download(String url, String target) {
+  public static boolean download(String url, Path target) {
     if (!url.isEmpty()) {
       try {
         URL site = new URL(url);
@@ -173,13 +173,17 @@ public class IOUtility {
         connection.setReadTimeout(AnkiFlashProps.READ_TIMEOUT);
 
         InputStream in = connection.getInputStream();
-        Files.copy(in, Paths.get(target), StandardCopyOption.REPLACE_EXISTING);
+        if (!target.toFile().exists()) {
+          Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+        } else {
+          logger.warn("the file existed already! url={}, target = {}", url, target);
+        }
       } catch (IOException e) {
         ErrorHandler.log(e);
         return false;
       }
     } else {
-      logger.warn("the url is empty! target = {}", target);
+      logger.warn("the url was empty! url={}, target = {}", url, target);
     }
 
     return true;

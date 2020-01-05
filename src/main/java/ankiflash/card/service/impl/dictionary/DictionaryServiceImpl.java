@@ -5,6 +5,7 @@ import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -62,10 +63,10 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
     File dir = new File(ankiDir);
     if (dir.exists() && !imageLink.isEmpty()) {
-      String output = Paths.get(dir.getAbsolutePath(), imageName).toString();
+      Path output = Paths.get(dir.getAbsolutePath(), imageName);
       IOUtility.download(imageLink, output);
     } else {
-      logger.warn("AnkiFlash folder not found! => isOffline ~ false" + ankiDir);
+      logger.warn("ankiDir={}, dir.exists={}, imageLink={}", ankiDir, dir.exists(), imageLink);
     }
   }
 
@@ -74,10 +75,10 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
     String imageName = DictHelper.getLastElement(imageLink);
     File dir = new File(ankiDir);
     if (dir.exists() && !imageLink.isEmpty()) {
-      String output = Paths.get(dir.getAbsolutePath(), imageName).toString();
+      Path output = Paths.get(dir.getAbsolutePath(), imageName);
       IOUtility.download(imageLink, output);
     } else {
-      logger.warn("AnkiFlash folder not found! => isOffline ~ false" + ankiDir);
+      logger.warn("ankiDir={}, dir.exists={}, imageLink={}", ankiDir, dir.exists(), imageLink);
     }
   }
 
@@ -103,10 +104,10 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
     File dir = new File(ankiDir);
     if (dir.exists() && !soundLink.isEmpty()) {
-      String output = Paths.get(dir.getAbsolutePath(), soundName).toString();
+      Path output = Paths.get(dir.getAbsolutePath(), soundName);
       IOUtility.download(soundLink, output);
     } else {
-      logger.warn("AnkiFlash folder not found! " + ankiDir);
+      logger.warn("ankiDir={}, dir.exists={}, soundLink={}", ankiDir, dir.exists(), soundLink);
     }
   }
 
@@ -115,10 +116,10 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
     String soundName = DictHelper.getLastElement(soundLink);
     File dir = new File(ankiDir);
     if (dir.exists() && !soundLink.isEmpty()) {
-      String output = Paths.get(dir.getAbsolutePath(), soundName).toString();
+      Path output = Paths.get(dir.getAbsolutePath(), soundName);
       IOUtility.download(soundLink, output);
     } else {
-      logger.warn("AnkiFlash folder not found! " + ankiDir);
+      logger.warn("ankiDir={}, dir.exists={}, soundLink={}", ankiDir, dir.exists(), soundLink);
     }
   }
 

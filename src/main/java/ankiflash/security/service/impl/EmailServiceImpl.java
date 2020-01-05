@@ -152,7 +152,7 @@ public class EmailServiceImpl implements EmailService {
             + "\n"
             + "Please check the log of the system to see if anything went wrong?\n"
             + "\n"
-            + "The following ErrorHandler occurred!\n"
+            + "The following error occurred!\n"
             + "\n"
             + "%s\n"
             + "\n"

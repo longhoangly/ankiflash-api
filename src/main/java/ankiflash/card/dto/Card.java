@@ -25,7 +25,7 @@ public class Card {
   @NotNull
   @NotEmpty
   @JsonIgnore
-  @Column(name = "hash", unique = true, columnDefinition = "VARCHAR(500)")
+  @Column(name = "hash", unique = true, columnDefinition = "VARCHAR(750)")
   private String hash;
 
   @NotNull
@@ -46,7 +46,7 @@ public class Card {
   private String originalWord;
 
   @NotNull
-  @Column(name = "wordType")
+  @Column(name = "wordType", columnDefinition = "VARCHAR(750)")
   private String wordType;
 
   @NotNull
