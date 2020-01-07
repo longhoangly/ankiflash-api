@@ -8,7 +8,6 @@ import ankiflash.card.utility.CardHelper;
 import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
-import ankiflash.utility.exception.BadRequestException;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -39,12 +38,14 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
   public Card generateCard(
       String combinedWord, Translation translation, String ankiDir, boolean isOffline) {
 
-    Card card;
+    Card card = new Card();
     String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
     if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {
       card = new Card(wordParts[0], wordParts[1], wordParts[2], translation.toString());
     } else {
-      throw new BadRequestException("Incorrect word format: " + combinedWord);
+      card.setStatus(Status.Word_Not_Found);
+      card.setComment("Incorrect word format=" + combinedWord);
+      return card;
     }
 
     logger.info("Word = " + card.getWord());
