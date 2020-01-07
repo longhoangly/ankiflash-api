@@ -30,7 +30,11 @@ public abstract class CardServiceImpl implements CardService {
       List<String> combinedWords, Translation translation, String ankiDir, boolean isOffline) {
     List<Card> cardCollection = new ArrayList<>();
     for (String combinedWord : combinedWords) {
-      cardCollection.add(generateCard(combinedWord, translation, ankiDir, isOffline));
+      try {
+        cardCollection.add(generateCard(combinedWord, translation, ankiDir, isOffline));
+      } catch (Exception e) {
+        ErrorHandler.log(e);
+      }
     }
     return cardCollection;
   }
