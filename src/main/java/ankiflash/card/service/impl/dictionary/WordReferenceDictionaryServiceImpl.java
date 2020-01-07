@@ -15,8 +15,8 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
   @Override
   public boolean isConnectionFailed(String combinedWord, Translation translation) {
 
-    String[] wordParts = combinedWord.split(":");
-    if (combinedWord.contains(":") && wordParts.length == 3) {
+    String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
+    if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {
       this.word = wordParts[0];
       this.wordId = wordParts[1];
       this.originalWord = wordParts[2];

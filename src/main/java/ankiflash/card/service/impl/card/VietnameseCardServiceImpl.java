@@ -27,7 +27,7 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     if (translation.equals(Translation.VN_JP)) {
       foundWords.addAll(CardHelper.getJDictWords(word));
     } else {
-      foundWords.add(word + ":" + word + ":" + word);
+      foundWords.add(word + Constants.SUB_DELIMITER + word + Constants.SUB_DELIMITER + word);
     }
 
     return foundWords;
@@ -38,8 +38,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       String combinedWord, Translation translation, String ankiDir, boolean isOffline) {
 
     Card card;
-    String[] wordParts = combinedWord.split(":");
-    if (combinedWord.contains(":") && wordParts.length == 3) {
+    String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
+    if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {
       card = new Card(wordParts[0], wordParts[1], wordParts[2], translation.toString());
     } else {
       throw new BadRequestException("Incorrect word format: " + combinedWord);
@@ -55,11 +55,11 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     DictionaryService lacVietDict = new LacVietDictionaryServiceImpl();
     DictionaryService jDict = new JDictDictionaryServiceImpl();
 
-    String hashCombination = combinedWord + ":" + translation.toString();
+    String hashCombination = combinedWord + Constants.SUB_DELIMITER + translation.toString();
     logger.info("finding-hash-combination={}", hashCombination);
     Card dbCard = cardDbService.findByHash(card.getHash());
     if (dbCard != null) {
-      logger.info("card-found-from-our-DB..." + card.getWord());
+      logger.info("card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
         jDict.downloadImage(ankiDir, dbCard.getImageLink());
         jDict.downloadSound(ankiDir, dbCard.getSoundLink());

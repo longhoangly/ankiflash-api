@@ -36,7 +36,12 @@ public class CardHelper {
     for (Element wordElem : wordElms) {
       if (wordElem.attr("title").toLowerCase().contains(word.toLowerCase())
           && !wordElem.attr("data-id").isEmpty()) {
-        jDictWords.add(wordElem.attr("title") + ":" + wordElem.attr("data-id") + ":" + word);
+        jDictWords.add(
+            wordElem.attr("title")
+                + Constants.SUB_DELIMITER
+                + wordElem.attr("data-id")
+                + Constants.SUB_DELIMITER
+                + word);
       }
     }
     return jDictWords;
@@ -65,7 +70,11 @@ public class CardHelper {
         String[] detailLinkEls = detailLink.attr("href").split("/");
         jDictWords.add(
             HtmlHelper.decodeValue(
-                foundWordElm.text() + ":" + detailLinkEls[detailLinkEls.length - 1] + ":" + word));
+                foundWordElm.text()
+                    + Constants.SUB_DELIMITER
+                    + detailLinkEls[detailLinkEls.length - 1]
+                    + Constants.SUB_DELIMITER
+                    + word));
       }
     }
 
@@ -82,7 +91,12 @@ public class CardHelper {
       String firstLink = HtmlHelper.getAttribute(doc, "link", 0, "href");
       if (firstLink.contains("definition/english")) {
         String matchedWord = HtmlHelper.getText(doc, "h2", 0);
-        foundWords.add(matchedWord + ":" + DictHelper.getLastElement(firstLink) + ":" + word);
+        foundWords.add(
+            matchedWord
+                + Constants.SUB_DELIMITER
+                + DictHelper.getLastElement(firstLink)
+                + Constants.SUB_DELIMITER
+                + word);
       }
 
       Elements allMatchesBlocks = doc.select("dl.accordion.ui-grad");
@@ -93,7 +107,8 @@ public class CardHelper {
           String matchedWord = li.getElementsByTag("span").text();
           if (matchedWord.equalsIgnoreCase(word)) {
             String wordId = DictHelper.getLastElement(li.getElementsByTag("a").attr("href"));
-            foundWords.add(matchedWord + ":" + wordId + ":" + word);
+            foundWords.add(
+                matchedWord + Constants.SUB_DELIMITER + wordId + Constants.SUB_DELIMITER + word);
           }
         }
       }

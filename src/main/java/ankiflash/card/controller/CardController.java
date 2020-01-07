@@ -52,8 +52,6 @@ class CardController {
 
   private CardService cardService;
 
-  private String delimiter = "%";
-
   @PostMapping("/get-words")
   public ResponseEntity getWords(@RequestBody @Valid CardRequest reqCard) {
 
@@ -65,7 +63,7 @@ class CardController {
     }
 
     initializeCardService(reqCard.getSource());
-    String[] words = reqCard.getWords().split(delimiter);
+    String[] words = reqCard.getWords().split(Constants.MAIN_DELIMITER);
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     List<String> success = new ArrayList<>();
@@ -120,7 +118,7 @@ class CardController {
     initializeCardService(reqCard.getSource());
 
     // Get request info
-    List<String> words = Arrays.asList(reqCard.getWords().split(delimiter));
+    List<String> words = Arrays.asList(reqCard.getWords().split(Constants.MAIN_DELIMITER));
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     // Create ankiDir folder
@@ -163,7 +161,12 @@ class CardController {
       } else {
         IOUtility.write(
             ankiDir + "/" + Constants.ANKI_FAILURE,
-            card.getWord() + " => " + card.getStatus() + ":" + card.getComment() + "\n");
+            card.getWord()
+                + " => "
+                + card.getStatus()
+                + Constants.SUB_DELIMITER
+                + card.getComment()
+                + "\n");
       }
     }
 

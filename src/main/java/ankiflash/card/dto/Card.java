@@ -1,5 +1,6 @@
 package ankiflash.card.dto;
 
+import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.api.client.util.Base64;
@@ -134,7 +135,13 @@ public class Card {
     this.hash =
         new String(
             Base64.encodeBase64(
-                (this.word + ":" + this.wordId + ":" + this.originalWord + ":" + this.translation)
+                (this.word
+                        + Constants.SUB_DELIMITER
+                        + this.wordId
+                        + Constants.SUB_DELIMITER
+                        + this.originalWord
+                        + Constants.SUB_DELIMITER
+                        + this.translation)
                     .getBytes()));
   }
 

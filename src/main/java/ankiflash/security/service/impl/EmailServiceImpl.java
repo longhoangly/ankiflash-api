@@ -40,7 +40,6 @@ public class EmailServiceImpl implements EmailService {
       logger.info("MAIL_HOST=" + AnkiFlashProps.MAIL_HOST);
       logger.info("MAIL_PORT=" + AnkiFlashProps.MAIL_PORT);
       logger.info("MAIL_USERNAME=" + AnkiFlashProps.MAIL_USERNAME);
-      logger.info("MAIL_PASSWORD=" + AnkiFlashProps.MAIL_PASSWORD);
       logger.info("MAIL_PROTOCOL=" + AnkiFlashProps.MAIL_PROTOCOL);
       logger.info("MAIL_AUTH=" + AnkiFlashProps.MAIL_AUTH);
       logger.info("MAIL_SSL=" + AnkiFlashProps.MAIL_SSL);
