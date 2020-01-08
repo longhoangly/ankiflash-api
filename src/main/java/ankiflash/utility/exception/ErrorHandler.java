@@ -14,13 +14,13 @@ public class ErrorHandler {
   private static final EmailService emailService = new EmailServiceImpl();
 
   public static void log(String msg, Throwable err) {
-    emailService.sendExceptionEmail(getStackTrace(err));
     logger.error(msg, err);
+    emailService.sendExceptionEmail(getStackTrace(err));
   }
 
   public static void log(Throwable err) {
+    logger.error("---Exception Occurred---", err);
     emailService.sendExceptionEmail(getStackTrace(err));
-    logger.error("Exception Occurred", err);
   }
 
   public static String getStackTrace(final Throwable throwable) {

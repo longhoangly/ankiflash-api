@@ -3,6 +3,7 @@ package ankiflash.card.service.impl.card;
 import ankiflash.card.dto.Card;
 import ankiflash.card.repository.CardRepository;
 import ankiflash.card.service.CardDbService;
+import ankiflash.utility.exception.ErrorHandler;
 import java.util.Collection;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -17,7 +18,12 @@ public class CardDbServiceImpl implements CardDbService {
 
   @Override
   public Card save(Card card) {
-    return cardRepository.save(card);
+    try {
+      return cardRepository.save(card);
+    } catch (Exception e) {
+      ErrorHandler.log(e);
+    }
+    return null;
   }
 
   @Override
