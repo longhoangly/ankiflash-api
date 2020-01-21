@@ -2,7 +2,6 @@ package ankiflash.card.service.impl.dictionary;
 
 import ankiflash.card.service.DictionaryService;
 import ankiflash.card.utility.DictHelper;
-import ankiflash.card.utility.Translation;
 import ankiflash.utility.IOUtility;
 import java.io.File;
 import java.nio.file.Path;
@@ -47,18 +46,6 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   String phonetic;
 
-  public abstract boolean isConnectionFailed(String combinedWord, Translation translation);
-
-  public abstract boolean isWordNotFound();
-
-  public abstract String getWordType();
-
-  public abstract String getExample();
-
-  public abstract String getPhonetic();
-
-  public abstract void preProceedImage(String ankiDir, String selector);
-
   public void downloadImage() {
 
     File dir = new File(ankiDir);
@@ -97,8 +84,6 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
   public String getImageName() {
     return imageName;
   }
-
-  public abstract void preProceedSound(String ankiDir, String selector);
 
   public void downloadSound() {
 
@@ -139,11 +124,7 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
     return soundName;
   }
 
-  public abstract String getMeaning();
-
   public String getTag() {
     return word.substring(0, 1);
   }
-
-  public abstract String getDictionaryName();
 }

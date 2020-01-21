@@ -77,11 +77,11 @@ class CardController {
       }
     }
 
-    WordResponse resWords = new WordResponse();
-    resWords.setSuccess(success);
-    resWords.setFailure(failure);
+    WordResponse respWords = new WordResponse();
+    respWords.setSuccess(success);
+    respWords.setFailure(failure);
 
-    return ResponseEntity.ok().body(resWords);
+    return ResponseEntity.ok().body(respWords);
   }
 
   @PostMapping("/generate-card")

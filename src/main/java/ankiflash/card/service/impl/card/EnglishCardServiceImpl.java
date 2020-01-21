@@ -23,6 +23,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
   @Override
   public List<String> getWords(String word, Translation translation) {
 
+    word = word.toLowerCase();
     List<String> foundWords = new ArrayList<>();
     if (translation.equals(Translation.EN_EN)) {
       foundWords.addAll(CardHelper.getOxfordWords(word));
@@ -37,6 +38,7 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
   public Card generateCard(
       String combinedWord, Translation translation, String ankiDir, boolean isOffline) {
 
+    combinedWord = combinedWord.toLowerCase();
     Card card = new Card();
     String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
     if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {

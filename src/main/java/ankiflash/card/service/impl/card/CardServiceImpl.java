@@ -21,11 +21,6 @@ public abstract class CardServiceImpl implements CardService {
 
   @Autowired protected CardDbService cardDbService;
 
-  public abstract List<String> getWords(String word, Translation translation);
-
-  public abstract Card generateCard(
-      String combinedWord, Translation translation, String ankiDir, boolean isOffline);
-
   public List<Card> generateCards(
       List<String> combinedWords, Translation translation, String ankiDir, boolean isOffline) {
     List<Card> cardCollection = new ArrayList<>();
