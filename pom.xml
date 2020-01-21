@@ -10,9 +10,9 @@
   </developers>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>longly.me</groupId>
+  <groupId>me.longly</groupId>
   <artifactId>ankiflash</artifactId>
-  <version>0.0.1</version>
+  <version>0.2.2</version>
   <packaging>jar</packaging>
 
   <properties>
