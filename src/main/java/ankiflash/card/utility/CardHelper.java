@@ -33,13 +33,13 @@ public class CardHelper {
     }
 
     List<String> jDictWords = new ArrayList<>();
-    for (Element wordElem : wordElms) {
-      if (wordElem.attr("title").toLowerCase().contains(word.toLowerCase())
-          && !wordElem.attr("data-id").isEmpty()) {
+    for (Element wordElm : wordElms) {
+      if (wordElm.attr("title").toLowerCase().contains(word.toLowerCase())
+          && !wordElm.attr("data-id").isEmpty()) {
         jDictWords.add(
-            wordElem.attr("title")
+            wordElm.attr("title")
                 + Constants.SUB_DELIMITER
-                + wordElem.attr("data-id")
+                + wordElm.attr("data-id")
                 + Constants.SUB_DELIMITER
                 + word);
       }
@@ -90,13 +90,15 @@ public class CardHelper {
     if (doc != null) {
       String firstLink = HtmlHelper.getAttribute(doc, "link", 0, "href");
       if (firstLink.contains("definition/english")) {
-        String matchedWord = HtmlHelper.getText(doc, "h2", 0);
-        foundWords.add(
-            matchedWord
-                + Constants.SUB_DELIMITER
-                + DictHelper.getLastElement(firstLink)
-                + Constants.SUB_DELIMITER
-                + word);
+        String matchedWord = HtmlHelper.getText(doc, ".headword", 0);
+        if (!matchedWord.isBlank()) {
+          foundWords.add(
+              matchedWord
+                  + Constants.SUB_DELIMITER
+                  + DictHelper.getLastElement(firstLink)
+                  + Constants.SUB_DELIMITER
+                  + word);
+        }
       }
 
       Elements allMatchesBlocks = doc.select("dl.accordion.ui-grad");
@@ -104,11 +106,11 @@ public class CardHelper {
         Elements lis = allMatches.select("li");
         for (Element li : lis) {
           li.getElementsByTag("pos").remove();
-          String matchedWord = li.getElementsByTag("span").text();
+          String matchedWord = li.getElementsByTag("span").text().trim();
           if (matchedWord.equalsIgnoreCase(word)) {
             String wordId = DictHelper.getLastElement(li.getElementsByTag("a").attr("href"));
             foundWords.add(
-                matchedWord + Constants.SUB_DELIMITER + wordId + Constants.SUB_DELIMITER + word);
+                wordId + Constants.SUB_DELIMITER + wordId + Constants.SUB_DELIMITER + word);
           }
         }
       }

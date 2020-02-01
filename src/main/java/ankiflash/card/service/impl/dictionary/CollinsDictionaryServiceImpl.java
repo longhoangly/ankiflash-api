@@ -119,15 +119,15 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    Elements meanElements = doc.select("div.hom");
-    for (Element meanElem : meanElements) {
+    Elements meanElms = doc.select("div.hom");
+    for (Element meanElm : meanElms) {
       Meaning meaning = new Meaning();
       // WordType
-      Element type = HtmlHelper.getElement(meanElem, ".pos", 0);
+      Element type = HtmlHelper.getElement(meanElm, ".pos", 0);
       meaning.setWordType(type != null ? type.text() : "");
 
       // Meaning
-      Elements means = meanElem.select(">div.sense");
+      Elements means = meanElm.select(">div.sense");
       for (Element mean : means) {
         Element re = mean.selectFirst("span[class*=sensenum]");
         if (re != null) {
@@ -141,8 +141,8 @@ public class CollinsDictionaryServiceImpl extends DictionaryServiceImpl {
 
     Meaning meaning = new Meaning();
     List<String> examples = new ArrayList<>();
-    Elements examElements = doc.select("div.example_box>blockquote");
-    examElements.forEach(e -> examples.add(e.text()));
+    Elements examElms = doc.select("div.example_box>blockquote");
+    examElms.forEach(e -> examples.add(e.text()));
     meaning.setExamples(examples);
     meaning.setWordType("Extra Examples");
     meanings.add(meaning);

@@ -43,7 +43,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
       return true;
     }
 
-    String word = HtmlHelper.getText(doc, "h2", 0);
+    String word = HtmlHelper.getText(doc, ".headword", 0);
     return word.isEmpty();
   }
 
@@ -132,53 +132,26 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     getPhonetic();
 
     List<Meaning> meanings = new ArrayList<>();
-    Elements meanGroup = doc.select(".sn-g");
-    for (Element meanElem : meanGroup) {
-      Element defElem = meanElem.selectFirst(".def");
+    Element wordFamilyElm = doc.selectFirst("span.unbox[unbox=\"wordfamily\"]");
+    if (wordFamilyElm != null) {
+      Elements wordFamilyElms = wordFamilyElm.select("span.p");
 
-      List<String> examples = new ArrayList<>();
-      Element subDefElem = meanElem.selectFirst(".xr-gs");
-      if (subDefElem != null) {
-        Element subDefPrefix = subDefElem.selectFirst(".prefix");
-        Element subDefLink = subDefElem.selectFirst(".Ref");
-        if (subDefPrefix != null
-            && subDefLink != null
-            && !subDefLink.attr("title").contains("full entry")) {
-          examples.add(
-              String.format(
-                  "<a href=\"%1$s\">%2$s %3$s</a>",
-                  subDefLink.attr("href"), subDefPrefix.text(), subDefLink.text()));
-        }
+      List<String> wordFamilies = new ArrayList<>();
+      for (Element wordFamily : wordFamilyElms) {
+        wordFamilies.add(wordFamily.text());
       }
 
-      Elements exampleElements = meanElem.select(".x");
-      for (Element exampleElem : exampleElements) {
-        examples.add(exampleElem.text());
-      }
-
-      meanings.add(new Meaning(defElem != null ? defElem.text() : "", examples));
-    }
-
-    Element extraExamples = doc.selectFirst("span.collapse[title=\"Extra examples\"]");
-    if (extraExamples != null) {
-      Elements exampleElements = extraExamples.select(".x");
-
-      List<String> examples = new ArrayList<>();
-      for (Element exampleElem : exampleElements) {
-        examples.add(exampleElem.text());
-      }
-
-      Meaning meaning = new Meaning("", examples);
-      meaning.setWordType("Extra Examples");
+      Meaning meaning = new Meaning("", wordFamilies);
+      meaning.setWordType("Word Family");
       meanings.add(meaning);
     }
 
-    Element wordFormElem = doc.selectFirst("span.collapse[title=\"Verb Forms\"]");
-    if (wordFormElem != null) {
-      Elements wordFormElements = wordFormElem.select(".vp");
+    Element wordFormElm = doc.selectFirst("span.unbox[unbox=\"verbforms\"]");
+    if (wordFormElm != null) {
+      Elements wordFormElms = wordFormElm.select("td.verbforms");
 
       List<String> wordForms = new ArrayList<>();
-      for (Element wordForm : wordFormElements) {
+      for (Element wordForm : wordFormElms) {
         wordForms.add(wordForm.text());
       }
 
@@ -187,12 +160,55 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
       meanings.add(meaning);
     }
 
-    Element wordOriginElem = doc.selectFirst("span.collapse[title=\"Word Origin\"]");
-    if (wordOriginElem != null) {
-      Element originElem = wordOriginElem.selectFirst(".p");
-      if (originElem != null) {
+    Elements meanGroup = doc.select(".sense");
+    for (Element meanElem : meanGroup) {
+      Element defElm = meanElem.selectFirst(".def");
+
+      List<String> examples = new ArrayList<>();
+      // SEE ALSO section
+      Element subDefElm = meanElem.selectFirst(".xrefs");
+      if (subDefElm != null) {
+        Element subDefPrefix = subDefElm.selectFirst(".prefix");
+        Element subDefLink = subDefElm.selectFirst(".Ref");
+        if (subDefPrefix != null
+            && subDefLink != null
+            && !subDefLink.attr("title").contains("full entry")) {
+          examples.add(
+              String.format(
+                  "<a href=\"%1$s\">%2$s %3$s</a>",
+                  subDefLink.attr("href"), subDefPrefix.text().toUpperCase(), subDefLink.text()));
+        }
+      }
+
+      Elements exampleElms = meanElem.select(".x");
+      for (Element exampleElem : exampleElms) {
+        examples.add(exampleElem.text());
+      }
+
+      meanings.add(new Meaning(defElm != null ? defElm.text() : "", examples));
+
+      Element extraExample =
+          HtmlHelper.getElement(meanElem, "span.unbox[unbox=\"extra_examples\"]", 0);
+      if (extraExample != null) {
+        exampleElms = extraExample.select(".unx");
+
+        examples = new ArrayList<>();
+        for (Element exampleElm : exampleElms) {
+          examples.add(exampleElm.text());
+        }
+
+        Meaning meaning = new Meaning("", examples);
+        meaning.setWordType("Extra Examples");
+        meanings.add(meaning);
+      }
+    }
+
+    Element wordOriginElm = doc.selectFirst("span.unbox[unbox=\"wordorigin\"]");
+    if (wordOriginElm != null) {
+      Element originElm = wordOriginElm.selectFirst(".p");
+      if (originElm != null) {
         List<String> wordOrigins = new ArrayList<>();
-        wordOrigins.add(originElem.text());
+        wordOrigins.add(originElm.text());
 
         Meaning meaning = new Meaning("", wordOrigins);
         meaning.setWordType("Word Origin");

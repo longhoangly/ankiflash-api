@@ -140,26 +140,26 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     Elements meanGroups = doc.select("div[id*=partofspeech]");
 
     for (Element meanGroup : meanGroups) {
-      Elements meanElements = meanGroup.getElementsByTag("div");
+      Elements meanElms = meanGroup.getElementsByTag("div");
       int meanCount = meanGroup.getElementsByClass("m").size();
       if (meanGroup.attr("id").equalsIgnoreCase("partofspeech_100")) {
-        meanElements.addAll(meanGroup.getElementsByTag("a"));
+        meanElms.addAll(meanGroup.getElementsByTag("a"));
       }
 
       Meaning meaning = new Meaning();
       List<String> examples = new ArrayList<>();
       boolean firstMeaning = true;
 
-      for (Element meanElem : meanElements) {
-        if (meanElem.hasClass("ub")) {
+      for (Element meanElm : meanElms) {
+        if (meanElm.hasClass("ub")) {
           if (meanCount > 0) {
             // has meaning => get text
-            meaning.setWordType(meanElem.text());
+            meaning.setWordType(meanElm.text());
           } else {
             // only type => get inner html
-            meaning.setWordType(meanElem.html().replaceAll("\n", ""));
+            meaning.setWordType(meanElm.html().replaceAll("\n", ""));
           }
-        } else if (meanElem.hasClass("m")) {
+        } else if (meanElm.hasClass("m")) {
           // from the second meaning tag
           if (!firstMeaning) {
             meaning.setExamples(examples);
@@ -169,14 +169,14 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
             examples = new ArrayList<>();
           }
 
-          meaning.setMeaning(meanElem.text());
+          meaning.setMeaning(meanElm.text());
           firstMeaning = false;
-        } else if (meanElem.hasClass("e")
-            || meanElem.hasClass("em")
-            || meanElem.hasClass("im")
-            || meanElem.hasClass("id")
-            || meanElem.hasAttr("href")) {
-          examples.add(meanElem.text());
+        } else if (meanElm.hasClass("e")
+            || meanElm.hasClass("em")
+            || meanElm.hasClass("im")
+            || meanElm.hasClass("id")
+            || meanElm.hasAttr("href")) {
+          examples.add(meanElm.text());
         }
       }
 

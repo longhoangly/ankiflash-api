@@ -124,16 +124,16 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
         }
 
         // Meaning
-        Elements meaningElements = meanGroup.select("div[class*=def-block]");
-        for (Element meaningElem : meaningElements) {
+        Elements meaningElms = meanGroup.select("div[class*=def-block]");
+        for (Element meaningElm : meaningElms) {
           meaning = new Meaning();
-          Element def = meaningElem.selectFirst("b.def");
+          Element def = meaningElm.selectFirst("b.def");
           if (def != null) {
             meaning.setMeaning(def.text());
           }
 
           examples = new ArrayList<>();
-          for (Element element : meaningElem.select(".eg,.trans")) {
+          for (Element element : meaningElm.select(".eg,.trans")) {
             examples.add(element.text());
           }
           meaning.setExamples(examples);

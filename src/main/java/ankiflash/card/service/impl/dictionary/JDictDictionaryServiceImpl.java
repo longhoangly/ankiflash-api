@@ -154,15 +154,15 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     }
     meanings.add(meaning);
 
-    Elements meanElements = meanGroup.select("ol.ol-decimal>li");
-    for (Element meanElem : meanElements) {
+    Elements meanElms = meanGroup.select("ol.ol-decimal>li");
+    for (Element meanElm : meanElms) {
       meaning = new Meaning();
-      Element mean = HtmlHelper.getElement(meanElem, ".nvmn-meaning", 0);
+      Element mean = HtmlHelper.getElement(meanElm, ".nvmn-meaning", 0);
       if (mean != null) {
         meaning.setMeaning(mean.text());
       }
 
-      Elements exampleElms = meanElem.select("ul.ul-disc>li>u,ul.ul-disc>li>p");
+      Elements exampleElms = meanElm.select("ul.ul-disc>li>u,ul.ul-disc>li>p");
       List<String> innerExamples = getJDictExamples(exampleElms);
       if (!innerExamples.isEmpty()) {
         meaning.setExamples(innerExamples);

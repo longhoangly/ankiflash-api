@@ -130,24 +130,24 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     if (meanGroup != null) {
 
       Meaning meaning;
-      Elements meanElements = meanGroup.select(".meaning-tags,.meaning-wrapper");
-      for (Element meanElem : meanElements) {
+      Elements meanElms = meanGroup.select(".meaning-tags,.meaning-wrapper");
+      for (Element meanElm : meanElms) {
 
-        if (meanElem.hasClass("meaning-tags")) {
+        if (meanElm.hasClass("meaning-tags")) {
           meaning = new Meaning();
-          meaning.setWordType(meanElem.text());
+          meaning.setWordType(meanElm.text());
           meanings.add(meaning);
         }
 
-        if (meanElem.hasClass("meaning-wrapper")) {
+        if (meanElm.hasClass("meaning-wrapper")) {
           meaning = new Meaning();
-          Element mean = HtmlHelper.getElement(meanElem, ".meaning-meaning", 0);
+          Element mean = HtmlHelper.getElement(meanElm, ".meaning-meaning", 0);
           if (mean != null) {
             meaning.setMeaning(mean.text());
           }
 
           List<String> examples = new ArrayList<>();
-          Elements exampleElms = meanElem.select(".sentence");
+          Elements exampleElms = meanElm.select(".sentence");
           for (Element exampleElm : exampleElms) {
             if (exampleElm != null) {
               examples.add(exampleElm.html().replaceAll("\n", ""));

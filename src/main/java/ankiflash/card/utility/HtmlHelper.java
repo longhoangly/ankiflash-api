@@ -157,7 +157,9 @@ public class HtmlHelper {
     for (Meaning meaning : meanings) {
       if (meaning.getWordType() != null && !meaning.getWordType().isEmpty()) {
         htmlBuilder.append(
-            String.format("<h4 class=\"content-type\">%s</h4>", meaning.getWordType()));
+            String.format(
+                "<h4 class=\"content-type\" style='margin-left: -20px;'>%s</h4>",
+                meaning.getWordType()));
       }
 
       if (meaning.getMeaning() != null && !meaning.getMeaning().isEmpty()) {
