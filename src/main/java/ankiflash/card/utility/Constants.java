@@ -68,7 +68,7 @@ public class Constants {
   // CONSTANTS
   public static final String TAB = "\t";
   public static final String MAIN_DELIMITER = "\\*\\*\\*";
-  public static final String SUB_DELIMITER = "---";
+  public static final String SUB_DELIMITER = "===";
   public static final String NO_EXAMPLE = "";
   public static final String SUCCESS = "Success";
   public static final String COPYRIGHT =

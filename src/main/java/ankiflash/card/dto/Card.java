@@ -60,17 +60,17 @@ public class Card {
 
   @NotNull
   @NotEmpty
-  @Column(name = "imageOffline")
+  @Column(name = "imageOffline", columnDefinition = "VARCHAR(500)")
   private String imageOffline;
 
   @NotNull
   @NotEmpty
-  @Column(name = "imageOnline")
+  @Column(name = "imageOnline", columnDefinition = "VARCHAR(500)")
   private String imageOnline;
 
   @NotNull
   @JsonIgnore
-  @Column(name = "imageLink")
+  @Column(name = "imageLink", columnDefinition = "VARCHAR(500)")
   private String imageLink;
 
   @NotNull
@@ -79,16 +79,16 @@ public class Card {
   private String imageName;
 
   @NotNull
-  @Column(name = "soundOffline")
+  @Column(name = "soundOffline", columnDefinition = "VARCHAR(500)")
   private String soundOffline;
 
   @NotNull
-  @Column(name = "soundOnline")
+  @Column(name = "soundOnline", columnDefinition = "VARCHAR(500)")
   private String soundOnline;
 
   @NotNull
   @JsonIgnore
-  @Column(name = "soundLink")
+  @Column(name = "soundLink", columnDefinition = "VARCHAR(500)")
   private String soundLink;
 
   @NotNull
