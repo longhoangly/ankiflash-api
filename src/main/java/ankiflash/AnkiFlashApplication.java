@@ -76,7 +76,7 @@ public class AnkiFlashApplication {
     // setAllowedHeaders is important! Without it, OPTIONS pre-flight request
     // will fail with 403 Invalid CORS request
     configuration.setAllowedHeaders(
-        Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        Arrays.asList("Authorization", "Cache-Control", "Content-Type", "Pragma", "Expires"));
     configuration.setMaxAge(86400L);
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
