@@ -13,9 +13,8 @@ import ankiflash.utility.AnkiFlashProps;
 import ankiflash.utility.IOUtility;
 import ankiflash.utility.exception.BadRequestException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,17 +25,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/anki-flash-card")
@@ -199,15 +193,18 @@ class CardController {
                 sessionId,
                 AnkiFlashProps.SUB_ANKI_FLASH_DIR)
             .toString();
-    String zipFilePath = cardService.compressResources(ankiDir);
 
+    String zipFilePath = ankiDir + ".zip";
     File zipFile = new File(zipFilePath);
-    Path path = Paths.get(zipFile.getAbsolutePath());
-    ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+    if (!zipFile.exists()) {
+      cardService.compressResources(ankiDir);
+    }
 
+    InputStreamResource resource =
+        new InputStreamResource(new FileInputStream(zipFile.getAbsolutePath()));
     return ResponseEntity.ok()
         .contentLength(zipFile.length())
-        .contentType(MediaType.parseMediaType("application/octet-stream"))
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
         .header(
             HttpHeaders.CONTENT_DISPOSITION,
             "attachment; filename=\"" + resource.getFilename() + "\"")

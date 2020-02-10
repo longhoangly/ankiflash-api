@@ -34,7 +34,7 @@ public abstract class CardServiceImpl implements CardService {
     return cardCollection;
   }
 
-  public String compressResources(String ankiDir) {
+  public void compressResources(String ankiDir) {
 
     ClassLoader classLoader = getClass().getClassLoader();
     List<String> files = Arrays.asList("AnkiFlashTemplate.apkg", "anki.ico", "anki.png");
@@ -51,7 +51,6 @@ public abstract class CardServiceImpl implements CardService {
     }
 
     IOUtility.zipFolder(ankiDir, ankiDir + ".zip");
-    return ankiDir + ".zip";
   }
 
   public List<Translation> getSupportedLanguages() {

@@ -13,7 +13,7 @@ public interface CardService {
   List<Card> generateCards(
       List<String> wordList, Translation translation, String ankiDir, boolean isOffline);
 
-  String compressResources(String ankiDir);
+  void compressResources(String ankiDir);
 
   List<Translation> getSupportedLanguages();
 }

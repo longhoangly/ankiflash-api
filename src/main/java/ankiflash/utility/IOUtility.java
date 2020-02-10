@@ -105,17 +105,16 @@ public class IOUtility {
   public static void zipFolder(String dirPath, String outputPath) {
 
     logger.info(String.format("Zipping directory, %1$s", dirPath));
-    try {
-      FileOutputStream fos = new FileOutputStream(outputPath);
+    try (FileOutputStream fos = new FileOutputStream(outputPath)) {
       ZipOutputStream zipOut = new ZipOutputStream(fos);
       File fileToZip = new File(dirPath);
 
       zipFile(fileToZip, fileToZip.getName(), zipOut);
       zipOut.close();
-      fos.close();
     } catch (IOException e) {
       ErrorHandler.log(e);
     }
+    logger.info(String.format("Zipped file, %1$s", outputPath));
   }
 
   private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) {
@@ -124,15 +123,14 @@ public class IOUtility {
       if (fileToZip.isHidden()) {
         return;
       }
+
       if (fileToZip.isDirectory()) {
         if (fileName.endsWith("/")) {
           zipOut.putNextEntry(new ZipEntry(fileName));
-
-          zipOut.closeEntry();
         } else {
           zipOut.putNextEntry(new ZipEntry(fileName + "/"));
-          zipOut.closeEntry();
         }
+        zipOut.closeEntry();
         File[] children = fileToZip.listFiles();
         for (File childFile : Objects.requireNonNull(children)) {
           zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
@@ -172,8 +170,8 @@ public class IOUtility {
         connection.setConnectTimeout(AnkiFlashProps.CONNECTION_TIMEOUT);
         connection.setReadTimeout(AnkiFlashProps.READ_TIMEOUT);
 
-        InputStream in = connection.getInputStream();
         if (!target.toFile().exists()) {
+          InputStream in = connection.getInputStream();
           Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
         } else {
           logger.warn("the file existed already! url={}, target = {}", url, target);
