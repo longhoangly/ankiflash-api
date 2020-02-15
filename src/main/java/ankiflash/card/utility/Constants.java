@@ -53,7 +53,7 @@ public class Constants {
       "https://www.collinsdictionary.com/search/?dictCode=french-english&q=%1$s";
 
   // JDICT
-  public static final String JDICT_URL_VN_JP_OR_JP_VN = "https://j-dict.com/postrequest.ashx";
+  public static final String JDICT_URL_VN_JP_OR_JP_VN = "https://kantan.vn/postrequest.ashx";
 
   // JISHO
   public static final String JISHO_WORD_NOT_FOUND = "Sorry, couldn't find anything matching";

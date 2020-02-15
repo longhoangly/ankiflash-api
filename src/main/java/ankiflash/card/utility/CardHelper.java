@@ -17,7 +17,7 @@ public class CardHelper {
 
   public static Document getJDictDoc(String url, String body) {
 
-    logger.info("body={}", body);
+    logger.info("url={}, body={}", url, body);
     JsonObject json = JsonUtility.postRequest(url, body);
     return Jsoup.parse(json.get("Content").getAsString());
   }
