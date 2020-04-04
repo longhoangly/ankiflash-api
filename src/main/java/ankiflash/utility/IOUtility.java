@@ -33,7 +33,7 @@ public class IOUtility {
     try {
       if (dir.exists()) {
         FileUtils.deleteDirectory(dir);
-        logger.info(String.format("Deleted directory, %1$s", dirPath));
+        logger.info("Directory deleted, {}", dirPath);
       }
     } catch (IOException e) {
       ErrorHandler.log(e);
@@ -58,12 +58,12 @@ public class IOUtility {
     File dir = new File(dirPath);
     if (!dir.exists()) {
       if (dir.mkdirs()) {
-        logger.info(String.format("Created directory, %1$s", dirPath));
+        logger.info("Directory created, {}", dirPath);
       } else {
-        logger.error(String.format("Failed to create directory, %1$s", dirPath));
+        logger.error("Directory creation failed, {}", dirPath);
       }
     } else {
-      logger.info(String.format("Directory already existed, %1$s", dirPath));
+      logger.info("Directory already existed, {}", dirPath);
     }
   }
 
@@ -104,7 +104,7 @@ public class IOUtility {
 
   public static void zipFolder(String dirPath, String outputPath) {
 
-    logger.info(String.format("Zipping directory, %1$s", dirPath));
+    logger.info("Zipping directory, {}", dirPath);
     try (FileOutputStream fos = new FileOutputStream(outputPath)) {
       ZipOutputStream zipOut = new ZipOutputStream(fos);
       File fileToZip = new File(dirPath);
@@ -114,7 +114,7 @@ public class IOUtility {
     } catch (IOException e) {
       ErrorHandler.log(e);
     }
-    logger.info(String.format("Zipped file, %1$s", outputPath));
+    logger.info("File zipped, {}", outputPath);
   }
 
   private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) {
@@ -174,14 +174,14 @@ public class IOUtility {
           InputStream in = connection.getInputStream();
           Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
         } else {
-          logger.warn("the file existed already! url={}, target = {}", url, target);
+          logger.warn("The file existed already! url={}, target = {}", url, target);
         }
       } catch (IOException e) {
         ErrorHandler.log(e);
         return false;
       }
     } else {
-      logger.warn("the url was empty! url={}, target = {}", url, target);
+      logger.warn("The url was empty! url={}, target = {}", url, target);
     }
 
     return true;

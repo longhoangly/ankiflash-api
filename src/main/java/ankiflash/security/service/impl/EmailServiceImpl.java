@@ -37,13 +37,13 @@ public class EmailServiceImpl implements EmailService {
 
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
     try {
-      logger.info("MAIL_HOST=" + AnkiFlashProps.MAIL_HOST);
-      logger.info("MAIL_PORT=" + AnkiFlashProps.MAIL_PORT);
-      logger.info("MAIL_USERNAME=" + AnkiFlashProps.MAIL_USERNAME);
-      logger.info("MAIL_PROTOCOL=" + AnkiFlashProps.MAIL_PROTOCOL);
-      logger.info("MAIL_AUTH=" + AnkiFlashProps.MAIL_AUTH);
-      logger.info("MAIL_SSL=" + AnkiFlashProps.MAIL_SSL);
-      logger.info("MAIL_DEBUG=" + AnkiFlashProps.MAIL_DEBUG);
+      logger.info("MAIL_HOST={}", AnkiFlashProps.MAIL_HOST);
+      logger.info("MAIL_PORT={}", AnkiFlashProps.MAIL_PORT);
+      logger.info("MAIL_USERNAME={}", AnkiFlashProps.MAIL_USERNAME);
+      logger.info("MAIL_PROTOCOL={}", AnkiFlashProps.MAIL_PROTOCOL);
+      logger.info("MAIL_AUTH={}", AnkiFlashProps.MAIL_AUTH);
+      logger.info("MAIL_SSL={}", AnkiFlashProps.MAIL_SSL);
+      logger.info("MAIL_DEBUG={}", AnkiFlashProps.MAIL_DEBUG);
 
       mailSender.setHost(AnkiFlashProps.MAIL_HOST);
       mailSender.setPort(AnkiFlashProps.MAIL_PORT);

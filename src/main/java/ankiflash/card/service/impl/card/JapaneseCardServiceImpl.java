@@ -48,21 +48,21 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       return card;
     }
 
-    logger.info("Word = " + card.getWord());
-    logger.info("WordId = " + card.getWordId());
-    logger.info("OriginalWord = " + card.getOriginalWord());
+    logger.info("Word = {}", card.getWord());
+    logger.info("WordId = {}", card.getWordId());
+    logger.info("OriginalWord = {}", card.getOriginalWord());
 
-    logger.info("Source = " + translation.getSource());
-    logger.info("Target = " + translation.getTarget());
+    logger.info("Source = {}", translation.getSource());
+    logger.info("Target = {}", translation.getTarget());
 
     DictionaryService jDict = new JDictDictionaryServiceImpl();
     DictionaryService jishoDict = new JishoDictionaryServiceImpl();
 
     String hashCombination = combinedWord + Constants.SUB_DELIMITER + translation.toString();
-    logger.info("finding-hash-combination={}", hashCombination);
+    logger.info("Finding-hash-combination={}", hashCombination);
     Card dbCard = cardDbService.findByHash(card.getHash());
     if (dbCard != null) {
-      logger.info("card-found-from-our-DB={}", card.getWord());
+      logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
         jDict.downloadImage(ankiDir, dbCard.getImageLink());
         jDict.downloadSound(ankiDir, dbCard.getSoundLink());
@@ -161,7 +161,7 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
     if (card.getStatus().compareTo(Status.Success) == 0
         && cardDbService.findByHash(card.getHash()) == null
         && !ankiDir.isEmpty()) {
-      logger.info("card-created-successfully-adding-to-DB: {}", card.getWord());
+      logger.info("Card-created-successfully-adding-to-DB: {}", card.getWord());
       cardDbService.save(card);
     }
 

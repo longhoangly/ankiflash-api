@@ -34,7 +34,7 @@ public class AnkiFlashApplication {
   public static void main(String[] args) {
     applicationContext = SpringApplication.run(AnkiFlashApplication.class, args);
     displayInitInfo();
-    logger.info("AnkiFlashApplication Started...");
+    logger.info("AnkiFlash Application Started...");
   }
 
   private static void displayInitInfo() {
@@ -47,7 +47,7 @@ public class AnkiFlashApplication {
     Field[] fields = clazz.getDeclaredFields();
     for (Field field : fields) {
       try {
-        logger.info(field.getName() + "=" + field.get(applicationContext).toString());
+        logger.info("{} = {}", field.getName(), field.get(applicationContext).toString());
       } catch (IllegalAccessException e) {
         ErrorHandler.log(e);
       }

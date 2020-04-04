@@ -68,13 +68,15 @@ public class CardHelper {
           && !detailLink.text().isEmpty()) {
 
         String[] detailLinkEls = detailLink.attr("href").split("/");
+        logger.debug("word = {}", word);
+        logger.debug("foundWordElm.text() = {}", foundWordElm.text());
+        logger.debug("detailLinkEls = {}", String.join("---", detailLinkEls));
         jDictWords.add(
-            HtmlHelper.decodeValue(
-                foundWordElm.text()
-                    + Constants.SUB_DELIMITER
-                    + detailLinkEls[detailLinkEls.length - 1]
-                    + Constants.SUB_DELIMITER
-                    + word));
+            foundWordElm.text()
+                + Constants.SUB_DELIMITER
+                + HtmlHelper.urlDecode(detailLinkEls[detailLinkEls.length - 1])
+                + Constants.SUB_DELIMITER
+                + word);
       }
     }
 

@@ -52,16 +52,16 @@ public class SocialAuthServiceImpl implements SocialAuthService {
 
         Payload payload = idToken.getPayload();
         String email = payload.getEmail();
-        logger.info("email: " + email);
+        logger.info("email: {}", email);
 
         User userByEmail = userService.findByEmail(email);
         if (userByEmail == null) {
 
           String userId = payload.getSubject();
-          logger.info("userId: " + userId);
+          logger.info("userId: {}", userId);
 
           String name = (String) payload.get("name");
-          logger.info("name: " + name);
+          logger.info("name: {}", name);
 
           User user = new User(userId);
           user.setPassword("***");
@@ -98,15 +98,15 @@ public class SocialAuthServiceImpl implements SocialAuthService {
 
       String userId = facebookId.getAsString();
       String email = meJson.get("email").getAsString();
-      logger.info("userId: " + userId);
-      logger.info("email: " + email);
+      logger.info("userId: {}", userId);
+      logger.info("email: {}", email);
 
       User userById = userService.findByUsername(userId);
       User userByEmail = userService.findByEmail(email);
       if (userById == null && userByEmail == null) {
 
         String name = meJson.get("name").getAsString();
-        logger.info("name: " + name);
+        logger.info("name: {}", name);
 
         User user = new User(userId);
         user.setPassword("***");

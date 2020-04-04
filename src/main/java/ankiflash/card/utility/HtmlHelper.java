@@ -28,7 +28,7 @@ public class HtmlHelper {
     return String.format(dictUrl, word);
   }
 
-  public static String decodeValue(String value) {
+  public static String urlDecode(String value) {
     try {
       return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
     } catch (UnsupportedEncodingException e) {
