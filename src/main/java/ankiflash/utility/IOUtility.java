@@ -40,6 +40,20 @@ public class IOUtility {
     }
   }
 
+  public static void removeFile(String dirPath) {
+
+    Path path = Paths.get(dirPath);
+    try {
+      if (Files.deleteIfExists(path)) {
+        logger.info("Deleted the file, {}", path.getRoot());
+      } else {
+        logger.info("Failed to delete the file.");
+      }
+    } catch (IOException e) {
+      ErrorHandler.log(e);
+    }
+  }
+
   public static void write(String filePath, String content) {
 
     File file = new File(filePath);
@@ -89,7 +103,7 @@ public class IOUtility {
     }
   }
 
-  private static void copyFile(String srcPath, String desPath) {
+  public static void copyFile(String srcPath, String desPath) {
 
     try {
       Files.copy(

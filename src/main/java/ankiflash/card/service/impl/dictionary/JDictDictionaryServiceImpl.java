@@ -80,9 +80,15 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
 
     List<String> examples = getJDictExamples(exampleElms);
     String lowerWord = this.originalWord.toLowerCase();
+
     for (int i = 0; i < examples.size(); i++) {
-      examples.set(
-          i, examples.get(i).toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}"));
+      String example = examples.get(i).toLowerCase();
+      if (example.contains(lowerWord)) {
+        example = example.replaceAll(lowerWord, "{{c1::" + lowerWord + "}}");
+      } else {
+        example = String.format("%s %s", example, "{{c1::...}}");
+      }
+      examples.set(i, example);
     }
 
     return HtmlHelper.buildExample(examples, true);

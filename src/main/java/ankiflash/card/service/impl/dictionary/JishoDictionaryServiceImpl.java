@@ -77,7 +77,12 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
         break;
       } else {
         String lowerWord = this.originalWord.toLowerCase();
-        example = example.toLowerCase().replaceAll(lowerWord, "{{c1::" + lowerWord + "}}");
+        example = example.toLowerCase();
+        if (example.contains(lowerWord)) {
+          example = example.replaceAll(lowerWord, "{{c1::" + lowerWord + "}}");
+        } else {
+          example = String.format("%s %s", example, "{{c1::...}}");
+        }
         examples.add(example.replaceAll("\n", ""));
       }
     }

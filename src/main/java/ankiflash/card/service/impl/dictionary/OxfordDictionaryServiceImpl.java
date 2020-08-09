@@ -70,7 +70,12 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
         break;
       } else {
         word = word.toLowerCase();
-        example = example.toLowerCase().replaceAll(word, "{{c1::" + word + "}}");
+        example = example.toLowerCase();
+        if (example.contains(word)) {
+          example = example.replaceAll(word, "{{c1::" + word + "}}");
+        } else {
+          example = String.format("%s %s", example, "{{c1::...}}");
+        }
         examples.add(example);
       }
     }

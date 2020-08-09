@@ -69,7 +69,7 @@ public class Constants {
   public static final String TAB = "\t";
   public static final String MAIN_DELIMITER = "\\*\\*\\*";
   public static final String SUB_DELIMITER = "===";
-  public static final String NO_EXAMPLE = "";
+  public static final String NO_EXAMPLE = "No example {{c1::...}}";
   public static final String SUCCESS = "Success";
   public static final String COPYRIGHT =
       "This card's content is collected from the following dictionaries: %1$s";
