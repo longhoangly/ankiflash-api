@@ -56,8 +56,8 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
     if (dbCard != null) {
       logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
-        collinsDict.downloadImage(ankiDir, dbCard.getImageLink());
-        collinsDict.downloadSound(ankiDir, dbCard.getSoundLink());
+        collinsDict.downloadFile(ankiDir, dbCard.getImageLink());
+        collinsDict.downloadFile(ankiDir, dbCard.getSoundLink());
       }
       return dbCard;
     }
@@ -65,11 +65,11 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
     // French to Vietnamese
     if (translation.equals(Translation.FR_VN)) {
 
-      if (lacVietDict.isConnectionFailed(combinedWord, translation)) {
+      if (lacVietDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (lacVietDict.isWordNotFound()) {
+      } else if (lacVietDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -79,20 +79,18 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
 
-      lacVietDict.preProceedSound(ankiDir, "embed");
+      lacVietDict.getSounds(ankiDir, "embed");
       if (isOffline) {
         lacVietDict.downloadSound();
       }
       card.setSoundOnline(lacVietDict.getSoundOnline());
       card.setSoundOffline(lacVietDict.getSoundOffline());
       card.setSoundLink(lacVietDict.getSoundLink());
-      card.setSoundName(lacVietDict.getSoundName());
 
-      lacVietDict.preProceedImage(ankiDir, "");
+      lacVietDict.getImages(ankiDir, "");
       card.setImageOffline(lacVietDict.getImageOffline());
       card.setImageOnline(lacVietDict.getImageOnline());
       card.setImageLink(lacVietDict.getImageLink());
-      card.setImageName(lacVietDict.getImageName());
 
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
@@ -101,11 +99,11 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       // French to English
     } else if (translation.equals(Translation.FR_EN)) {
 
-      if (collinsDict.isConnectionFailed(combinedWord, translation)) {
+      if (collinsDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (collinsDict.isWordNotFound()) {
+      } else if (collinsDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -115,7 +113,7 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(collinsDict.getPhonetic());
       card.setExample(collinsDict.getExample());
 
-      collinsDict.preProceedSound(
+      collinsDict.getSounds(
           ankiDir, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr");
       if (isOffline) {
         collinsDict.downloadSound();
@@ -123,13 +121,11 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setSoundOnline(collinsDict.getSoundOnline());
       card.setSoundOffline(collinsDict.getSoundOffline());
       card.setSoundLink(collinsDict.getSoundLink());
-      card.setSoundName(collinsDict.getSoundName());
 
-      collinsDict.preProceedImage(ankiDir, "");
+      collinsDict.getImages(ankiDir, "");
       card.setImageOffline(collinsDict.getImageOffline());
       card.setImageOnline(collinsDict.getImageOnline());
       card.setImageLink(collinsDict.getImageLink());
-      card.setImageName(collinsDict.getImageName());
 
       card.setTag(collinsDict.getTag());
       card.setMeaning(collinsDict.getMeaning());

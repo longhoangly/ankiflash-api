@@ -62,8 +62,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     if (dbCard != null) {
       logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
-        jDict.downloadImage(ankiDir, dbCard.getImageLink());
-        jDict.downloadSound(ankiDir, dbCard.getSoundLink());
+        jDict.downloadFile(ankiDir, dbCard.getImageLink());
+        jDict.downloadFile(ankiDir, dbCard.getSoundLink());
       }
       return dbCard;
     }
@@ -71,11 +71,11 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     // Vietnamese to English/French
     if (translation.equals(Translation.VN_EN) || translation.equals(Translation.VN_FR)) {
 
-      if (lacVietDict.isConnectionFailed(combinedWord, translation)) {
+      if (lacVietDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (lacVietDict.isWordNotFound()) {
+      } else if (lacVietDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -85,20 +85,18 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
 
-      lacVietDict.preProceedSound(ankiDir, "embed");
+      lacVietDict.getSounds(ankiDir, "embed");
       if (isOffline) {
         lacVietDict.downloadSound();
       }
       card.setSoundOnline(lacVietDict.getSoundOnline());
       card.setSoundOffline(lacVietDict.getSoundOffline());
       card.setSoundLink(lacVietDict.getSoundLink());
-      card.setSoundName(lacVietDict.getSoundName());
 
-      lacVietDict.preProceedImage(ankiDir, "");
+      lacVietDict.getImages(ankiDir, "");
       card.setImageOffline(lacVietDict.getImageOffline());
       card.setImageOnline(lacVietDict.getImageOnline());
       card.setImageLink(lacVietDict.getImageLink());
-      card.setImageName(lacVietDict.getImageName());
 
       card.setTag(lacVietDict.getTag());
       card.setMeaning(lacVietDict.getMeaning());
@@ -107,11 +105,11 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       // Vietnamese to Japanese
     } else if (translation.equals(Translation.VN_JP)) {
 
-      if (jDict.isConnectionFailed(combinedWord, translation)) {
+      if (jDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (jDict.isWordNotFound()) {
+      } else if (jDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -121,23 +119,21 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(jDict.getPhonetic());
       card.setExample(jDict.getExample());
 
-      jDict.preProceedSound(ankiDir, "a.sound");
+      jDict.getSounds(ankiDir, "a.sound");
       if (isOffline) {
         jDict.downloadSound();
       }
       card.setSoundOnline(jDict.getSoundOnline());
       card.setSoundOffline(jDict.getSoundOffline());
       card.setSoundLink(jDict.getSoundLink());
-      card.setSoundName(jDict.getSoundName());
 
-      jDict.preProceedImage(ankiDir, "a.fancybox.img");
+      jDict.getImages(ankiDir, "a.fancybox.img");
       if (isOffline) {
         jDict.downloadImage();
       }
       card.setImageOffline(jDict.getImageOffline());
       card.setImageOnline(jDict.getImageOnline());
       card.setImageLink(jDict.getImageLink());
-      card.setImageName(jDict.getImageName());
 
       card.setTag(jDict.getTag());
       card.setMeaning(jDict.getMeaning());

@@ -64,8 +64,8 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
     if (dbCard != null) {
       logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
-        jDict.downloadImage(ankiDir, dbCard.getImageLink());
-        jDict.downloadSound(ankiDir, dbCard.getSoundLink());
+        jDict.downloadFile(ankiDir, dbCard.getImageLink());
+        jDict.downloadFile(ankiDir, dbCard.getSoundLink());
       }
       return dbCard;
     }
@@ -73,11 +73,11 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
     // Japanese to Vietnamese
     if (translation.equals(Translation.JP_VN)) {
 
-      if (jDict.isConnectionFailed(combinedWord, translation)) {
+      if (jDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (jDict.isWordNotFound()) {
+      } else if (jDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -87,23 +87,21 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(jDict.getPhonetic());
       card.setExample(jDict.getExample());
 
-      jDict.preProceedSound(ankiDir, "a.sound");
+      jDict.getSounds(ankiDir, "a.sound");
       if (isOffline) {
         jDict.downloadSound();
       }
       card.setSoundOnline(jDict.getSoundOnline());
       card.setSoundOffline(jDict.getSoundOffline());
       card.setSoundLink(jDict.getSoundLink());
-      card.setSoundName(jDict.getSoundName());
 
-      jDict.preProceedImage(ankiDir, "a.fancybox.img");
+      jDict.getImages(ankiDir, "a.fancybox.img");
       if (isOffline) {
         jDict.downloadImage();
       }
       card.setImageOffline(jDict.getImageOffline());
       card.setImageOnline(jDict.getImageOnline());
       card.setImageLink(jDict.getImageLink());
-      card.setImageName(jDict.getImageName());
 
       card.setTag(jDict.getTag());
       card.setMeaning(jDict.getMeaning());
@@ -112,11 +110,11 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       // Japanese to English
     } else if (translation.equals(Translation.JP_EN)) {
 
-      if (jishoDict.isConnectionFailed(combinedWord, translation)) {
+      if (jishoDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (jishoDict.isWordNotFound()) {
+      } else if (jishoDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -126,20 +124,18 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(jishoDict.getPhonetic());
       card.setExample(jishoDict.getExample());
 
-      jishoDict.preProceedSound(ankiDir, "audio>source[type=audio/mpeg]");
+      jishoDict.getSounds(ankiDir, "audio>source[type=audio/mpeg]");
       if (isOffline) {
         jishoDict.downloadSound();
       }
       card.setSoundOnline(jishoDict.getSoundOnline());
       card.setSoundOffline(jishoDict.getSoundOffline());
       card.setSoundLink(jishoDict.getSoundLink());
-      card.setSoundName(jishoDict.getSoundName());
 
-      jishoDict.preProceedImage(ankiDir, "");
+      jishoDict.getImages(ankiDir, "");
       card.setImageOffline(jishoDict.getImageOffline());
       card.setImageOnline(jishoDict.getImageOnline());
       card.setImageLink(jishoDict.getImageLink());
-      card.setImageName(jishoDict.getImageName());
 
       card.setTag(jishoDict.getTag());
       card.setMeaning(jishoDict.getMeaning());

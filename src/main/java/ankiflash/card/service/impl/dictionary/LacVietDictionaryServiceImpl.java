@@ -18,7 +18,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(LacVietDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String combinedWord, Translation translation) {
+  public boolean isConnected(String combinedWord, Translation translation) {
 
     String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
     if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {
@@ -44,7 +44,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public boolean isWordNotFound() {
+  public boolean isInvalidWord() {
 
     Elements words = doc.select("div.w.fl");
     if (words.isEmpty()) {
@@ -108,7 +108,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void preProceedImage(String ankiDir, String selector) {
+  public void getImages(String ankiDir, String selector) {
 
     this.ankiDir = ankiDir;
     imageLink = imageName = "";
@@ -120,7 +120,7 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void preProceedSound(String ankiDir, String selector) {
+  public void getSounds(String ankiDir, String selector) {
 
     this.ankiDir = ankiDir;
     soundLink = HtmlHelper.getAttribute(doc, selector, 0, "flashvars");
@@ -130,9 +130,9 @@ public class LacVietDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     soundLink = soundLink.replace("file=", "").replace("&autostart=false", "");
-    soundName = DictHelper.getLastElement(soundLink);
-    soundOnline = String.format("<source src=\"%1$s\">Online sound. %2$s", soundLink, soundLink);
-    soundOffline = String.format("<source src=\"%1$s\">Offline sound. %2$s", soundName, soundName);
+    soundName = DictHelper.getFileName(soundLink);
+    soundOnline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundLink, soundLink);
+    soundOffline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundName, soundName);
   }
 
   @Override

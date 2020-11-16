@@ -19,7 +19,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(JishoDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String combinedWord, Translation translation) {
+  public boolean isConnected(String combinedWord, Translation translation) {
 
     String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
     if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {
@@ -36,7 +36,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public boolean isWordNotFound() {
+  public boolean isInvalidWord() {
 
     if (doc.outerHtml().contains(Constants.JISHO_WORD_NOT_FOUND)) {
       return true;
@@ -97,7 +97,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void preProceedImage(String ankiDir, String selector) {
+  public void getImages(String ankiDir, String selector) {
 
     this.ankiDir = ankiDir;
     imageLink = imageName = "";
@@ -109,7 +109,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void preProceedSound(String ankiDir, String selector) {
+  public void getSounds(String ankiDir, String selector) {
 
     this.ankiDir = ankiDir;
     soundLink = HtmlHelper.getAttribute(doc, selector, 0, "src");
@@ -119,9 +119,9 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     }
 
     soundLink = "https:" + soundLink;
-    soundName = DictHelper.getLastElement(soundLink);
-    soundOnline = String.format("<source src=\"%1$s\">Online sound. %2$s", soundLink, soundLink);
-    soundOffline = String.format("<source src=\"%1$s\">Offline sound. %2$s", soundName, soundName);
+    soundName = DictHelper.getFileName(soundLink);
+    soundOnline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundLink, soundLink);
+    soundOffline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundName, soundName);
   }
 
   @Override

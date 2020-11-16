@@ -18,7 +18,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(OxfordDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String combinedWord, Translation translation) {
+  public boolean isConnected(String combinedWord, Translation translation) {
 
     String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
     if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {
@@ -35,7 +35,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public boolean isWordNotFound() {
+  public boolean isInvalidWord() {
 
     String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.OXFORD_SPELLING_WRONG)
@@ -95,7 +95,7 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void preProceedImage(String ankiDir, String selector) {
+  public void getImages(String ankiDir, boolean isOffline) {
 
     this.ankiDir = ankiDir;
     String googleImage =
@@ -103,31 +103,45 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
             + word
             + "\" style=\"font-size: 15px; color: blue\">Search images by the word</a>";
 
-    imageLink = HtmlHelper.getAttribute(doc, selector, 0, "href");
+    imageLink = HtmlHelper.getAttribute(doc, "a.topic", 0, "href");
     if (imageLink.isEmpty()) {
       imageLink = imageName = "";
       imageOnline = imageOffline = googleImage;
       return;
     }
 
-    imageName = DictHelper.getLastElement(imageLink);
+    imageName = DictHelper.getFileName(imageLink);
     imageOnline = "<img src=\"" + imageLink + "\"/>";
     imageOffline = "<img src=\"" + imageName + "\"/>";
+
+    if (isOffline) {
+      DictHelper.downloadFile(ankiDir, imageLink);
+    }
   }
 
   @Override
-  public void preProceedSound(String ankiDir, String selector) {
+  public void getSounds(String ankiDir, boolean isOffline) {
 
     this.ankiDir = ankiDir;
-    soundLink = HtmlHelper.getAttribute(doc, selector, 0, "data-src-mp3");
+    List<String> soundLinks = new ArrayList<>();
+    soundLink = HtmlHelper.getAttribute(doc, "div.pron-us", 0, "data-src-mp3");
+    soundLink = HtmlHelper.getAttribute(doc, "div.pron-uk", 0, "data-src-mp3");
+
+
     if (soundLink.isEmpty()) {
       soundName = soundLink = soundOnline = soundOffline = "";
       return;
     }
 
-    soundName = DictHelper.getLastElement(soundLink);
-    soundOnline = String.format("<source src=\"%1$s\">Online sound. %2$s", soundLink, soundLink);
-    soundOffline = String.format("<source src=\"%1$s\">Offline sound. %2$s", soundName, soundName);
+    soundName = DictHelper.getFileName(soundLink);
+    // <audio id='audio1' src="ex1.wav" type="audio/wav" preload="auto" autobuffer controls
+    // ></audio>
+    soundOnline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundLink, soundLink);
+    soundOffline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundName, soundName);
+
+    if (isOffline) {
+      DictHelper.downloadFile(ankiDir, soundLink);
+    }
   }
 
   @Override

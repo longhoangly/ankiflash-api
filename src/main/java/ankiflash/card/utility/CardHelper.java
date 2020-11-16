@@ -97,7 +97,7 @@ public class CardHelper {
           foundWords.add(
               matchedWord
                   + Constants.SUB_DELIMITER
-                  + DictHelper.getLastElement(firstLink)
+                  + DictHelper.getFileName(firstLink)
                   + Constants.SUB_DELIMITER
                   + word);
         }
@@ -110,7 +110,7 @@ public class CardHelper {
           li.getElementsByTag("pos").remove();
           String matchedWord = li.getElementsByTag("span").text().trim();
           if (matchedWord.equalsIgnoreCase(word)) {
-            String wordId = DictHelper.getLastElement(li.getElementsByTag("a").attr("href"));
+            String wordId = DictHelper.getFileName(li.getElementsByTag("a").attr("href"));
             foundWords.add(
                 wordId + Constants.SUB_DELIMITER + wordId + Constants.SUB_DELIMITER + word);
           }

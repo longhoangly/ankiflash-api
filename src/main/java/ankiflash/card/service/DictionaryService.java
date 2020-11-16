@@ -4,9 +4,9 @@ import ankiflash.card.utility.Translation;
 
 public interface DictionaryService {
 
-  boolean isConnectionFailed(String word, Translation translation);
+  boolean isConnected(String word, Translation translation);
 
-  boolean isWordNotFound();
+  boolean isInvalidWord();
 
   String getWordType();
 
@@ -14,7 +14,7 @@ public interface DictionaryService {
 
   String getPhonetic();
 
-  void preProceedImage(String ankiDir, String selector);
+  void getImages(String ankiDir, boolean isOffline);
 
   String getImageOnline();
 
@@ -22,25 +22,13 @@ public interface DictionaryService {
 
   String getImageLink();
 
-  String getImageName();
-
-  void downloadImage();
-
-  void downloadImage(String ankiDir, String imageLink);
-
-  void preProceedSound(String ankiDir, String selector);
+  void getSounds(String ankiDir, boolean isOffline);
 
   String getSoundOnline();
 
   String getSoundOffline();
 
   String getSoundLink();
-
-  String getSoundName();
-
-  void downloadSound();
-
-  void downloadSound(String ankiDir, String imageLink);
 
   String getMeaning();
 

@@ -46,29 +46,6 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   String phonetic;
 
-  public void downloadImage() {
-
-    File dir = new File(ankiDir);
-    if (dir.exists() && !imageLink.isEmpty()) {
-      Path output = Paths.get(dir.getAbsolutePath(), imageName);
-      IOUtility.download(imageLink, output);
-    } else {
-      logger.warn("ankiDir={}, dir.exists={}, imageLink={}", ankiDir, dir.exists(), imageLink);
-    }
-  }
-
-  public void downloadImage(String ankiDir, String imageLink) {
-
-    String imageName = DictHelper.getLastElement(imageLink);
-    File dir = new File(ankiDir);
-    if (dir.exists() && !imageLink.isEmpty()) {
-      Path output = Paths.get(dir.getAbsolutePath(), imageName);
-      IOUtility.download(imageLink, output);
-    } else {
-      logger.warn("ankiDir={}, dir.exists={}, imageLink={}", ankiDir, dir.exists(), imageLink);
-    }
-  }
-
   public String getImageOnline() {
     return imageOnline;
   }
@@ -83,29 +60,6 @@ public abstract class DictionaryServiceImpl implements DictionaryService {
 
   public String getImageName() {
     return imageName;
-  }
-
-  public void downloadSound() {
-
-    File dir = new File(ankiDir);
-    if (dir.exists() && !soundLink.isEmpty()) {
-      Path output = Paths.get(dir.getAbsolutePath(), soundName);
-      IOUtility.download(soundLink, output);
-    } else {
-      logger.warn("ankiDir={}, dir.exists={}, soundLink={}", ankiDir, dir.exists(), soundLink);
-    }
-  }
-
-  public void downloadSound(String ankiDir, String soundLink) {
-
-    String soundName = DictHelper.getLastElement(soundLink);
-    File dir = new File(ankiDir);
-    if (dir.exists() && !soundLink.isEmpty()) {
-      Path output = Paths.get(dir.getAbsolutePath(), soundName);
-      IOUtility.download(soundLink, output);
-    } else {
-      logger.warn("ankiDir={}, dir.exists={}, soundLink={}", ankiDir, dir.exists(), soundLink);
-    }
   }
 
   public String getSoundOnline() {

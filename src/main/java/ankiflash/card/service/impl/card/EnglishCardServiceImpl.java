@@ -66,19 +66,19 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     if (dbCard != null) {
       logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
-        oxfordDict.downloadImage(ankiDir, dbCard.getImageLink());
-        oxfordDict.downloadSound(ankiDir, dbCard.getSoundLink());
+        oxfordDict.downloadFile(ankiDir, dbCard.getImageLink());
+        oxfordDict.downloadFile(ankiDir, dbCard.getSoundLink());
       }
       return dbCard;
     }
 
     // English to English
     if (translation.equals(Translation.EN_EN)) {
-      if (oxfordDict.isConnectionFailed(combinedWord, translation)) {
+      if (oxfordDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (oxfordDict.isWordNotFound()) {
+      } else if (oxfordDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -95,12 +95,12 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
         || translation.equals(Translation.EN_JP)
         || translation.equals(Translation.EN_FR)) {
 
-      if (oxfordDict.isConnectionFailed(combinedWord, translation)
-          || cambridgeDict.isConnectionFailed(combinedWord, translation)) {
+      if (oxfordDict.isConnected(combinedWord, translation)
+          || cambridgeDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (oxfordDict.isWordNotFound() || cambridgeDict.isWordNotFound()) {
+      } else if (oxfordDict.isInvalidWord() || cambridgeDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -118,12 +118,12 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
       // English to Vietnamese
     } else if (translation.equals(Translation.EN_VN)) {
 
-      if (oxfordDict.isConnectionFailed(combinedWord, translation)
-          || lacVietDict.isConnectionFailed(combinedWord, translation)) {
+      if (oxfordDict.isConnected(combinedWord, translation)
+          || lacVietDict.isConnected(combinedWord, translation)) {
         card.setStatus(Status.Connection_Failed);
         card.setComment(Constants.CONNECTION_FAILED);
         return card;
-      } else if (oxfordDict.isWordNotFound() || lacVietDict.isWordNotFound()) {
+      } else if (oxfordDict.isInvalidWord() || lacVietDict.isInvalidWord()) {
         card.setStatus(Status.Word_Not_Found);
         card.setComment(Constants.WORD_NOT_FOUND);
         return card;
@@ -148,27 +148,15 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
       return card;
     }
 
-    oxfordDict.preProceedSound(ankiDir, "div.pron-uk");
-    if (isOffline) {
-      oxfordDict.downloadSound();
-    }
-    oxfordDict.preProceedSound(ankiDir, "div.pron-us");
-    if (isOffline) {
-      oxfordDict.downloadSound();
-    }
+    oxfordDict.getSounds(ankiDir, isOffline);
     card.setSoundOnline(oxfordDict.getSoundOnline());
     card.setSoundOffline(oxfordDict.getSoundOffline());
     card.setSoundLink(oxfordDict.getSoundLink());
-    card.setSoundName(oxfordDict.getSoundName());
 
-    oxfordDict.preProceedImage(ankiDir, "a.topic");
-    if (isOffline) {
-      oxfordDict.downloadImage();
-    }
+    oxfordDict.getImages(ankiDir, isOffline);
     card.setImageOffline(oxfordDict.getImageOffline());
     card.setImageOnline(oxfordDict.getImageOnline());
     card.setImageLink(oxfordDict.getImageLink());
-    card.setImageName(oxfordDict.getImageName());
 
     card.setExample(oxfordDict.getExample());
     card.setTag(oxfordDict.getTag());

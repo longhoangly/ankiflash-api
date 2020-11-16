@@ -22,7 +22,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   private static final Logger logger = LoggerFactory.getLogger(JDictDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String combinedWord, Translation translation) {
+  public boolean isConnected(String combinedWord, Translation translation) {
 
     String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
     if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {
@@ -39,7 +39,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public boolean isWordNotFound() {
+  public boolean isInvalidWord() {
 
     Elements elements = doc.select("#txtKanji");
     if (elements.isEmpty()) {
@@ -104,7 +104,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void preProceedImage(String ankiDir, String selector) {
+  public void getImages(String ankiDir, String selector) {
 
     this.ankiDir = ankiDir;
     String googleImage =
@@ -123,13 +123,13 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       imageLink = "https://j-dict.com" + imageLink;
     }
     imageLink = imageLink.replaceFirst("\\?w=.*$", "");
-    imageName = DictHelper.getLastElement(imageLink);
+    imageName = DictHelper.getFileName(imageLink);
     imageOnline = "<img src=\"" + imageLink + "\"/>";
     imageOffline = "<img src=\"" + imageName + "\"/>";
   }
 
   @Override
-  public void preProceedSound(String ankiDir, String selector) {
+  public void getSounds(String ankiDir, String selector) {
 
     this.ankiDir = ankiDir;
     soundLink = HtmlHelper.getAttribute(doc, selector, 0, "data-fn");
@@ -138,9 +138,9 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
       return;
     }
 
-    soundName = DictHelper.getLastElement(soundLink);
-    soundOnline = String.format("<source src=\"%1$s\">Online sound. %2$s", soundLink, soundLink);
-    soundOffline = String.format("<source src=\"%1$s\">Offline sound. %2$s", soundName, soundName);
+    soundName = DictHelper.getFileName(soundLink);
+    soundOnline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundLink, soundLink);
+    soundOffline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundName, soundName);
   }
 
   @Override

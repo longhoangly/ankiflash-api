@@ -18,7 +18,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
       LoggerFactory.getLogger(CambridgeDictionaryServiceImpl.class);
 
   @Override
-  public boolean isConnectionFailed(String combinedWord, Translation translation) {
+  public boolean isConnected(String combinedWord, Translation translation) {
 
     String[] wordParts = combinedWord.split(Constants.SUB_DELIMITER);
     if (combinedWord.contains(Constants.SUB_DELIMITER) && wordParts.length == 3) {
@@ -44,7 +44,7 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public boolean isWordNotFound() {
+  public boolean isInvalidWord() {
 
     String title = HtmlHelper.getText(doc, "title", 0);
     if (title.contains(Constants.CAMBRIDGE_SPELLING_WRONG)) {
@@ -81,12 +81,12 @@ public class CambridgeDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void preProceedImage(String ankiDir, String selector) {
+  public void getImages(String ankiDir, String selector) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void preProceedSound(String ankiDir, String selector) {
+  public void getSounds(String ankiDir, String selector) {
     throw new UnsupportedOperationException();
   }
 

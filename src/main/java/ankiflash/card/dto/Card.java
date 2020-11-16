@@ -4,12 +4,7 @@ import ankiflash.card.utility.Constants;
 import ankiflash.card.utility.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.api.client.util.Base64;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -74,11 +69,6 @@ public class Card {
   private String imageLink;
 
   @NotNull
-  @JsonIgnore
-  @Column(name = "imageName")
-  private String imageName;
-
-  @NotNull
   @Column(name = "soundOffline", columnDefinition = "VARCHAR(500)")
   private String soundOffline;
 
@@ -90,11 +80,6 @@ public class Card {
   @JsonIgnore
   @Column(name = "soundLink", columnDefinition = "VARCHAR(500)")
   private String soundLink;
-
-  @NotNull
-  @JsonIgnore
-  @Column(name = "soundName")
-  private String soundName;
 
   @NotNull
   @NotEmpty
@@ -262,28 +247,12 @@ public class Card {
     this.imageOnline = imageOnline;
   }
 
-  public String getImageName() {
-    return imageName;
-  }
-
-  public void setImageName(String imageName) {
-    this.imageName = imageName;
-  }
-
   public String getSoundOnline() {
     return soundOnline;
   }
 
   public void setSoundOnline(String soundOnline) {
     this.soundOnline = soundOnline;
-  }
-
-  public String getSoundName() {
-    return soundName;
-  }
-
-  public void setSoundName(String soundName) {
-    this.soundName = soundName;
   }
 
   public String getMeaning() {
