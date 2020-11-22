@@ -5,6 +5,7 @@ import ankiflash.card.service.DictionaryService;
 import ankiflash.card.service.impl.dictionary.CollinsDictionaryServiceImpl;
 import ankiflash.card.service.impl.dictionary.LacVietDictionaryServiceImpl;
 import ankiflash.card.utility.Constants;
+import ankiflash.card.utility.DictHelper;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
 import java.util.ArrayList;
@@ -56,8 +57,8 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
     if (dbCard != null) {
       logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
-        collinsDict.downloadFile(ankiDir, dbCard.getImageLink());
-        collinsDict.downloadFile(ankiDir, dbCard.getSoundLink());
+        DictHelper.downloadFile(ankiDir, dbCard.getImageLink());
+        DictHelper.downloadFile(ankiDir, dbCard.getSoundLink());
       }
       return dbCard;
     }
@@ -79,15 +80,12 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
 
-      lacVietDict.getSounds(ankiDir, "embed");
-      if (isOffline) {
-        lacVietDict.downloadSound();
-      }
+      lacVietDict.getSounds(ankiDir, isOffline);
       card.setSoundOnline(lacVietDict.getSoundOnline());
       card.setSoundOffline(lacVietDict.getSoundOffline());
       card.setSoundLink(lacVietDict.getSoundLink());
 
-      lacVietDict.getImages(ankiDir, "");
+      lacVietDict.getImages(ankiDir, isOffline);
       card.setImageOffline(lacVietDict.getImageOffline());
       card.setImageOnline(lacVietDict.getImageOnline());
       card.setImageLink(lacVietDict.getImageLink());
@@ -113,16 +111,12 @@ public class FrenchCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(collinsDict.getPhonetic());
       card.setExample(collinsDict.getExample());
 
-      collinsDict.getSounds(
-          ankiDir, "a.hwd_sound.sound.audio_play_button.icon-volume-up.ptr");
-      if (isOffline) {
-        collinsDict.downloadSound();
-      }
+      collinsDict.getSounds(ankiDir, isOffline);
       card.setSoundOnline(collinsDict.getSoundOnline());
       card.setSoundOffline(collinsDict.getSoundOffline());
       card.setSoundLink(collinsDict.getSoundLink());
 
-      collinsDict.getImages(ankiDir, "");
+      collinsDict.getImages(ankiDir, isOffline);
       card.setImageOffline(collinsDict.getImageOffline());
       card.setImageOnline(collinsDict.getImageOnline());
       card.setImageLink(collinsDict.getImageLink());

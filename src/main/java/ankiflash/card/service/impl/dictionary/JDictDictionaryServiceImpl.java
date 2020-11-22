@@ -104,7 +104,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void getImages(String ankiDir, String selector) {
+  public void getImages(String ankiDir, boolean isOffline) {
 
     this.ankiDir = ankiDir;
     String googleImage =
@@ -112,7 +112,7 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
             + word
             + "\" style=\"font-size: 15px; color: blue\">Example Images</a>";
 
-    imageLink = HtmlHelper.getAttribute(doc, selector, 0, "href");
+    imageLink = HtmlHelper.getAttribute(doc, "a.fancybox.img", 0, "href");
     if (imageLink.isEmpty() || imageLink.contains("no-image")) {
       imageLink = imageName = "";
       imageOnline = imageOffline = googleImage;
@@ -126,13 +126,17 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     imageName = DictHelper.getFileName(imageLink);
     imageOnline = "<img src=\"" + imageLink + "\"/>";
     imageOffline = "<img src=\"" + imageName + "\"/>";
+
+    if (isOffline) {
+      DictHelper.downloadFile(ankiDir, imageLink);
+    }
   }
 
   @Override
-  public void getSounds(String ankiDir, String selector) {
+  public void getSounds(String ankiDir, boolean isOffline) {
 
     this.ankiDir = ankiDir;
-    soundLink = HtmlHelper.getAttribute(doc, selector, 0, "data-fn");
+    soundLink = HtmlHelper.getAttribute(doc, "a.sound", 0, "data-fn");
     if (soundLink.isEmpty()) {
       soundName = soundLink = soundOnline = soundOffline = "";
       return;
@@ -141,6 +145,10 @@ public class JDictDictionaryServiceImpl extends DictionaryServiceImpl {
     soundName = DictHelper.getFileName(soundLink);
     soundOnline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundLink, soundLink);
     soundOffline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundName, soundName);
+
+    if (isOffline) {
+      DictHelper.downloadFile(ankiDir, soundLink);
+    }
   }
 
   @Override

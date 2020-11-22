@@ -4,10 +4,7 @@ import ankiflash.card.dto.Card;
 import ankiflash.card.service.DictionaryService;
 import ankiflash.card.service.impl.dictionary.JDictDictionaryServiceImpl;
 import ankiflash.card.service.impl.dictionary.JishoDictionaryServiceImpl;
-import ankiflash.card.utility.CardHelper;
-import ankiflash.card.utility.Constants;
-import ankiflash.card.utility.Status;
-import ankiflash.card.utility.Translation;
+import ankiflash.card.utility.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -64,8 +61,8 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
     if (dbCard != null) {
       logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
-        jDict.downloadFile(ankiDir, dbCard.getImageLink());
-        jDict.downloadFile(ankiDir, dbCard.getSoundLink());
+        DictHelper.downloadFile(ankiDir, dbCard.getImageLink());
+        DictHelper.downloadFile(ankiDir, dbCard.getSoundLink());
       }
       return dbCard;
     }
@@ -87,18 +84,12 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(jDict.getPhonetic());
       card.setExample(jDict.getExample());
 
-      jDict.getSounds(ankiDir, "a.sound");
-      if (isOffline) {
-        jDict.downloadSound();
-      }
+      jDict.getSounds(ankiDir, isOffline);
       card.setSoundOnline(jDict.getSoundOnline());
       card.setSoundOffline(jDict.getSoundOffline());
       card.setSoundLink(jDict.getSoundLink());
 
-      jDict.getImages(ankiDir, "a.fancybox.img");
-      if (isOffline) {
-        jDict.downloadImage();
-      }
+      jDict.getImages(ankiDir, isOffline);
       card.setImageOffline(jDict.getImageOffline());
       card.setImageOnline(jDict.getImageOnline());
       card.setImageLink(jDict.getImageLink());
@@ -124,15 +115,12 @@ public class JapaneseCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(jishoDict.getPhonetic());
       card.setExample(jishoDict.getExample());
 
-      jishoDict.getSounds(ankiDir, "audio>source[type=audio/mpeg]");
-      if (isOffline) {
-        jishoDict.downloadSound();
-      }
+      jishoDict.getSounds(ankiDir, isOffline);
       card.setSoundOnline(jishoDict.getSoundOnline());
       card.setSoundOffline(jishoDict.getSoundOffline());
       card.setSoundLink(jishoDict.getSoundLink());
 
-      jishoDict.getImages(ankiDir, "");
+      jishoDict.getImages(ankiDir, isOffline);
       card.setImageOffline(jishoDict.getImageOffline());
       card.setImageOnline(jishoDict.getImageOnline());
       card.setImageLink(jishoDict.getImageLink());

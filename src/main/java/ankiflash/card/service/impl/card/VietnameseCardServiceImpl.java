@@ -4,10 +4,7 @@ import ankiflash.card.dto.Card;
 import ankiflash.card.service.DictionaryService;
 import ankiflash.card.service.impl.dictionary.JDictDictionaryServiceImpl;
 import ankiflash.card.service.impl.dictionary.LacVietDictionaryServiceImpl;
-import ankiflash.card.utility.CardHelper;
-import ankiflash.card.utility.Constants;
-import ankiflash.card.utility.Status;
-import ankiflash.card.utility.Translation;
+import ankiflash.card.utility.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -62,8 +59,8 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
     if (dbCard != null) {
       logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
-        jDict.downloadFile(ankiDir, dbCard.getImageLink());
-        jDict.downloadFile(ankiDir, dbCard.getSoundLink());
+        DictHelper.downloadFile(ankiDir, dbCard.getImageLink());
+        DictHelper.downloadFile(ankiDir, dbCard.getSoundLink());
       }
       return dbCard;
     }
@@ -85,15 +82,12 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(lacVietDict.getPhonetic());
       card.setExample(lacVietDict.getExample());
 
-      lacVietDict.getSounds(ankiDir, "embed");
-      if (isOffline) {
-        lacVietDict.downloadSound();
-      }
+      lacVietDict.getSounds(ankiDir, isOffline);
       card.setSoundOnline(lacVietDict.getSoundOnline());
       card.setSoundOffline(lacVietDict.getSoundOffline());
       card.setSoundLink(lacVietDict.getSoundLink());
 
-      lacVietDict.getImages(ankiDir, "");
+      lacVietDict.getImages(ankiDir, isOffline);
       card.setImageOffline(lacVietDict.getImageOffline());
       card.setImageOnline(lacVietDict.getImageOnline());
       card.setImageLink(lacVietDict.getImageLink());
@@ -119,18 +113,12 @@ public class VietnameseCardServiceImpl extends CardServiceImpl {
       card.setPhonetic(jDict.getPhonetic());
       card.setExample(jDict.getExample());
 
-      jDict.getSounds(ankiDir, "a.sound");
-      if (isOffline) {
-        jDict.downloadSound();
-      }
+      jDict.getSounds(ankiDir, isOffline);
       card.setSoundOnline(jDict.getSoundOnline());
       card.setSoundOffline(jDict.getSoundOffline());
       card.setSoundLink(jDict.getSoundLink());
 
-      jDict.getImages(ankiDir, "a.fancybox.img");
-      if (isOffline) {
-        jDict.downloadImage();
-      }
+      jDict.getImages(ankiDir, isOffline);
       card.setImageOffline(jDict.getImageOffline());
       card.setImageOnline(jDict.getImageOnline());
       card.setImageLink(jDict.getImageLink());

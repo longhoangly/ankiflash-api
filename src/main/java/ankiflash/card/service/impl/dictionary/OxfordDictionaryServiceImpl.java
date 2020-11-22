@@ -127,7 +127,6 @@ public class OxfordDictionaryServiceImpl extends DictionaryServiceImpl {
     soundLink = HtmlHelper.getAttribute(doc, "div.pron-us", 0, "data-src-mp3");
     soundLink = HtmlHelper.getAttribute(doc, "div.pron-uk", 0, "data-src-mp3");
 
-
     if (soundLink.isEmpty()) {
       soundName = soundLink = soundOnline = soundOffline = "";
       return;

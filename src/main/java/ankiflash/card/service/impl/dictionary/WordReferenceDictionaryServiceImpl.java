@@ -57,12 +57,12 @@ public class WordReferenceDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void getImages(String ankiDir, String selector) {
+  public void getImages(String ankiDir, boolean isOffline) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void getSounds(String ankiDir, String selector) {
+  public void getSounds(String ankiDir, boolean isOffline) {
     throw new UnsupportedOperationException();
   }
 

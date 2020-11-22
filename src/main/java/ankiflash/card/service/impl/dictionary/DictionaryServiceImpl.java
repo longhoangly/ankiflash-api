@@ -1,11 +1,6 @@
 package ankiflash.card.service.impl.dictionary;
 
 import ankiflash.card.service.DictionaryService;
-import ankiflash.card.utility.DictHelper;
-import ankiflash.utility.IOUtility;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

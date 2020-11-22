@@ -97,7 +97,7 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void getImages(String ankiDir, String selector) {
+  public void getImages(String ankiDir, boolean isOffline) {
 
     this.ankiDir = ankiDir;
     imageLink = imageName = "";
@@ -109,10 +109,12 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
   }
 
   @Override
-  public void getSounds(String ankiDir, String selector) {
+  public void getSounds(String ankiDir, boolean isOffline) {
 
     this.ankiDir = ankiDir;
-    soundLink = HtmlHelper.getAttribute(doc, selector, 0, "src");
+    soundLink =
+        HtmlHelper.getAttribute(
+            doc, "audio>source[type=audio/mpeg]", 0, "src");
     if (soundLink.isEmpty()) {
       soundName = soundLink = soundOnline = soundOffline = "";
       return;
@@ -122,6 +124,10 @@ public class JishoDictionaryServiceImpl extends DictionaryServiceImpl {
     soundName = DictHelper.getFileName(soundLink);
     soundOnline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundLink, soundLink);
     soundOffline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundName, soundName);
+
+    if (isOffline) {
+      DictHelper.downloadFile(ankiDir, soundLink);
+    }
   }
 
   @Override

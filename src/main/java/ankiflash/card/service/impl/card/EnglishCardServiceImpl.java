@@ -5,10 +5,7 @@ import ankiflash.card.service.DictionaryService;
 import ankiflash.card.service.impl.dictionary.CambridgeDictionaryServiceImpl;
 import ankiflash.card.service.impl.dictionary.LacVietDictionaryServiceImpl;
 import ankiflash.card.service.impl.dictionary.OxfordDictionaryServiceImpl;
-import ankiflash.card.utility.CardHelper;
-import ankiflash.card.utility.Constants;
-import ankiflash.card.utility.Status;
-import ankiflash.card.utility.Translation;
+import ankiflash.card.utility.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -66,8 +63,8 @@ public class EnglishCardServiceImpl extends CardServiceImpl {
     if (dbCard != null) {
       logger.info("Card-found-from-our-DB={}", card.getWord());
       if (isOffline) {
-        oxfordDict.downloadFile(ankiDir, dbCard.getImageLink());
-        oxfordDict.downloadFile(ankiDir, dbCard.getSoundLink());
+        DictHelper.downloadFile(ankiDir, dbCard.getImageLink());
+        DictHelper.downloadFile(ankiDir, dbCard.getSoundLink());
       }
       return dbCard;
     }
