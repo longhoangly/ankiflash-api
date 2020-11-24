@@ -11,6 +11,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 class SkipPathRequestMatcher implements RequestMatcher {
 
   private final OrRequestMatcher matchers;
+
   private final RequestMatcher processingMatcher;
 
   public SkipPathRequestMatcher(List<String> pathsToSkip, String processingPath) {

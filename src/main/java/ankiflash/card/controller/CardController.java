@@ -3,9 +3,9 @@ package ankiflash.card.controller;
 import ankiflash.card.dto.Card;
 import ankiflash.card.payload.CardRequest;
 import ankiflash.card.payload.WordResponse;
-import ankiflash.card.service.CardDbService;
-import ankiflash.card.service.CardService;
-import ankiflash.card.utility.Constants;
+import ankiflash.card.service.CardGeneratingService;
+import ankiflash.card.service.CardStorageService;
+import ankiflash.card.utility.Constant;
 import ankiflash.card.utility.Status;
 import ankiflash.card.utility.Translation;
 import ankiflash.security.service.UserService;
@@ -40,11 +40,11 @@ class CardController {
 
   @Autowired private UserService userService;
 
-  @Autowired private CardDbService cardDbService;
+  @Autowired private CardStorageService cardStorageService;
 
   @Autowired private BeanFactory beans;
 
-  private CardService cardService;
+  private CardGeneratingService cardGeneratingService;
 
   @PostMapping("/get-words")
   public ResponseEntity getWords(@RequestBody @Valid CardRequest reqCard) {
@@ -57,13 +57,13 @@ class CardController {
     }
 
     initializeCardService(reqCard.getSource());
-    String[] words = reqCard.getWords().split(Constants.MAIN_DELIMITER);
+    String[] words = reqCard.getWords().split(Constant.MAIN_DELIMITER);
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     List<String> success = new ArrayList<>();
     List<String> failure = new ArrayList<>();
     for (String word : words) {
-      List<String> matchedWords = cardService.getWords(word, translation);
+      List<String> matchedWords = cardGeneratingService.getWords(word, translation);
       if (matchedWords.isEmpty()) {
         failure.add(word);
       } else {
@@ -95,7 +95,7 @@ class CardController {
     String word = reqCard.getWords();
 
     // Generate card
-    Card card = cardService.generateCard(word, translation, "", reqCard.getIsOffline());
+    Card card = cardGeneratingService.generateCard(word, translation, "", reqCard.getIsOffline());
     return ResponseEntity.ok().body(card);
   }
 
@@ -112,7 +112,7 @@ class CardController {
     initializeCardService(reqCard.getSource());
 
     // Get request info
-    List<String> words = Arrays.asList(reqCard.getWords().split(Constants.MAIN_DELIMITER));
+    List<String> words = Arrays.asList(reqCard.getWords().split(Constant.MAIN_DELIMITER));
     Translation translation = new Translation(reqCard.getSource(), reqCard.getTarget());
 
     // Create ankiDir folder
@@ -127,38 +127,38 @@ class CardController {
 
     // Generate cards
     List<Card> cards =
-        cardService.generateCards(words, translation, ankiDir, reqCard.getIsOffline());
+        cardGeneratingService.generateCards(words, translation, ankiDir, reqCard.getIsOffline());
     for (Card card : cards) {
       if (card.getStatus().compareTo(Status.Success) == 0) {
         String soundHtml = reqCard.getIsOffline() ? card.getSoundOffline() : card.getSoundOnline();
         String imageHtml = reqCard.getIsOffline() ? card.getImageOffline() : card.getImageOnline();
         String cardContent =
             card.getWord()
-                + Constants.TAB
+                + Constant.TAB
                 + card.getWordType()
-                + Constants.TAB
+                + Constant.TAB
                 + card.getPhonetic()
-                + Constants.TAB
+                + Constant.TAB
                 + card.getExample()
-                + Constants.TAB
+                + Constant.TAB
                 + soundHtml
-                + Constants.TAB
+                + Constant.TAB
                 + imageHtml
-                + Constants.TAB
+                + Constant.TAB
                 + card.getMeaning()
-                + Constants.TAB
+                + Constant.TAB
                 + card.getCopyright()
-                + Constants.TAB
+                + Constant.TAB
                 + card.getTag()
                 + "\n";
-        IOUtility.write(ankiDir + "/" + Constants.ANKI_DECK, cardContent);
+        IOUtility.write(ankiDir + "/" + Constant.ANKI_DECK, cardContent);
       } else {
         IOUtility.write(
-            ankiDir + "/" + Constants.ANKI_FAILURE,
+            ankiDir + "/" + Constant.ANKI_FAILURE,
             card.getWord()
                 + " => "
                 + card.getStatus()
-                + Constants.SUB_DELIMITER
+                + Constant.SUB_DELIMITER
                 + card.getComment()
                 + "\n");
       }
@@ -173,7 +173,7 @@ class CardController {
     logger.info("/api/v1/anki-flash-card/get-supported-language");
 
     initializeCardService("English");
-    List<Translation> languages = cardService.getSupportedLanguages();
+    List<Translation> languages = cardGeneratingService.getSupportedLanguages();
 
     return ResponseEntity.ok().body(languages);
   }
@@ -197,7 +197,7 @@ class CardController {
     String zipFilePath = ankiDir + ".zip";
     File zipFile = new File(zipFilePath);
     if (!zipFile.exists()) {
-      cardService.compressResources(ankiDir);
+      cardGeneratingService.compressResources(ankiDir);
     }
 
     InputStreamResource resource =
@@ -227,7 +227,8 @@ class CardController {
 
     String beanPrefix = sourceLanguage.toLowerCase().split(" ")[0];
     try {
-      cardService = beans.getBean(beanPrefix + "CardServiceImpl", CardService.class);
+      cardGeneratingService =
+          beans.getBean(beanPrefix + "CardGeneratingServiceImpl", CardGeneratingService.class);
     } catch (BeansException e) {
       throw new BadRequestException(
           String.format("The language [%s] is not supported!", sourceLanguage));

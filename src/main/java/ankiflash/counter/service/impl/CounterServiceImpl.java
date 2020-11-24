@@ -1,6 +1,6 @@
 package ankiflash.counter.service.impl;
 
-import ankiflash.card.service.CardDbService;
+import ankiflash.card.service.CardStorageService;
 import ankiflash.counter.dto.Counter;
 import ankiflash.counter.payload.CounterResponse;
 import ankiflash.counter.repository.CounterRepository;
@@ -17,7 +17,7 @@ public class CounterServiceImpl implements CounterService {
 
   @Autowired private CounterRepository counterRepository;
 
-  @Autowired private CardDbService cardDbService;
+  @Autowired private CardStorageService cardStorageService;
 
   @Autowired private UserService userService;
 
@@ -40,7 +40,7 @@ public class CounterServiceImpl implements CounterService {
         : new CounterResponse(
             userService.userCount(),
             counter.getVisitCount(),
-            cardDbService.cardCount(),
+            cardStorageService.cardCount(),
             counter.getLangCount());
   }
 

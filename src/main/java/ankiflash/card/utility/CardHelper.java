@@ -26,7 +26,7 @@ public class CardHelper {
 
     String urlParameters =
         String.format("m=dictionary&fn=search_word&keyword=%1$s&allowSentenceAnalyze=true", word);
-    Document document = CardHelper.getJDictDoc(Constants.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
+    Document document = CardHelper.getJDictDoc(Constant.JDICT_URL_VN_JP_OR_JP_VN, urlParameters);
     Elements wordElms = new Elements();
     if (document != null) {
       wordElms = document.select("ul>li");
@@ -38,9 +38,9 @@ public class CardHelper {
           && !wordElm.attr("data-id").isEmpty()) {
         jDictWords.add(
             wordElm.attr("title")
-                + Constants.SUB_DELIMITER
+                + Constant.SUB_DELIMITER
                 + wordElm.attr("data-id")
-                + Constants.SUB_DELIMITER
+                + Constant.SUB_DELIMITER
                 + word);
       }
     }
@@ -49,7 +49,7 @@ public class CardHelper {
 
   public static List<String> getJishoWords(String word) {
 
-    String url = HtmlHelper.lookupUrl(Constants.JISHO_SEARCH_URL_JP_EN, word);
+    String url = HtmlHelper.lookupUrl(Constant.JISHO_SEARCH_URL_JP_EN, word);
     Document document = HtmlHelper.getDocument(url);
     Elements wordElms = new Elements();
     if (document != null) {
@@ -73,9 +73,9 @@ public class CardHelper {
         logger.debug("detailLinkEls = {}", String.join("---", detailLinkEls));
         jDictWords.add(
             foundWordElm.text()
-                + Constants.SUB_DELIMITER
+                + Constant.SUB_DELIMITER
                 + HtmlHelper.urlDecode(detailLinkEls[detailLinkEls.length - 1])
-                + Constants.SUB_DELIMITER
+                + Constant.SUB_DELIMITER
                 + word);
       }
     }
@@ -86,7 +86,7 @@ public class CardHelper {
   public static List<String> getOxfordWords(String word) {
 
     List<String> foundWords = new ArrayList<>();
-    String url = HtmlHelper.lookupUrl(Constants.OXFORD_SEARCH_URL_EN_EN, word);
+    String url = HtmlHelper.lookupUrl(Constant.OXFORD_SEARCH_URL_EN_EN, word);
     Document doc = HtmlHelper.getDocument(url);
 
     if (doc != null) {
@@ -96,9 +96,9 @@ public class CardHelper {
         if (!matchedWord.isBlank()) {
           foundWords.add(
               matchedWord
-                  + Constants.SUB_DELIMITER
+                  + Constant.SUB_DELIMITER
                   + DictHelper.getFileName(firstLink)
-                  + Constants.SUB_DELIMITER
+                  + Constant.SUB_DELIMITER
                   + word);
         }
       }
@@ -112,7 +112,7 @@ public class CardHelper {
           if (matchedWord.equalsIgnoreCase(word)) {
             String wordId = DictHelper.getFileName(li.getElementsByTag("a").attr("href"));
             foundWords.add(
-                wordId + Constants.SUB_DELIMITER + wordId + Constants.SUB_DELIMITER + word);
+                wordId + Constant.SUB_DELIMITER + wordId + Constant.SUB_DELIMITER + word);
           }
         }
       }

@@ -9,9 +9,11 @@ public class PassEncoding {
   public final BCryptPasswordEncoder passwordEncoder;
 
   public static PassEncoding getInstance() {
+
     if (passEncoding != null) {
       return passEncoding;
     }
+
     return new PassEncoding();
   }
 
