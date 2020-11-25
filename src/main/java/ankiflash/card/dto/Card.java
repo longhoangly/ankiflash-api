@@ -73,12 +73,12 @@ public class Card {
   private String soundOffline;
 
   @NotNull
-  @Column(name = "soundOnline", columnDefinition = "VARCHAR(500)")
+  @Column(name = "soundOnline", columnDefinition = "LONGTEXT")
   private String soundOnline;
 
   @NotNull
   @JsonIgnore
-  @Column(name = "soundLink", columnDefinition = "VARCHAR(500)")
+  @Column(name = "soundLink", columnDefinition = "LONGTEXT")
   private String soundLink;
 
   @NotNull

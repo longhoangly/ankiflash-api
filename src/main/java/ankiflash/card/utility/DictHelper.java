@@ -17,15 +17,18 @@ public class DictHelper {
     return link_els[link_els.length - 1];
   }
 
-  public static void downloadFile(String ankiDir, String url) {
+  public static void downloadFiles(String ankiDir, String urls) {
 
-    String fileName = DictHelper.getFileName(url);
-    File dir = new File(ankiDir);
-    if (dir.exists() && !url.isEmpty()) {
-      Path output = Paths.get(dir.getAbsolutePath(), fileName);
-      IOUtility.download(url, output);
-    } else {
-      logger.warn("ankiDir={}, dir.exists={}, url={}", ankiDir, dir.exists(), url);
+    String[] downloadLinks = urls.split(";");
+    for (var link : downloadLinks) {
+      String fileName = DictHelper.getFileName(link);
+      File dir = new File(ankiDir);
+      if (dir.exists() && !link.isEmpty()) {
+        Path output = Paths.get(dir.getAbsolutePath(), fileName);
+        IOUtility.download(link, output);
+      } else {
+        logger.warn("ankiDir={}, dir.exists={}, link={}", ankiDir, dir.exists(), link);
+      }
     }
   }
 }
