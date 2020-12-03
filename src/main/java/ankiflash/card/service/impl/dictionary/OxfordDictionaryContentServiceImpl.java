@@ -142,11 +142,11 @@ public class OxfordDictionaryContentServiceImpl extends DictionaryContentService
       String soundName = DictHelper.getFileName(soundLink);
       soundOnline =
           String.format(
-              "<audio src=\"%1$s\" type=\"audio/wav\" preload=\"auto\" autobuffer controls>[sound:%2$s]</audio> %3$s",
+              "<audio src=\"%1$s\" type=\"audio/wav\" preload=\"auto\" autoplay autobuffer controls>[sound:%2$s]</audio> %3$s",
               soundLink, soundLink, ofNullable(soundOnline).orElse(""));
       soundOffline =
           String.format(
-              "<audio src=\"%1$s\" type=\"audio/wav\" preload=\"auto\" autobuffer controls>[sound:%2$s]</audio> %3$s",
+              "<audio src=\"%1$s\" type=\"audio/wav\" preload=\"auto\" autoplay autobuffer controls>[sound:%2$s]</audio> %3$s",
               soundName, soundName, ofNullable(soundOffline).orElse(""));
     }
 

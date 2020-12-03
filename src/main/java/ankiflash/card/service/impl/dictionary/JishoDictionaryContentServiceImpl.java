@@ -1,5 +1,7 @@
 package ankiflash.card.service.impl.dictionary;
 
+import static java.util.Optional.ofNullable;
+
 import ankiflash.card.dto.Meaning;
 import ankiflash.card.utility.Constant;
 import ankiflash.card.utility.DictHelper;
@@ -120,9 +122,18 @@ public class JishoDictionaryContentServiceImpl extends DictionaryContentServiceI
     }
 
     soundLinks = "https:" + soundLinks;
-    String soundName = DictHelper.getFileName(soundLinks);
-    soundOnline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundLinks, soundLinks);
-    soundOffline = String.format("<source src=\"%1$s\">[sound:%2$s]", soundName, soundName);
+    String[] sounds = soundLinks.split(";");
+    for (var soundLink : sounds) {
+      String soundName = DictHelper.getFileName(soundLink);
+      soundOnline =
+          String.format(
+              "<audio src=\"%1$s\" type=\"audio/wav\" preload=\"auto\" autoplay autobuffer controls>[sound:%2$s]</audio> %3$s",
+              soundLink, soundLink, ofNullable(soundOnline).orElse(""));
+      soundOffline =
+          String.format(
+              "<audio src=\"%1$s\" type=\"audio/wav\" preload=\"auto\" autoplay autobuffer controls>[sound:%2$s]</audio> %3$s",
+              soundName, soundName, ofNullable(soundOffline).orElse(""));
+    }
 
     if (isOffline) {
       DictHelper.downloadFiles(ankiDir, soundLinks);
