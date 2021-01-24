@@ -37,7 +37,9 @@ public abstract class CardGeneratingServiceImpl implements CardGeneratingService
   public void compressResources(String ankiDir) {
 
     ClassLoader classLoader = getClass().getClassLoader();
-    List<String> files = Arrays.asList("anki.ico", "anki.png");
+    List<String> files =
+        Arrays.asList(
+            "anki.ico", "anki.png", "front.html", "back.html", "style.css", "version.csv");
 
     for (String file : files) {
       InputStream inputStream =
